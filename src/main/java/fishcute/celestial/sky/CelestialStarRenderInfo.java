@@ -31,10 +31,10 @@ public class CelestialStarRenderInfo {
     }
 
     public static final CelestialStarRenderInfo DEFAULT = new CelestialStarRenderInfo(
-            "skyAngle + 90",
+            "#skyAngle + 90",
             "0",
             "0",
-            "((1.0 - dayLight) * rainGradient)m(1)",
+            "((1.0 - #dayLight) * #rainGradient)m(1)",
             1500,
             0.2,
             0.25,
@@ -52,10 +52,10 @@ public class CelestialStarRenderInfo {
         JsonObject stars = o.getAsJsonObject("stars");
         JsonObject rotation = stars.getAsJsonObject("rotation");
         return new CelestialStarRenderInfo(
-                Util.getOptionalString(rotation, "degrees_x", "skyAngle + 90"),
+                Util.getOptionalString(rotation, "degrees_x", "#skyAngle + 90"),
                 Util.getOptionalString(rotation, "degrees_y", "-90"),
                 Util.getOptionalString(rotation, "degrees_z", "0"),
-                Util.getOptionalString(stars, "brightness", "((1.0 - dayLight) * rainGradient)m(1)"),
+                Util.getOptionalString(stars, "brightness", "((1.0 - #dayLight) * #rainGradient)m(1)"),
                 Util.getOptionalInteger(stars, "count", 1500),
                 Util.getOptionalDouble(stars, "min_size", 0.1),
                 Util.getOptionalDouble(stars, "max_size", 0.15),
