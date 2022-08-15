@@ -27,13 +27,11 @@ public class BackgroundRendererMixin {
   @Inject(method = "applyFog", at = @At("RETURN"))
     private static void applyFog(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo info) {
       if (CelestialSky.doesDimensionHaveCustomSky() && !CelestialSky.getDimensionRenderInfo().environment.useSimpleFog()) {
-          Map<String, String> toReplaceMap = Map.ofEntries(
+          Map<String, String> toReplaceMap = new java.util.HashMap<>(Map.ofEntries(
                   entry("#viewDistance", viewDistance + ""),
-                  entry("#minViewDistance", Math.min(viewDistance, 192.0F) + ""),
-                  entry("#xPos", MinecraftClient.getInstance().player.getPos().x + ""),
-                  entry("#yPos", MinecraftClient.getInstance().player.getPos().y + ""),
-                  entry("#zPos", MinecraftClient.getInstance().player.getPos().z + "")
-          );
+                  entry("#minViewDistance", Math.min(viewDistance, 192.0F) + "")
+          ));
+          toReplaceMap.putAll(Util.getReplaceMapNormal());
           RenderSystem.setShaderFogStart((float) Util.solveEquation(CelestialSky.getDimensionRenderInfo().environment.fogStart, toReplaceMap));
           RenderSystem.setShaderFogEnd((float) Util.solveEquation(CelestialSky.getDimensionRenderInfo().environment.fogEnd, toReplaceMap));
       }

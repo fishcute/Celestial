@@ -3,10 +3,12 @@ package fishcute.celestial.util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import fishcute.celestial.sky.CelestialSky;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
@@ -20,9 +22,11 @@ public class Util {
     /*
     Function below originally made by Boann on StackOverFlow, and slightly modified by me.
      */
+
+    static DecimalFormat numberFormat = new DecimalFormat("#.00000000");
     public static double solveEquation(String str, Map<String, String> toReplace) {
         for (String i : toReplace.keySet()) {
-            str = str.replaceAll(i, toReplace.get(i));
+            str = str.replaceAll(i, numberFormat.format(Double.valueOf(toReplace.get(i))));
         }
         String finalStr = str;
 
@@ -153,6 +157,7 @@ public class Util {
     }
 
     public static void warn(Object i) {
+        CelestialSky.warnings++;
         if (!MinecraftClient.getInstance().isPaused()) {
             log("[Warn] " + i.toString());
             sendWarnInGame(i.toString());
@@ -162,6 +167,7 @@ public class Util {
     public static ArrayList<String> errorList = new ArrayList<>();
 
     public static void sendErrorInGame(String i, boolean unloadResources) {
+        CelestialSky.errors++;
         if (MinecraftClient.getInstance().player == null)
             return;
         if (errorList.contains(i) || errorList.size() > 25)
@@ -255,7 +261,14 @@ public class Util {
         return Map.ofEntries(
                 entry("#xPos", MinecraftClient.getInstance().player.getPos().x + ""),
                 entry("#yPos", MinecraftClient.getInstance().player.getPos().y + ""),
-                entry("#zPos", MinecraftClient.getInstance().player.getPos().z + "")
+                entry("#zPos", MinecraftClient.getInstance().player.getPos().z + ""),
+                entry("#tickDelta", MinecraftClient.getInstance().getTickDelta() + ""),
+                entry("#dayLight", (1.0F - MinecraftClient.getInstance().world.method_23787(MinecraftClient.getInstance().getTickDelta())) + ""),
+                entry("#rainGradient", (1.0F - MinecraftClient.getInstance().world.getRainGradient(MinecraftClient.getInstance().world.method_23787(MinecraftClient.getInstance().getTickDelta()))) + ""),
+                entry("#isUsingSpyglass", (MinecraftClient.getInstance().player.isUsingSpyglass() ? 1 : 0) + ""),
+                entry("#isSubmerged", (MinecraftClient.getInstance().player.isSubmergedInWater() ? 1 : 0) + ""),
+                entry("#getTotalTime", (MinecraftClient.getInstance().world.getTime()) + ""),
+                entry("#random", Math.random() + "")
         );
     }
 }

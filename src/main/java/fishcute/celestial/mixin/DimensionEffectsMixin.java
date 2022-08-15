@@ -16,15 +16,6 @@ import static java.util.Map.entry;
 
 @Mixin(DimensionEffects.class)
 public class DimensionEffectsMixin {
-    private static Map<String, String> getReplaceMapNormal(float twilightAlpha) {
-        return Map.ofEntries(
-                entry("#xPos", MinecraftClient.getInstance().player.getPos().x + ""),
-                entry("#yPos", MinecraftClient.getInstance().player.getPos().y + ""),
-                entry("#zPos", MinecraftClient.getInstance().player.getPos().z + ""),
-                entry("#twilightAlpha", twilightAlpha + "")
-        );
-    }
-
     private final float[] rgba = new float[4];
 
     @Inject(method = "getCloudsHeight", at = @At("RETURN"), cancellable = true)
@@ -44,7 +35,14 @@ public class DimensionEffectsMixin {
                 this.rgba[0] = i * 0.3F + (CelestialSky.getDimensionRenderInfo().environment.twilightColor.getRed() / 255.0F);
                 this.rgba[1] = i * i * 0.7F + (CelestialSky.getDimensionRenderInfo().environment.twilightColor.getGreen() / 255.0F);
                 this.rgba[2] = i * i * 0.0F + (CelestialSky.getDimensionRenderInfo().environment.twilightColor.getBlue() / 255.0F);
-                this.rgba[3] = Math.min(j, (float) Util.solveEquation(CelestialSky.getDimensionRenderInfo().environment.twilightAlpha, getReplaceMapNormal(j)));
+
+                Map<String, String> toReplaceMap = new java.util.HashMap<>(Map.ofEntries(
+                        entry("#twilightAlpha", j + "")
+                ));
+
+                toReplaceMap.putAll(Util.getReplaceMapNormal());
+
+                this.rgba[3] = Math.min(j, (float) Util.solveEquation(CelestialSky.getDimensionRenderInfo().environment.twilightAlpha, toReplaceMap));
                 info.setReturnValue(this.rgba);
             } else {
                 info.setReturnValue(null);

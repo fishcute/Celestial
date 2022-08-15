@@ -43,6 +43,8 @@ public abstract class WorldRendererMixin {
 
     @Shadow protected abstract BufferBuilder.BuiltBuffer renderStars(BufferBuilder buffer);
 
+    @Shadow public abstract void render(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix);
+
     private static Matrix4f setRotation(MatrixStack matrixStack, Quaternion i, Quaternion j, Quaternion k, Vec3d move) {
         matrixStack.push();
 
@@ -168,36 +170,36 @@ public abstract class WorldRendererMixin {
                             }
                         }
 
-                        matrices.push();
-
                         float a = this.world.getSkyAngle(tickDelta) * 360.0F;
 
-                        Map<String, String> toReplaceMapRotation = Map.ofEntries(
-                                entry("#skyAngle", a + ""),
-                                entry("#xPos", MinecraftClient.getInstance().player.getPos().x + ""),
-                                entry("#yPos", MinecraftClient.getInstance().player.getPos().y + ""),
-                                entry("#zPos", MinecraftClient.getInstance().player.getPos().z + "")
-                        );
+                        Map<String, String> toReplaceMapRotation = new java.util.HashMap<>(Map.ofEntries(
+                                entry("#skyAngle", a + "")
+                        ));
+
+                        toReplaceMapRotation.putAll(Util.getReplaceMapNormal());
 
                         i = 1.0F - this.world.getRainGradient(tickDelta);
 
-                        Map<String, String> toReplaceMapGeneral = Map.ofEntries(
-                                entry("#xPos", MinecraftClient.getInstance().player.getPos().x + ""),
-                                entry("#yPos", MinecraftClient.getInstance().player.getPos().y + ""),
-                                entry("#zPos", MinecraftClient.getInstance().player.getPos().z + ""),
-                                entry("#dayLight", (1.0F - this.world.method_23787(tickDelta)) + ""),
-                                entry("#rainGradient", (i) + "")
-                        );
+                        toReplaceMapRotation.putAll(Util.getReplaceMapNormal());
+
+                        Map<String, String> toReplaceMapStarBrightness = new java.util.HashMap<>(Map.ofEntries(
+                                entry("#starAlpha", this.world.method_23787(tickDelta) * i + "")
+                        ));
+
+                        toReplaceMapStarBrightness.putAll(Util.getReplaceMapNormal());
+
+                        matrices.push();
+
+                        matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion((float) Util.solveEquation(renderInfo.stars.baseDegreesX, toReplaceMapRotation)));
+                        matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion((float) Util.solveEquation(renderInfo.stars.baseDegreesY, toReplaceMapRotation)));
+                        matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion((float) Util.solveEquation(renderInfo.stars.baseDegreesZ, toReplaceMapRotation)));
+
 
                         // Stars
 
-                        float alpha = (float) (Math.max(
-                                Util.solveEquation(renderInfo.environment.skyDarkness, Util.getReplaceMapNormal()),
-                                (this.world.method_23787(tickDelta) * i)));
-                        float brightness = (float) (Math.min(alpha + 0.2, 1) + Util.solveEquation(renderInfo.stars.starBrightness, toReplaceMapGeneral));
-
-                        if (alpha > 0.0F) {
-                            RenderSystem.setShaderColor(brightness, brightness, brightness, alpha);
+                        float brightness = (float) Util.solveEquation(renderInfo.stars.starBrightness, toReplaceMapStarBrightness);
+                        if (brightness > 0.0F) {
+                            RenderSystem.setShaderColor(brightness, brightness, brightness, brightness);
                             BackgroundRenderer.clearFog();
                             this.starsBuffer.bind();
                             this.starsBuffer.draw(setRotation(matrices,
@@ -209,41 +211,51 @@ public abstract class WorldRendererMixin {
                             runnable.run();
                         }
 
+                        matrices.pop();
+
                         RenderSystem.enableTexture();
+                        RenderSystem.enableBlend();
                         RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
 
                         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, i);
 
                         Matrix4f matrix4f2;
 
-                        matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90.0F));
-                        matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-i));
-                        matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-90.0F));
-
                         for (CelestialObject c : renderInfo.skyObjects) {
+                            matrices.push();
+
+                            matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion((float) Util.solveEquation(c.baseDegreesX, toReplaceMapRotation)));
+                            matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion((float) Util.solveEquation(c.baseDegreesY, toReplaceMapRotation)));
+                            matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion((float) Util.solveEquation(c.baseDegreesZ, toReplaceMapRotation)));
 
                             matrix4f2 = setRotation(matrices,
-                                    Vec3f.POSITIVE_X.getDegreesQuaternion((float) Util.solveEquation(c.degreesX, toReplaceMapRotation) - 1.0F),
+                                    Vec3f.POSITIVE_X.getDegreesQuaternion((float) Util.solveEquation(c.degreesX, toReplaceMapRotation)),
                                             Vec3f.POSITIVE_Y.getDegreesQuaternion((float) Util.solveEquation(c.degreesY, toReplaceMapRotation)),
                                             Vec3f.POSITIVE_Z.getDegreesQuaternion((float) Util.solveEquation(c.degreesZ, toReplaceMapRotation)),
                                             new Vec3d(
-                                                    (float) Util.solveEquation(c.posX, toReplaceMapGeneral),
-                                                    (float) Util.solveEquation(c.posY, toReplaceMapGeneral),
-                                                    (float) Util.solveEquation(c.posZ, toReplaceMapGeneral)
+                                                    (float) Util.solveEquation(c.posX, Util.getReplaceMapNormal()),
+                                                    (float) Util.solveEquation(c.posY, Util.getReplaceMapNormal()),
+                                                    (float) Util.solveEquation(c.posZ, Util.getReplaceMapNormal())
                                             ));
+
+                            float distance = (float) Util.solveEquation(c.distance, Util.getReplaceMapNormal());
                             // Set scale
-                            k = (float) Util.solveEquation(c.scale, toReplaceMapGeneral);
-                            float distance = (float) Util.solveEquation(c.distance, toReplaceMapGeneral);
+                            k = (float) Util.solveEquation(c.scale, Util.getReplaceMapNormal());
+
+                            float k1 = distance < 0 ? k : -k;
+
+                            float k2 = distance < 0 ? -k : k;
+
 
                             RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
 
                             // Set texture
                             RenderSystem.setShaderTexture(0, c.texture);
 
-                            int r1 = (int) (((float) Util.solveEquation(c.celestialObjectProperties.red, toReplaceMapGeneral)) * 255);
-                            int g1 = (int) (((float) Util.solveEquation(c.celestialObjectProperties.green, toReplaceMapGeneral)) * 255);
-                            int b1 = (int) (((float) Util.solveEquation(c.celestialObjectProperties.blue, toReplaceMapGeneral)) * 255);
-                            int a1 = (int) (((float) Util.solveEquation(c.celestialObjectProperties.alpha, toReplaceMapGeneral)) * 255);
+                            int r1 = (int) (((float) Util.solveEquation(c.celestialObjectProperties.red, Util.getReplaceMapNormal())) * 255);
+                            int g1 = (int) (((float) Util.solveEquation(c.celestialObjectProperties.green, Util.getReplaceMapNormal())) * 255);
+                            int b1 = (int) (((float) Util.solveEquation(c.celestialObjectProperties.blue, Util.getReplaceMapNormal())) * 255);
+                            int a1 = (int) (((float) Util.solveEquation(c.celestialObjectProperties.alpha, Util.getReplaceMapNormal())) * 255);
 
                             if (c.celestialObjectProperties.isSolid)
                                 RenderSystem.defaultBlendFunc();
@@ -257,17 +269,17 @@ public abstract class WorldRendererMixin {
                                 p = (float)(s + 1) / 4.0F;
                                 q = (float)(m + 1) / 2.0F;
                                 bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
-                                bufferBuilder.vertex(matrix4f2, -k, distance, k).texture(p, q).color(r1, g1, b1, a1).next();
-                                bufferBuilder.vertex(matrix4f2, k, distance, k).texture(t, q).color(r1, g1, b1, a1).next();
-                                bufferBuilder.vertex(matrix4f2, k, distance, -k).texture(t, o).color(r1, g1, b1, a1).next();
-                                bufferBuilder.vertex(matrix4f2, -k, distance, -k).texture(p, o).color(r1, g1, b1, a1).next();
+                                bufferBuilder.vertex(matrix4f2, -k, distance, k1).texture(p, q).color(r1, g1, b1, a1).next();
+                                bufferBuilder.vertex(matrix4f2, k, distance, k1).texture(t, q).color(r1, g1, b1, a1).next();
+                                bufferBuilder.vertex(matrix4f2, k, distance, k2).texture(t, o).color(r1, g1, b1, a1).next();
+                                bufferBuilder.vertex(matrix4f2, -k, distance, k2).texture(p, o).color(r1, g1, b1, a1).next();
                             }
                             else {
                                 bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
-                                bufferBuilder.vertex(matrix4f2, -k, distance, -k).texture(0.0F, 0.0F).color(r1, g1, b1, a1).next();
-                                bufferBuilder.vertex(matrix4f2, k, distance, -k).texture(1.0F, 0.0F).color(r1, g1, b1, a1).next();
-                                bufferBuilder.vertex(matrix4f2, k, distance, k).texture(1.0F, 1.0F).color(r1, g1, b1, a1).next();
-                                bufferBuilder.vertex(matrix4f2, -k, distance, k).texture(0.0F, 1.0F).color(r1, g1, b1, a1).next();
+                                bufferBuilder.vertex(matrix4f2, -k, distance, k1).texture(0.0F, 0.0F).color(r1, g1, b1, a1).next();
+                                bufferBuilder.vertex(matrix4f2, k, distance, k1).texture(1.0F, 0.0F).color(r1, g1, b1, a1).next();
+                                bufferBuilder.vertex(matrix4f2, k, distance, k2).texture(1.0F, 1.0F).color(r1, g1, b1, a1).next();
+                                bufferBuilder.vertex(matrix4f2, -k, distance, k2).texture(0.0F, 1.0F).color(r1, g1, b1, a1).next();
                             }
                             BufferRenderer.drawWithShader(bufferBuilder.end());
 
@@ -275,13 +287,12 @@ public abstract class WorldRendererMixin {
                                 RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
 
                             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+                            matrices.pop();
                         }
-
-                        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
                         RenderSystem.disableBlend();
-                        matrices.pop();
                         RenderSystem.disableTexture();
                         RenderSystem.setShaderColor(0.0F, 0.0F, 0.0F, 1.0F);
+
 
                         double d = MinecraftClient.getInstance().player.getCameraPosVec(tickDelta).y - this.world.getLevelProperties().getSkyDarknessHeight(this.world);
                         if (d < 0.0) {
@@ -292,6 +303,8 @@ public abstract class WorldRendererMixin {
                             VertexBuffer.unbind();
                             matrices.pop();
                         }
+
+                        //TODO: Fix the things
 
                         if (this.world.getDimensionEffects().isAlternateSkyColor()) {
                             RenderSystem.setShaderColor(f * 0.2F + 0.04F, g * 0.2F + 0.04F, h * 0.6F + 0.1F, 1.0F);

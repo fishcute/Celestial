@@ -91,6 +91,9 @@ public class CelestialPopulateProperties {
                 object.degreesX + "+" + Util.generateRandomDouble(this.minDegreesX, this.maxDegreesX),
                 object.degreesY + "+" + Util.generateRandomDouble(this.minDegreesY, this.maxDegreesY),
                 object.degreesZ + "+" + Util.generateRandomDouble(this.minDegreesZ, this.maxDegreesZ),
+                object.baseDegreesX,
+                object.baseDegreesY,
+                object.baseDegreesZ,
                 object.celestialObjectProperties
                 );
     }

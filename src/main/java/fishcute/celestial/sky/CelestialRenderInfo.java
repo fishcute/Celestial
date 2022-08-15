@@ -28,9 +28,11 @@ public class CelestialRenderInfo {
         SKYBOX
     }
     public static RenderType value(String i) {
-        if ("skybox".equals(i)) {
-            return RenderType.SKYBOX;
+        switch (i) {
+            case "skybox":
+                return RenderType.SKYBOX;
+            default:
+                return RenderType.NORMAL;
         }
-        return RenderType.NORMAL;
     }
 }

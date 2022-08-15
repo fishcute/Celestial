@@ -6,15 +6,21 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fishcute.celestial.util.Util;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CelestialSky {
+
+    public static int warnings = 0;
+    public static int errors = 0;
     static Gson reader = new Gson();
 
     public static HashMap<String, CelestialRenderInfo> dimensionSkyMap = new HashMap<>();
@@ -28,7 +34,12 @@ public class CelestialSky {
         return dimensionSkyMap.get(MinecraftClient.getInstance().world.getRegistryKey().getValue().getPath());
     }
     public static void loadResources() {
+        warnings = 0;
+        errors = 0;
+
         dimensionSkyMap.clear();
+
+        Util.log("Loading resources...");
 
         try { getFile("celestial:sky/dimensions.json").getAsJsonArray("dimensions"); }
         catch (Exception e) {
@@ -52,7 +63,7 @@ public class CelestialSky {
             for (String i : getAllCelestialObjects(dimension)) {
                 Util.log("[" + dimension + "] Loading celestial object \"" + i + "\"");
                 JsonObject object = getFile("celestial:sky/" + dimension + "/objects/" + i + ".json");
-                celestialObjects.addAll(CelestialObject.createSkyObjectFromJson(object, i));
+                celestialObjects.addAll(CelestialObject.createSkyObjectFromJson(object, i, dimension));
                 objectCount++;
             }
             dimensionSkyMap.put(dimension, new CelestialRenderInfo(
@@ -65,7 +76,9 @@ public class CelestialSky {
             ));
             dimensionCount++;
         }
-        Util.log("Finished loading skies for " + dimensionCount + " dimension(s). Loaded " + objectCount + " celestial object(s)");
+        Util.log("Finished loading skies for " + dimensionCount + " dimension(s). Loaded " + objectCount + " celestial object(s) with " + warnings + " warning(s) and " + errors + " error(s).");
+        if (MinecraftClient.getInstance().player != null)
+            MinecraftClient.getInstance().player.sendMessage(Text.of(Formatting.GRAY + "[Celestial] Reloaded with " + warnings + " warning(s) and " +errors + " error(s)."));
     }
 
     public static ArrayList<String> getAsStringList(JsonArray array) {
