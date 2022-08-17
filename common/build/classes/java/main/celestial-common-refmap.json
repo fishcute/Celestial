@@ -1,0 +1,54 @@
+{
+  "mappings": {
+    "fishcute/celestial/mixin/MinecraftMixin": {
+      "tick": "Lnet/minecraft/class_310;method_1574()V"
+    },
+    "fishcute/celestial/mixin/ClientLevelMixin": {
+      "getCloudColor": "Lnet/minecraft/class_638;method_23785(F)Lnet/minecraft/class_243;"
+    },
+    "fishcute/celestial/mixin/LevelRendererMixin": {
+      "renderSky": "Lnet/minecraft/class_761;method_3257(Lnet/minecraft/class_4587;Lnet/minecraft/class_1159;FLnet/minecraft/class_4184;ZLjava/lang/Runnable;)V"
+    },
+    "fishcute/celestial/mixin/ReloadableResourceManagerMixin": {
+      "createReload": "Lnet/minecraft/class_3304;method_18232(Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;Ljava/util/List;)Lnet/minecraft/class_4011;"
+    },
+    "fishcute/celestial/mixin/DimensionSpecialEffectsMixin": {
+      "getCloudHeight": "Lnet/minecraft/class_5294;method_28108()F",
+      "getSunriseColor": "Lnet/minecraft/class_5294;method_28109(FF)[F"
+    },
+    "fishcute/celestial/mixin/FogRendererMixin": {
+      "setupFog": "Lnet/minecraft/class_758;method_3211(Lnet/minecraft/class_4184;Lnet/minecraft/class_758$class_4596;FZF)V"
+    },
+    "fishcute/celestial/mixin/BiomeMixin": {
+      "getSkyColor": "Lnet/minecraft/class_1959;method_8697()I",
+      "getFogColor": "Lnet/minecraft/class_1959;method_24376()I"
+    }
+  },
+  "data": {
+    "named:intermediary": {
+      "fishcute/celestial/mixin/MinecraftMixin": {
+        "tick": "Lnet/minecraft/class_310;method_1574()V"
+      },
+      "fishcute/celestial/mixin/ClientLevelMixin": {
+        "getCloudColor": "Lnet/minecraft/class_638;method_23785(F)Lnet/minecraft/class_243;"
+      },
+      "fishcute/celestial/mixin/LevelRendererMixin": {
+        "renderSky": "Lnet/minecraft/class_761;method_3257(Lnet/minecraft/class_4587;Lnet/minecraft/class_1159;FLnet/minecraft/class_4184;ZLjava/lang/Runnable;)V"
+      },
+      "fishcute/celestial/mixin/ReloadableResourceManagerMixin": {
+        "createReload": "Lnet/minecraft/class_3304;method_18232(Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;Ljava/util/List;)Lnet/minecraft/class_4011;"
+      },
+      "fishcute/celestial/mixin/DimensionSpecialEffectsMixin": {
+        "getCloudHeight": "Lnet/minecraft/class_5294;method_28108()F",
+        "getSunriseColor": "Lnet/minecraft/class_5294;method_28109(FF)[F"
+      },
+      "fishcute/celestial/mixin/FogRendererMixin": {
+        "setupFog": "Lnet/minecraft/class_758;method_3211(Lnet/minecraft/class_4184;Lnet/minecraft/class_758$class_4596;FZF)V"
+      },
+      "fishcute/celestial/mixin/BiomeMixin": {
+        "getSkyColor": "Lnet/minecraft/class_1959;method_8697()I",
+        "getFogColor": "Lnet/minecraft/class_1959;method_24376()I"
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+	"texture": "celestial:sky/overworld/objects/storm_3.png",
+	"display": {
+		"scale": "150",
+		"pos_x": "0",
+		"pos_y": "20",
+		"pos_z": "0",
+		"distance": "50"
+	},
+	"rotation": {
+		"degrees_x": "90",
+		"degrees_y": "#skyAngle ^ 1.4",
+		"degrees_z": "0"
+	},
+	"properties": {
+		"is_solid": true,
+		"red": "#dayLightM(0.25)",
+		"green": "#dayLightM(0.25)",
+		"blue": "#dayLightM(0.25)",
+		"alpha": "#dayLightM(0.25) * #rainGradient"
+	}
+}

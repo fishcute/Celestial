@@ -1,0 +1,410 @@
+[08:25:11] [main/INFO] (FabricLoader/GameProvider) Loading Minecraft 1.19 with Fabric Loader 0.14.9
+[08:25:11] [main/DEBUG] (FabricLoader/GamePatch) Found game constructor: net.minecraft.client.main.Main -> net.minecraft.client.Minecraft
+[08:25:11] [main/DEBUG] (FabricLoader/GamePatch) Patching game constructor <init>(Lnet/minecraft/client/main/GameConfig;)V
+[08:25:11] [main/DEBUG] (FabricLoader/GamePatch) Run directory field is thought to be net/minecraft/client/Minecraft/gameDirectory
+[08:25:11] [main/DEBUG] (FabricLoader/GamePatch) Applying brand name hook to net/minecraft/client/ClientBrandRetriever::getClientModName
+[08:25:11] [main/DEBUG] (FabricLoader/GamePatch) Applying brand name hook to net/minecraft/server/MinecraftServer::getServerModName
+[08:25:11] [main/DEBUG] (FabricLoader/GamePatch) Patched 3 classs
+[08:25:11] [ForkJoinPool-1-worker-2/WARN] (FabricLoader/Metadata) Mod celestial uses the version ${version} which isn't compatible with Loader's extended semantic version format (Could not parse version number component '${version}'!), SemVer is recommended for reliably evaluating dependencies and prioritizing newer version
+[08:25:11] [main/DEBUG] (FabricLoader/Discovery) Mod discovery time: 13.1 ms
+[08:25:11] [main/DEBUG] (FabricLoader/Resolution) Mod resolution time: 41.0 ms
+[08:25:11] [main/INFO] (FabricLoader) Loading 5 mods:
+	- celestial 1.0
+	- fabricloader 0.14.9
+	- generated_d93f6a3 1.0.0
+	- java 17
+	- minecraft 1.19
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\AppData\Local\Temp\3654933101770023014.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\Documents\MCProjects\archcelestial1.19WithFabricApi\fabric\build\resources\main to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Entrypoint) Registering new-style initializer fishcute.celestial.fabric.CelestialFabric for mod celestial (key client)
+[08:25:11] [main/INFO] (FabricLoader/Mixin) SpongePowered MIXIN Subsystem Version=0.8.5 Source=file:/C:/Users/fisha/.gradle/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.11.4+mixin.0.8.5/c1dc27696aa4006e492c2485c9ccbcb26045a971/sponge-mixin-0.11.4+mixin.0.8.5.jar Service=Knot/Fabric Env=CLIENT
+[08:25:11] [main/DEBUG] (FabricLoader/Mixin) Error cleaning class output directory: .mixin.out
+[08:25:11] [main/DEBUG] (FabricLoader/Mixin) Initialising Mixin Platform Manager
+[08:25:11] [main/DEBUG] (FabricLoader/Mixin) Adding mixin platform agents for container ContainerHandleURI(file:///C:/Users/fisha/Documents/MCProjects/archcelestial1.19WithFabricApi/.gradle/loom-cache/remapped_mods/loom_mappings_1_19_layered_hash_40359_v2/net/fabricmc/fabric-loader/0.14.9/fabric-loader-0.14.9.jar)
+[08:25:11] [main/DEBUG] (FabricLoader/Mixin) Instancing new MixinPlatformAgentDefault for ContainerHandleURI(file:///C:/Users/fisha/Documents/MCProjects/archcelestial1.19WithFabricApi/.gradle/loom-cache/remapped_mods/loom_mappings_1_19_layered_hash_40359_v2/net/fabricmc/fabric-loader/0.14.9/fabric-loader-0.14.9.jar)
+[08:25:11] [main/DEBUG] (FabricLoader/Mixin) MixinPlatformAgentDefault accepted container ContainerHandleURI(file:///C:/Users/fisha/Documents/MCProjects/archcelestial1.19WithFabricApi/.gradle/loom-cache/remapped_mods/loom_mappings_1_19_layered_hash_40359_v2/net/fabricmc/fabric-loader/0.14.9/fabric-loader-0.14.9.jar)
+[08:25:11] [main/DEBUG] (FabricLoader/Mixin) Instancing new MixinPlatformAgentDefault for ContainerHandleURI(file:///C:/Users/fisha/Documents/MCProjects/archcelestial1.19WithFabricApi/.gradle/loom-cache/remapped_mods/loom_mappings_1_19_layered_hash_40359_v2/net/fabricmc/fabric-loader/0.14.9/fabric-loader-0.14.9.jar)
+[08:25:11] [main/DEBUG] (FabricLoader/Mixin) MixinPlatformAgentDefault accepted container ContainerHandleURI(file:///C:/Users/fisha/Documents/MCProjects/archcelestial1.19WithFabricApi/.gradle/loom-cache/remapped_mods/loom_mappings_1_19_layered_hash_40359_v2/net/fabricmc/fabric-loader/0.14.9/fabric-loader-0.14.9.jar)
+[08:25:11] [main/DEBUG] (FabricLoader/Mixin) Processing prepare() for PlatformAgent[MixinPlatformAgentDefault:ContainerHandleURI(file:///C:/Users/fisha/Documents/MCProjects/archcelestial1.19WithFabricApi/.gradle/loom-cache/remapped_mods/loom_mappings_1_19_layered_hash_40359_v2/net/fabricmc/fabric-loader/0.14.9/fabric-loader-0.14.9.jar)]
+[08:25:11] [main/DEBUG] (FabricLoader/Mixin) Processing prepare() for PlatformAgent[MixinPlatformAgentDefault:ContainerHandleURI(file:///C:/Users/fisha/Documents/MCProjects/archcelestial1.19WithFabricApi/.gradle/loom-cache/remapped_mods/loom_mappings_1_19_layered_hash_40359_v2/net/fabricmc/fabric-loader/0.14.9/fabric-loader-0.14.9.jar)]
+[08:25:11] [main/DEBUG] (FabricLoader/Mappings) Loading mappings took 54 ms
+[08:25:11] [main/INFO] (FabricLoader/Mixin) Loaded Fabric development mappings for mixin remapper!
+[08:25:11] [main/DEBUG] (FabricLoader/Mixin) Compatibility level JAVA_17 specified by celestial.mixins.json is higher than the maximum level supported by this version of mixin (JAVA_13).
+[08:25:11] [main/INFO] (FabricLoader/Mixin) Compatibility level set to JAVA_17
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\fabric-loom\1.19\loom.mappings.1_19.layered+hash.40359-v2\minecraft-merged-named.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\Documents\MCProjects\archcelestial1.19WithFabricApi\fabric\build\classes\java\main to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\Documents\MCProjects\archcelestial1.19WithFabricApi\fabric\build\resources\main to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\Documents\MCProjects\archcelestial1.19WithFabricApi\common\build\classes\java\main to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\Documents\MCProjects\archcelestial1.19WithFabricApi\common\build\resources\main to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\com.mojang\blocklist\1.0.10\5c685c5ffa94c4cd39496c7184c1d122e515ecef\blocklist-1.0.10.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\com.mojang\patchy\2.2.10\da05971b07cbb379d002cf7eaec6a2048211fefc\patchy-2.2.10.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\com.ibm.icu\icu4j\70.1\dfa3a1fbc55bf5db8c6e79fc0935ac7ab1202950\icu4j-70.1.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\io.netty\netty-handler\4.1.77.Final\47a81089de03635a27f509f3e4e13386ae1db275\netty-handler-4.1.77.Final.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\io.netty\netty-codec\4.1.77.Final\4efc5f59335301d6ba0d7cd31dd10651119b03c8\netty-codec-4.1.77.Final.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\io.netty\netty-transport-native-epoll\4.1.77.Final\5f051599ced83e119ddeda891f471c0613721e5c\netty-transport-native-epoll-4.1.77.Final-linux-aarch_64.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\io.netty\netty-transport-native-epoll\4.1.77.Final\8d10e9e138dac52172dd83229bdc89197100c723\netty-transport-native-epoll-4.1.77.Final-linux-x86_64.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\io.netty\netty-transport-classes-epoll\4.1.77.Final\dd70dbccbcf98382223a59044f3c08d8e9920cad\netty-transport-classes-epoll-4.1.77.Final.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\io.netty\netty-transport-native-unix-common\4.1.77.Final\c95d53486414b3270d08057957c5da8e0c37e4eb\netty-transport-native-unix-common-4.1.77.Final.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\io.netty\netty-transport\4.1.77.Final\2a3373bbd20d520c821f210bd5ee886788512043\netty-transport-4.1.77.Final.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\io.netty\netty-buffer\4.1.77.Final\d97571f99e5e739d86824d0df99f35d295276b5f\netty-buffer-4.1.77.Final.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\io.netty\netty-resolver\4.1.77.Final\4a239dbf8d8bb5f98aa51462c35011c0516395fd\netty-resolver-4.1.77.Final.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\io.netty\netty-common\4.1.77.Final\ea0fc20f4e6178966b9d62017b7fcb83dfe0e713\netty-common-4.1.77.Final.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.apache.httpcomponents\httpclient\4.5.13\e5f6cae5ca7ecaac1ec2827a9e2d65ae2869cada\httpclient-4.5.13.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\commons-codec\commons-codec\1.15\49d94806b6e3dc933dacbd8acb0fdbab8ebd1e5d\commons-codec-1.15.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.apache.commons\commons-compress\1.21\4ec95b60d4e86b5c95a0e919cb172a0af98011ef\commons-compress-1.21.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\commons-logging\commons-logging\1.2\4bfc12adfe4842bf07b657f0369c4cb522955686\commons-logging-1.2.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.apache.httpcomponents\httpcore\4.4.14\9dd1a631c082d92ecd4bd8fd4cf55026c720a8c1\httpcore-4.4.14.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-jemalloc\3.3.1\a817bcf213db49f710603677457567c37d53e103\lwjgl-jemalloc-3.3.1.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-jemalloc\3.3.1\33dbb017b6ed6b25f993ad9d56741a49e7937718\lwjgl-jemalloc-3.3.1-natives-linux.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-jemalloc\3.3.1\56424dc8db3cfb8e7b594aa6d59a4f4387b7f544\lwjgl-jemalloc-3.3.1-natives-macos.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-jemalloc\3.3.1\e577b87d8ad2ade361aaea2fcf226c660b15dee8\lwjgl-jemalloc-3.3.1-natives-macos-arm64.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-jemalloc\3.3.1\948a89b76a16aa324b046ae9308891216ffce5f9\lwjgl-jemalloc-3.3.1-natives-windows.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-jemalloc\3.3.1\fb476c8ec110e1c137ad3ce8a7f7bfe6b11c6324\lwjgl-jemalloc-3.3.1-natives-windows-x86.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-openal\3.3.1\2623a6b8ae1dfcd880738656a9f0243d2e6840bd\lwjgl-openal-3.3.1.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-openal\3.3.1\f906b6439f6daa66001182ea7727e3467a93681b\lwjgl-openal-3.3.1-natives-linux.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-openal\3.3.1\3a57b8911835fb58b5e558d0ca0d28157e263d45\lwjgl-openal-3.3.1-natives-macos.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-openal\3.3.1\23d55e7490b57495320f6c9e1936d78fd72c4ef8\lwjgl-openal-3.3.1-natives-macos-arm64.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-openal\3.3.1\30a474d0e57193d7bc128849a3ab66bc9316fdb1\lwjgl-openal-3.3.1-natives-windows.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-openal\3.3.1\888349f7b1be6fbae58bf8edfb9ef12def04c4e3\lwjgl-openal-3.3.1-natives-windows-x86.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-opengl\3.3.1\831a5533a21a5f4f81bbc51bb13e9899319b5411\lwjgl-opengl-3.3.1.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-opengl\3.3.1\ab9ab6fde3743e3550fa5d46d785ecb45b047d99\lwjgl-opengl-3.3.1-natives-linux.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-opengl\3.3.1\a0d12697ea019a7362eff26475b0531340e876a6\lwjgl-opengl-3.3.1-natives-macos.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-opengl\3.3.1\eafe34b871d966292e8db0f1f3d6b8b110d4e91d\lwjgl-opengl-3.3.1-natives-macos-arm64.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-opengl\3.3.1\c1807e9bd571402787d7e37e3029776ae2513bb8\lwjgl-opengl-3.3.1-natives-windows.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-opengl\3.3.1\deef3eb9b178ff2ff3ce893cc72ae741c3a17974\lwjgl-opengl-3.3.1-natives-windows-x86.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-glfw\3.3.1\cbac1b8d30cb4795149c1ef540f912671a8616d0\lwjgl-glfw-3.3.1.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-glfw\3.3.1\81716978214ecbda15050ca394b06ef61501a49e\lwjgl-glfw-3.3.1-natives-linux.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-glfw\3.3.1\9ec4ce1fc8c85fdef03ef4ff2aace6f5775fb280\lwjgl-glfw-3.3.1-natives-macos.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-glfw\3.3.1\cac0d3f712a3da7641fa174735a5f315de7ffe0a\lwjgl-glfw-3.3.1-natives-macos-arm64.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-glfw\3.3.1\ed892f945cf7e79c8756796f32d00fa4ceaf573b\lwjgl-glfw-3.3.1-natives-windows.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-glfw\3.3.1\b997e3391d6ce8f05487e7335d95c606043884a1\lwjgl-glfw-3.3.1-natives-windows-x86.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-stb\3.3.1\b119297cf8ed01f247abe8685857f8e7fcf5980f\lwjgl-stb-3.3.1.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-stb\3.3.1\3ee7aec8686e52867677110415566a5342a80230\lwjgl-stb-3.3.1-natives-linux.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-stb\3.3.1\def8879b8d38a47a4cc1d48b1f9a7b772e51258e\lwjgl-stb-3.3.1-natives-macos.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-stb\3.3.1\fcf073ed911752abdca5f0b00a53cfdf17ff8e8b\lwjgl-stb-3.3.1-natives-macos-arm64.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-stb\3.3.1\86315914ac119efdb02dc9e8e978ade84f1702af\lwjgl-stb-3.3.1-natives-windows.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-stb\3.3.1\a8d41f419eecb430b7c91ea2ce2c5c451cae2091\lwjgl-stb-3.3.1-natives-windows-x86.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-tinyfd\3.3.1\ff1914111ef2e3e0110ef2dabc8d8cdaad82347\lwjgl-tinyfd-3.3.1.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-tinyfd\3.3.1\a35110b9471bea8cde826ab297550ee8c22f5035\lwjgl-tinyfd-3.3.1-natives-linux.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-tinyfd\3.3.1\78641a0fa5e9afa714adfdd152c357930c97a1ce\lwjgl-tinyfd-3.3.1-natives-macos.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-tinyfd\3.3.1\972ecc17bad3571e81162153077b4d47b7b9eaa9\lwjgl-tinyfd-3.3.1-natives-macos-arm64.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-tinyfd\3.3.1\a5d830475ec0958d9fdba1559efa99aef211e6ff\lwjgl-tinyfd-3.3.1-natives-windows.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl-tinyfd\3.3.1\842eedd876fae354abc308c98a263f6bbc9e8a4d\lwjgl-tinyfd-3.3.1-natives-windows-x86.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl\3.3.1\ae58664f88e18a9bb2c77b063833ca7aaec484cb\lwjgl-3.3.1.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl\3.3.1\1de885aba434f934201b99f2f1afb142036ac189\lwjgl-3.3.1-natives-linux.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl\3.3.1\fc6bb723dec2cd031557dccb2a95f0ab80acb9db\lwjgl-3.3.1-natives-macos.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl\3.3.1\71d0d5e469c9c95351eb949064497e3391616ac9\lwjgl-3.3.1-natives-macos-arm64.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl\3.3.1\36c37f16ab611b3aa11f3bcf80b1d509b4ce6b\lwjgl-3.3.1-natives-windows.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl\3.3.1\3b14f4beae9dd39791ec9e12190a9380cd8a3ce6\lwjgl-3.3.1-natives-windows-x86.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\com.mojang\text2speech\1.13.9\5f4e3a6ef86cb021f7ca87ca192cddb50c26eb59\text2speech-1.13.9.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\com.mojang\text2speech\1.13.9\6c63ecb3b6408dcfdde6440c9ee62c060542af33\text2speech-1.13.9-natives-linux.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\com.mojang\text2speech\1.13.9\7a90898b29e5c72f90ba6ebe86fa78a6afd7d3eb\text2speech-1.13.9-natives-windows.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\ca.weblite\java-objc-bridge\1.1\1227f9e0666314f9de41477e3ec277e542ed7f7b\java-objc-bridge-1.1.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\com.github.oshi\oshi-core\5.8.5\1d0ec654d820741327f5a9229d513732a4b7ce50\oshi-core-5.8.5.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\net.java.dev.jna\jna-platform\5.10.0\fbed7d9669dba47714ad0d4f4454290a997aee69\jna-platform-5.10.0.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\net.java.dev.jna\jna\5.10.0\7cf4c87dd802db50721db66947aa237d7ad09418\jna-5.10.0.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\com.mojang\javabridge\1.2.24\c876796229b2ef5120f186eab5acc870699d3b9\javabridge-1.2.24.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\net.sf.jopt-simple\jopt-simple\5.0.4\4fdac2fbe92dfad86aa6e9301736f6b4342a3f5c\jopt-simple-5.0.4.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\com.mojang\datafixerupper\5.0.28\e2157e236e529aff80a5fc3ccb506e56d46b130b\datafixerupper-5.0.28.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\com.google.guava\guava\31.0.1-jre\119ea2b2bc205b138974d351777b20f02b92704b\guava-31.0.1-jre.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\com.google.guava\failureaccess\1.0.1\1dcf1de382a0bf95a3d8b0849546c88bac1292c9\failureaccess-1.0.1.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.apache.commons\commons-lang3\3.12.0\c6842c86792ff03b9f1d1fe2aab8dc23aa6c6f0e\commons-lang3-3.12.0.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\commons-io\commons-io\2.11.0\a2503f302b11ebde7ebc3df41daebe0e4eea3689\commons-io-2.11.0.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\com.mojang\brigadier\1.0.18\c1ef1234282716483c92183f49bef47b1a89bfa9\brigadier-1.0.18.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\it.unimi.dsi\fastutil\8.5.6\76f95700418a68fbc4ac050525261f05dc681ca1\fastutil-8.5.6.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\com.google.code.findbugs\jsr305\3.0.2\25ea2e8b0c338a877313bd4672d3fe056ea78f0d\jsr305-3.0.2.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\com.google.guava\listenablefuture\9999.0-empty-to-avoid-conflict-with-guava\b421526c5f297295adef1c886e5246c39d4ac629\listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.checkerframework\checker-qual\3.12.0\d5692f0526415fcc6de94bb5bfbd3afd9dd3b3e5\checker-qual-3.12.0.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\com.google.errorprone\error_prone_annotations\2.7.1\458d9042f7aa6fa9a634df902b37f544e15aacac\error_prone_annotations-2.7.1.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\com.google.j2objc\j2objc-annotations\1.3\ba035118bc8bac37d7eff77700720999acd9986d\j2objc-annotations-1.3.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\dev.architectury\architectury-transformer\5.2.67\1ca11d90fd49162cd9b859436e2e74ba119c14af\architectury-transformer-5.2.67-agent.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\dev.architectury\architectury-transformer\5.2.67\e56ee488145602b44235b03645ff0f8ed9ae955a\architectury-transformer-5.2.67-runtime.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\net.fabricmc\dev-launch-injector\0.2.1+build.8\da8bef7e6e2f952da707f282bdb46882a0fce5e3\dev-launch-injector-0.2.1+build.8.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\fabric-loom\1.19\loom.mappings.1_19.layered+hash.40359-v2\mappings.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.jline\jline-reader\3.12.1\4382ab1382c7b6f379377ed5f665dc2f6e1218bc\jline-reader-3.12.1.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\.gradle\caches\modules-2\files-2.1\org.jline\jline-terminal\3.12.1\c777448314e050d980a6b697c140f3bfe9eb7416\jline-terminal-3.12.1.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Knot) Adding C:\Users\fisha\AppData\Local\Temp\3654933101770023014.jar to classpath.
+[08:25:11] [main/DEBUG] (FabricLoader/Entrypoint) No subscribers for entrypoint 'preLaunch'
+[08:25:11] [main/DEBUG] (FabricLoader/Mixin) Preparing mixins for MixinEnvironment[DEFAULT]
+[08:25:11] [main/DEBUG] (FabricLoader/Mixin) Selecting config celestial.mixins.json
+[08:25:11] [main/DEBUG] (FabricLoader/Mixin) Preparing celestial.mixins.json (6)
+[08:25:11] [main/DEBUG] (FabricLoader/Mixin) Registering new injector for @Inject with org.spongepowered.asm.mixin.injection.struct.CallbackInjectionInfo
+[08:25:11] [main/DEBUG] (FabricLoader/Mixin) Registering new injector for @ModifyArg with org.spongepowered.asm.mixin.injection.struct.ModifyArgInjectionInfo
+[08:25:11] [main/DEBUG] (FabricLoader/Mixin) Registering new injector for @ModifyArgs with org.spongepowered.asm.mixin.injection.struct.ModifyArgsInjectionInfo
+[08:25:11] [main/DEBUG] (FabricLoader/Mixin) Registering new injector for @Redirect with org.spongepowered.asm.mixin.injection.struct.RedirectInjectionInfo
+[08:25:11] [main/DEBUG] (FabricLoader/Mixin) Registering new injector for @ModifyVariable with org.spongepowered.asm.mixin.injection.struct.ModifyVariableInjectionInfo
+[08:25:11] [main/DEBUG] (FabricLoader/Mixin) Registering new injector for @ModifyConstant with org.spongepowered.asm.mixin.injection.struct.ModifyConstantInjectionInfo
+[08:25:11] [main/DEBUG] (io.netty.util.internal.logging.InternalLoggerFactory) Using SLF4J as the default logging framework
+[08:25:11] [main/DEBUG] (io.netty.util.ResourceLeakDetector) -Dio.netty.leakDetection.level: simple
+[08:25:11] [main/DEBUG] (io.netty.util.ResourceLeakDetector) -Dio.netty.leakDetection.targetRecords: 4
+[08:25:12] [main/WARN] (oshi.util.FileUtil) Configuration conflict: there is more than one oshi.properties file on the classpath
+[08:25:12] [main/WARN] (oshi.util.FileUtil) Configuration conflict: there is more than one oshi.architecture.properties file on the classpath
+[08:25:16] [main/INFO] (net.minecraft.util.datafix.DataFixers) Building optimized datafixer
+[08:25:21] [main/DEBUG] (FabricLoader/Mixin) Mixing BiomeMixin from celestial.mixins.json into net.minecraft.world.level.biome.Biome
+[08:25:22] [main/DEBUG] (FabricLoader/Mixin) celestial.mixins.json:BiomeMixin from mod celestial->@Inject::getFogColor(Lorg/spongepowered/asm/mixin/injection/callback/CallbackInfoReturnable;)V does use it's CallbackInfoReturnable
+[08:25:22] [main/DEBUG] (FabricLoader/Mixin) celestial.mixins.json:BiomeMixin from mod celestial->@Inject::getSkyColor(Lorg/spongepowered/asm/mixin/injection/callback/CallbackInfoReturnable;)V does use it's CallbackInfoReturnable
+[08:25:33] [Render thread/DEBUG] (FabricLoader/Mixin) Mixing MinecraftMixin from celestial.mixins.json into net.minecraft.client.Minecraft
+[08:25:33] [Render thread/DEBUG] (FabricLoader/Mixin) celestial.mixins.json:MinecraftMixin from mod celestial->@Inject::tick(Lorg/spongepowered/asm/mixin/injection/callback/CallbackInfo;)V doesn't use it's CallbackInfo
+[08:25:33] [Render thread/DEBUG] (FabricLoader/Mixin) celestial.mixins.json:MinecraftMixin from mod celestial->@Inject::tick(Lorg/spongepowered/asm/mixin/injection/callback/CallbackInfo;)V has 0 override(s) in child classes
+[08:25:33] [Render thread/DEBUG] (FabricLoader/Mixin) celestial.mixins.json:MinecraftMixin from mod celestial->@Inject::tick(Lorg/spongepowered/asm/mixin/injection/callback/CallbackInfo;)V won't be passed a CallbackInfo as a result
+[08:25:36] [Render thread/INFO] (com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService) Environment: authHost='https://authserver.mojang.com', accountsHost='https://api.mojang.com', sessionHost='https://sessionserver.mojang.com', servicesHost='https://api.minecraftservices.com', name='PROD'
+[08:25:36] [Render thread/DEBUG] (com.mojang.authlib.minecraft.client.MinecraftClient) Connecting to https://api.minecraftservices.com/player/attributes
+[08:25:39] [Render thread/ERROR] (net.minecraft.client.Minecraft) Failed to verify authentication
+com.mojang.authlib.exceptions.InvalidCredentialsException: Status: 401
+	at com.mojang.authlib.exceptions.MinecraftClientHttpException.toAuthenticationException(MinecraftClientHttpException.java:56) ~[authlib-3.5.41.jar:?]
+	at com.mojang.authlib.yggdrasil.YggdrasilUserApiService.fetchProperties(YggdrasilUserApiService.java:140) ~[authlib-3.5.41.jar:?]
+	at com.mojang.authlib.yggdrasil.YggdrasilUserApiService.<init>(YggdrasilUserApiService.java:47) ~[authlib-3.5.41.jar:?]
+	at com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService.createUserApiService(YggdrasilAuthenticationService.java:158) ~[authlib-3.5.41.jar:?]
+	at net.minecraft.client.Minecraft.createUserApiService(Minecraft.java:677) [minecraft-merged-named.jar:?]
+	at net.minecraft.client.Minecraft.<init>(Minecraft.java:415) [minecraft-merged-named.jar:?]
+	at net.minecraft.client.main.Main.main(Main.java:198) [minecraft-merged-named.jar:?]
+	at net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider.launch(MinecraftGameProvider.java:461) [fabric-loader-0.14.9.jar:?]
+	at net.fabricmc.loader.impl.launch.knot.Knot.launch(Knot.java:74) [fabric-loader-0.14.9.jar:?]
+	at net.fabricmc.loader.impl.launch.knot.KnotClient.main(KnotClient.java:23) [fabric-loader-0.14.9.jar:?]
+	at net.fabricmc.devlaunchinjector.Main.main(Main.java:86) [dev-launch-injector-0.2.1+build.8.jar:?]
+	at dev.architectury.transformer.TransformerRuntime.main(TransformerRuntime.java:217) [architectury-transformer-5.2.67-runtime.jar:5.2.67]
+Caused by: com.mojang.authlib.exceptions.MinecraftClientHttpException: Status: 401
+	at com.mojang.authlib.minecraft.client.MinecraftClient.readInputStream(MinecraftClient.java:85) ~[authlib-3.5.41.jar:?]
+	at com.mojang.authlib.minecraft.client.MinecraftClient.get(MinecraftClient.java:48) ~[authlib-3.5.41.jar:?]
+	at com.mojang.authlib.yggdrasil.YggdrasilUserApiService.fetchProperties(YggdrasilUserApiService.java:121) ~[authlib-3.5.41.jar:?]
+	... 10 more
+[08:25:39] [Render thread/INFO] (net.minecraft.client.Minecraft) Setting user: Player197
+[08:25:39] [Render thread/DEBUG] (FabricLoader/Entrypoint) No subscribers for entrypoint 'main'
+[08:25:39] [Render thread/DEBUG] (FabricLoader/Entrypoint) Iterating over entrypoint 'client'
+[08:25:40] [Render thread/INFO] (net.minecraft.client.Minecraft) Backend library: LWJGL version 3.3.1 SNAPSHOT
+[08:25:47] [Render thread/DEBUG] (FabricLoader/Mixin) Mixing LevelRendererMixin from celestial.mixins.json into net.minecraft.client.renderer.LevelRenderer
+[08:25:48] [Render thread/DEBUG] (FabricLoader/Mixin) celestial.mixins.json:LevelRendererMixin from mod celestial->@Inject::renderSky(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/math/Matrix4f;FLnet/minecraft/client/Camera;ZLjava/lang/Runnable;Lorg/spongepowered/asm/mixin/injection/callback/CallbackInfo;)V does use it's CallbackInfo
+[08:25:48] [Render thread/DEBUG] (com.mojang.blaze3d.systems.RenderSystem) Growing IndexBuffer: Old limit 0, new limit 9360.
+[08:25:48] [Render thread/DEBUG] (com.mojang.blaze3d.systems.RenderSystem) Growing IndexBuffer: Old limit 0, new limit 20.
+[08:25:50] [Render thread/INFO] (com.mojang.text2speech.NarratorWindows) Narrator library for x64 successfully loaded
+[08:25:50] [Worker-Bootstrap-4/INFO] (com.mojang.datafixers.DataFixerBuilder) 4256 Datafixer optimizations took 34477 milliseconds
+[08:25:50] [Worker-Main-20/ERROR] (net.minecraft.client.multiplayer.ProfileKeyPairManager) Failed to retrieve profile key pair
+java.io.IOException: Could not retrieve profile key pair
+	at net.minecraft.client.multiplayer.ProfileKeyPairManager.fetchProfileKeyPair(ProfileKeyPairManager.java:112) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.multiplayer.ProfileKeyPairManager.method_44291(ProfileKeyPairManager.java:56) ~[minecraft-merged-named.jar:?]
+	at java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1768) [?:?]
+	at java.util.concurrent.CompletableFuture$AsyncSupply.exec(CompletableFuture.java:1760) [?:?]
+	at java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:373) [?:?]
+	at java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(ForkJoinPool.java:1182) [?:?]
+	at java.util.concurrent.ForkJoinPool.scan(ForkJoinPool.java:1655) [?:?]
+	at java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1622) [?:?]
+	at java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:165) [?:?]
+[08:25:50] [Render thread/INFO] (net.minecraft.server.packs.resources.ReloadableResourceManager) Reloading ResourceManager: Default, HurricaneEyeDemo.zip
+[08:25:50] [Render thread/DEBUG] (FabricLoader/Mixin) Mixing ReloadInstanceMixin from celestial.mixins.json into net.minecraft.server.packs.resources.SimpleReloadInstance
+[08:25:50] [Render thread/DEBUG] (FabricLoader/Mixin) celestial.mixins.json:ReloadInstanceMixin from mod celestial->@Inject::done(Lorg/spongepowered/asm/mixin/injection/callback/CallbackInfoReturnable;)V does use it's CallbackInfoReturnable
+[08:25:51] [Realms Notification Availability checker #1/INFO] (com.mojang.realmsclient.client.RealmsClient) Could not authorize you against Realms server: Invalid session id
+[08:25:51] [Render thread/DEBUG] (FabricLoader/Mixin) Mixing FogRendererMixin from celestial.mixins.json into net.minecraft.client.renderer.FogRenderer
+[08:25:51] [Render thread/DEBUG] (FabricLoader/Mixin) celestial.mixins.json:FogRendererMixin from mod celestial->@Inject::setupFog(Lnet/minecraft/client/Camera;Lnet/minecraft/client/renderer/FogRenderer$FogMode;FZFLorg/spongepowered/asm/mixin/injection/callback/CallbackInfo;)V doesn't use it's CallbackInfo
+[08:25:52] [Render thread/WARN] (net.minecraft.client.sounds.SoundEngine) Missing sound for event: minecraft:item.goat_horn.play
+[08:25:52] [Render thread/WARN] (net.minecraft.client.sounds.SoundEngine) Missing sound for event: minecraft:entity.goat.screaming.horn_break
+[08:25:52] [Render thread/INFO] (com.mojang.blaze3d.audio.Library) OpenAL initialized on device OpenAL Soft on Speakers (Realtek(R) Audio)
+[08:25:52] [Render thread/INFO] (net.minecraft.client.sounds.SoundEngine) Sound engine started
+[08:25:52] [Render thread/INFO] (net.minecraft.client.renderer.texture.TextureAtlas) Created: 1024x1024x4 minecraft:textures/atlas/blocks.png-atlas
+[08:25:53] [Render thread/INFO] (net.minecraft.client.renderer.texture.TextureAtlas) Created: 256x128x4 minecraft:textures/atlas/signs.png-atlas
+[08:25:53] [Render thread/INFO] (net.minecraft.client.renderer.texture.TextureAtlas) Created: 1024x512x4 minecraft:textures/atlas/banner_patterns.png-atlas
+[08:25:53] [Render thread/INFO] (net.minecraft.client.renderer.texture.TextureAtlas) Created: 1024x512x4 minecraft:textures/atlas/shield_patterns.png-atlas
+[08:25:53] [Render thread/INFO] (net.minecraft.client.renderer.texture.TextureAtlas) Created: 256x256x4 minecraft:textures/atlas/chest.png-atlas
+[08:25:53] [Render thread/INFO] (net.minecraft.client.renderer.texture.TextureAtlas) Created: 512x256x4 minecraft:textures/atlas/beds.png-atlas
+[08:25:53] [Render thread/INFO] (net.minecraft.client.renderer.texture.TextureAtlas) Created: 512x256x4 minecraft:textures/atlas/shulker_boxes.png-atlas
+[08:25:54] [Render thread/WARN] (net.minecraft.client.renderer.ShaderInstance) Shader rendertype_entity_translucent_emissive could not find sampler named Sampler2 in the specified shader program.
+[08:25:54] [Render thread/INFO] (net.minecraft.client.renderer.texture.TextureAtlas) Created: 512x256x0 minecraft:textures/atlas/particles.png-atlas
+[08:25:54] [Render thread/INFO] (net.minecraft.client.renderer.texture.TextureAtlas) Created: 256x256x0 minecraft:textures/atlas/paintings.png-atlas
+[08:25:54] [Render thread/INFO] (net.minecraft.client.renderer.texture.TextureAtlas) Created: 256x128x0 minecraft:textures/atlas/mob_effects.png-atlas
+[08:25:58] [Render thread/INFO] (net.minecraft.world.item.crafting.RecipeManager) Loaded 7 recipes
+[08:25:59] [Render thread/INFO] (net.minecraft.advancements.AdvancementList) Loaded 1179 advancements
+[08:25:59] [Server thread/INFO] (net.minecraft.client.server.IntegratedServer) Starting integrated minecraft server version 1.19
+[08:25:59] [Server thread/INFO] (net.minecraft.server.MinecraftServer) Generating keypair
+[08:25:59] [Server thread/INFO] (net.minecraft.server.MinecraftServer) Preparing start region for dimension minecraft:overworld
+[08:26:01] [Render thread/INFO] (net.minecraft.server.level.progress.LoggerChunkProgressListener) Preparing spawn area: 0%
+[08:26:01] [Render thread/INFO] (net.minecraft.server.level.progress.LoggerChunkProgressListener) Preparing spawn area: 0%
+[08:26:01] [Render thread/INFO] (net.minecraft.server.level.progress.LoggerChunkProgressListener) Preparing spawn area: 0%
+[08:26:01] [Render thread/INFO] (net.minecraft.server.level.progress.LoggerChunkProgressListener) Preparing spawn area: 0%
+[08:26:01] [Render thread/INFO] (net.minecraft.server.level.progress.LoggerChunkProgressListener) Preparing spawn area: 31%
+[08:26:02] [Render thread/INFO] (net.minecraft.server.level.progress.LoggerChunkProgressListener) Time elapsed: 2302 ms
+[08:26:02] [Server thread/INFO] (net.minecraft.client.server.IntegratedServer) Changing view distance to 12, from 10
+[08:26:02] [Server thread/INFO] (net.minecraft.client.server.IntegratedServer) Changing simulation distance to 12, from 0
+[08:26:02] [Render thread/DEBUG] (io.netty.channel.MultithreadEventLoopGroup) -Dio.netty.eventLoopThreads: 40
+[08:26:02] [Render thread/DEBUG] (io.netty.util.internal.InternalThreadLocalMap) -Dio.netty.threadLocalMap.stringBuilder.initialSize: 1024
+[08:26:02] [Render thread/DEBUG] (io.netty.util.internal.InternalThreadLocalMap) -Dio.netty.threadLocalMap.stringBuilder.maxSize: 4096
+[08:26:02] [Render thread/DEBUG] (io.netty.util.internal.PlatformDependent0) -Dio.netty.noUnsafe: false
+[08:26:02] [Render thread/DEBUG] (io.netty.util.internal.PlatformDependent0) Java version: 17
+[08:26:02] [Render thread/DEBUG] (io.netty.util.internal.PlatformDependent0) sun.misc.Unsafe.theUnsafe: available
+[08:26:02] [Render thread/DEBUG] (io.netty.util.internal.PlatformDependent0) sun.misc.Unsafe.copyMemory: available
+[08:26:02] [Render thread/DEBUG] (io.netty.util.internal.PlatformDependent0) sun.misc.Unsafe.storeFence: available
+[08:26:02] [Render thread/DEBUG] (io.netty.util.internal.PlatformDependent0) java.nio.Buffer.address: available
+[08:26:02] [Render thread/DEBUG] (io.netty.util.internal.PlatformDependent0) direct buffer constructor: unavailable
+java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
+	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:31) ~[netty-common-4.1.77.Final.jar:?]
+	at io.netty.util.internal.PlatformDependent0$5.run(PlatformDependent0.java:287) ~[netty-common-4.1.77.Final.jar:?]
+	at java.security.AccessController.doPrivileged(AccessController.java:318) ~[?:?]
+	at io.netty.util.internal.PlatformDependent0.<clinit>(PlatformDependent0.java:281) ~[netty-common-4.1.77.Final.jar:?]
+	at io.netty.util.internal.PlatformDependent.isAndroid(PlatformDependent.java:294) ~[netty-common-4.1.77.Final.jar:?]
+	at io.netty.util.internal.PlatformDependent.<clinit>(PlatformDependent.java:88) ~[netty-common-4.1.77.Final.jar:?]
+	at io.netty.channel.nio.NioEventLoop.<clinit>(NioEventLoop.java:83) ~[netty-transport-4.1.77.Final.jar:?]
+	at io.netty.channel.nio.NioEventLoopGroup.newChild(NioEventLoopGroup.java:182) ~[netty-transport-4.1.77.Final.jar:?]
+	at io.netty.channel.nio.NioEventLoopGroup.newChild(NioEventLoopGroup.java:38) ~[netty-transport-4.1.77.Final.jar:?]
+	at io.netty.util.concurrent.MultithreadEventExecutorGroup.<init>(MultithreadEventExecutorGroup.java:84) ~[netty-common-4.1.77.Final.jar:?]
+	at io.netty.util.concurrent.MultithreadEventExecutorGroup.<init>(MultithreadEventExecutorGroup.java:60) ~[netty-common-4.1.77.Final.jar:?]
+	at io.netty.util.concurrent.MultithreadEventExecutorGroup.<init>(MultithreadEventExecutorGroup.java:49) ~[netty-common-4.1.77.Final.jar:?]
+	at io.netty.channel.MultithreadEventLoopGroup.<init>(MultithreadEventLoopGroup.java:59) ~[netty-transport-4.1.77.Final.jar:?]
+	at io.netty.channel.nio.NioEventLoopGroup.<init>(NioEventLoopGroup.java:87) ~[netty-transport-4.1.77.Final.jar:?]
+	at io.netty.channel.nio.NioEventLoopGroup.<init>(NioEventLoopGroup.java:82) ~[netty-transport-4.1.77.Final.jar:?]
+	at io.netty.channel.nio.NioEventLoopGroup.<init>(NioEventLoopGroup.java:69) ~[netty-transport-4.1.77.Final.jar:?]
+	at net.minecraft.server.network.ServerConnectionListener.method_14348(ServerConnectionListener.java:55) ~[minecraft-merged-named.jar:?]
+	at com.google.common.base.Suppliers$NonSerializableMemoizingSupplier.get(Suppliers.java:183) ~[guava-31.0.1-jre.jar:?]
+	at net.minecraft.util.LazyLoadedValue.get(LazyLoadedValue.java:19) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.server.network.ServerConnectionListener.startMemoryChannel(ServerConnectionListener.java:147) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.Minecraft.doWorldLoad(Minecraft.java:2042) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.gui.screens.worldselection.WorldOpenFlows.method_43326(WorldOpenFlows.java:179) ~[minecraft-merged-named.jar:?]
+	at java.util.concurrent.CompletableFuture$UniAccept.tryFire(CompletableFuture.java:718) ~[?:?]
+	at java.util.concurrent.CompletableFuture$Completion.run(CompletableFuture.java:482) ~[?:?]
+	at net.minecraft.util.thread.BlockableEventLoop.execute(BlockableEventLoop.java:103) ~[minecraft-merged-named.jar:?]
+	at java.util.concurrent.CompletableFuture.uniAcceptNow(CompletableFuture.java:754) ~[?:?]
+	at java.util.concurrent.CompletableFuture.uniAcceptStage(CompletableFuture.java:735) ~[?:?]
+	at java.util.concurrent.CompletableFuture.thenAcceptAsync(CompletableFuture.java:2191) ~[?:?]
+	at net.minecraft.client.gui.screens.worldselection.WorldOpenFlows.doLoadLevel(WorldOpenFlows.java:177) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.gui.screens.worldselection.WorldOpenFlows.loadLevel(WorldOpenFlows.java:57) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.gui.screens.worldselection.WorldSelectionList$WorldListEntry.loadWorld(WorldSelectionList.java:528) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.gui.screens.worldselection.WorldSelectionList$WorldListEntry.joinWorld(WorldSelectionList.java:436) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.gui.screens.worldselection.WorldSelectionList$WorldListEntry.mouseClicked(WorldSelectionList.java:367) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.gui.components.AbstractSelectionList.mouseClicked(AbstractSelectionList.java:359) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.gui.components.events.ContainerEventHandler.mouseClicked(ContainerEventHandler.java:27) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.MouseHandler.method_1611(MouseHandler.java:94) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.gui.screens.Screen.wrapScreenError(Screen.java:491) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.MouseHandler.onPress(MouseHandler.java:94) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.MouseHandler.method_22686(MouseHandler.java:165) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.util.thread.BlockableEventLoop.execute(BlockableEventLoop.java:103) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.MouseHandler.method_22684(MouseHandler.java:165) ~[minecraft-merged-named.jar:?]
+	at org.lwjgl.glfw.GLFWMouseButtonCallbackI.callback(GLFWMouseButtonCallbackI.java:43) [lwjgl-glfw-3.3.1.jar:?]
+	at org.lwjgl.system.JNI.invokeV(Native Method) ~[lwjgl-3.3.1.jar:?]
+	at org.lwjgl.glfw.GLFW.glfwWaitEventsTimeout(GLFW.java:3474) [lwjgl-glfw-3.3.1.jar:?]
+	at com.mojang.blaze3d.systems.RenderSystem.limitDisplayFPS(RenderSystem.java:222) [minecraft-merged-named.jar:?]
+	at net.minecraft.client.Minecraft.runTick(Minecraft.java:1174) [minecraft-merged-named.jar:?]
+	at net.minecraft.client.Minecraft.run(Minecraft.java:734) [minecraft-merged-named.jar:?]
+	at net.minecraft.client.main.Main.main(Main.java:237) [minecraft-merged-named.jar:?]
+	at net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider.launch(MinecraftGameProvider.java:461) [fabric-loader-0.14.9.jar:?]
+	at net.fabricmc.loader.impl.launch.knot.Knot.launch(Knot.java:74) [fabric-loader-0.14.9.jar:?]
+	at net.fabricmc.loader.impl.launch.knot.KnotClient.main(KnotClient.java:23) [fabric-loader-0.14.9.jar:?]
+	at net.fabricmc.devlaunchinjector.Main.main(Main.java:86) [dev-launch-injector-0.2.1+build.8.jar:?]
+	at dev.architectury.transformer.TransformerRuntime.main(TransformerRuntime.java:217) [architectury-transformer-5.2.67-runtime.jar:5.2.67]
+[08:26:02] [Render thread/DEBUG] (io.netty.util.internal.PlatformDependent0) java.nio.Bits.unaligned: available, true
+[08:26:02] [Render thread/DEBUG] (io.netty.util.internal.PlatformDependent0) jdk.internal.misc.Unsafe.allocateUninitializedArray(int): unavailable
+java.lang.IllegalAccessException: class io.netty.util.internal.PlatformDependent0$7 cannot access class jdk.internal.misc.Unsafe (in module java.base) because module java.base does not export jdk.internal.misc to unnamed module @62158618
+	at jdk.internal.reflect.Reflection.newIllegalAccessException(Reflection.java:392) ~[?:?]
+	at java.lang.reflect.AccessibleObject.checkAccess(AccessibleObject.java:674) ~[?:?]
+	at java.lang.reflect.Method.invoke(Method.java:560) ~[?:?]
+	at io.netty.util.internal.PlatformDependent0$7.run(PlatformDependent0.java:409) ~[netty-common-4.1.77.Final.jar:?]
+	at java.security.AccessController.doPrivileged(AccessController.java:318) ~[?:?]
+	at io.netty.util.internal.PlatformDependent0.<clinit>(PlatformDependent0.java:400) ~[netty-common-4.1.77.Final.jar:?]
+	at io.netty.util.internal.PlatformDependent.isAndroid(PlatformDependent.java:294) ~[netty-common-4.1.77.Final.jar:?]
+	at io.netty.util.internal.PlatformDependent.<clinit>(PlatformDependent.java:88) ~[netty-common-4.1.77.Final.jar:?]
+	at io.netty.channel.nio.NioEventLoop.<clinit>(NioEventLoop.java:83) ~[netty-transport-4.1.77.Final.jar:?]
+	at io.netty.channel.nio.NioEventLoopGroup.newChild(NioEventLoopGroup.java:182) ~[netty-transport-4.1.77.Final.jar:?]
+	at io.netty.channel.nio.NioEventLoopGroup.newChild(NioEventLoopGroup.java:38) ~[netty-transport-4.1.77.Final.jar:?]
+	at io.netty.util.concurrent.MultithreadEventExecutorGroup.<init>(MultithreadEventExecutorGroup.java:84) ~[netty-common-4.1.77.Final.jar:?]
+	at io.netty.util.concurrent.MultithreadEventExecutorGroup.<init>(MultithreadEventExecutorGroup.java:60) ~[netty-common-4.1.77.Final.jar:?]
+	at io.netty.util.concurrent.MultithreadEventExecutorGroup.<init>(MultithreadEventExecutorGroup.java:49) ~[netty-common-4.1.77.Final.jar:?]
+	at io.netty.channel.MultithreadEventLoopGroup.<init>(MultithreadEventLoopGroup.java:59) ~[netty-transport-4.1.77.Final.jar:?]
+	at io.netty.channel.nio.NioEventLoopGroup.<init>(NioEventLoopGroup.java:87) ~[netty-transport-4.1.77.Final.jar:?]
+	at io.netty.channel.nio.NioEventLoopGroup.<init>(NioEventLoopGroup.java:82) ~[netty-transport-4.1.77.Final.jar:?]
+	at io.netty.channel.nio.NioEventLoopGroup.<init>(NioEventLoopGroup.java:69) ~[netty-transport-4.1.77.Final.jar:?]
+	at net.minecraft.server.network.ServerConnectionListener.method_14348(ServerConnectionListener.java:55) ~[minecraft-merged-named.jar:?]
+	at com.google.common.base.Suppliers$NonSerializableMemoizingSupplier.get(Suppliers.java:183) ~[guava-31.0.1-jre.jar:?]
+	at net.minecraft.util.LazyLoadedValue.get(LazyLoadedValue.java:19) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.server.network.ServerConnectionListener.startMemoryChannel(ServerConnectionListener.java:147) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.Minecraft.doWorldLoad(Minecraft.java:2042) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.gui.screens.worldselection.WorldOpenFlows.method_43326(WorldOpenFlows.java:179) ~[minecraft-merged-named.jar:?]
+	at java.util.concurrent.CompletableFuture$UniAccept.tryFire(CompletableFuture.java:718) ~[?:?]
+	at java.util.concurrent.CompletableFuture$Completion.run(CompletableFuture.java:482) ~[?:?]
+	at net.minecraft.util.thread.BlockableEventLoop.execute(BlockableEventLoop.java:103) ~[minecraft-merged-named.jar:?]
+	at java.util.concurrent.CompletableFuture.uniAcceptNow(CompletableFuture.java:754) ~[?:?]
+	at java.util.concurrent.CompletableFuture.uniAcceptStage(CompletableFuture.java:735) ~[?:?]
+	at java.util.concurrent.CompletableFuture.thenAcceptAsync(CompletableFuture.java:2191) ~[?:?]
+	at net.minecraft.client.gui.screens.worldselection.WorldOpenFlows.doLoadLevel(WorldOpenFlows.java:177) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.gui.screens.worldselection.WorldOpenFlows.loadLevel(WorldOpenFlows.java:57) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.gui.screens.worldselection.WorldSelectionList$WorldListEntry.loadWorld(WorldSelectionList.java:528) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.gui.screens.worldselection.WorldSelectionList$WorldListEntry.joinWorld(WorldSelectionList.java:436) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.gui.screens.worldselection.WorldSelectionList$WorldListEntry.mouseClicked(WorldSelectionList.java:367) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.gui.components.AbstractSelectionList.mouseClicked(AbstractSelectionList.java:359) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.gui.components.events.ContainerEventHandler.mouseClicked(ContainerEventHandler.java:27) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.MouseHandler.method_1611(MouseHandler.java:94) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.gui.screens.Screen.wrapScreenError(Screen.java:491) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.MouseHandler.onPress(MouseHandler.java:94) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.MouseHandler.method_22686(MouseHandler.java:165) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.util.thread.BlockableEventLoop.execute(BlockableEventLoop.java:103) ~[minecraft-merged-named.jar:?]
+	at net.minecraft.client.MouseHandler.method_22684(MouseHandler.java:165) ~[minecraft-merged-named.jar:?]
+	at org.lwjgl.glfw.GLFWMouseButtonCallbackI.callback(GLFWMouseButtonCallbackI.java:43) [lwjgl-glfw-3.3.1.jar:?]
+	at org.lwjgl.system.JNI.invokeV(Native Method) ~[lwjgl-3.3.1.jar:?]
+	at org.lwjgl.glfw.GLFW.glfwWaitEventsTimeout(GLFW.java:3474) [lwjgl-glfw-3.3.1.jar:?]
+	at com.mojang.blaze3d.systems.RenderSystem.limitDisplayFPS(RenderSystem.java:222) [minecraft-merged-named.jar:?]
+	at net.minecraft.client.Minecraft.runTick(Minecraft.java:1174) [minecraft-merged-named.jar:?]
+	at net.minecraft.client.Minecraft.run(Minecraft.java:734) [minecraft-merged-named.jar:?]
+	at net.minecraft.client.main.Main.main(Main.java:237) [minecraft-merged-named.jar:?]
+	at net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider.launch(MinecraftGameProvider.java:461) [fabric-loader-0.14.9.jar:?]
+	at net.fabricmc.loader.impl.launch.knot.Knot.launch(Knot.java:74) [fabric-loader-0.14.9.jar:?]
+	at net.fabricmc.loader.impl.launch.knot.KnotClient.main(KnotClient.java:23) [fabric-loader-0.14.9.jar:?]
+	at net.fabricmc.devlaunchinjector.Main.main(Main.java:86) [dev-launch-injector-0.2.1+build.8.jar:?]
+	at dev.architectury.transformer.TransformerRuntime.main(TransformerRuntime.java:217) [architectury-transformer-5.2.67-runtime.jar:5.2.67]
+[08:26:02] [Render thread/DEBUG] (io.netty.util.internal.PlatformDependent0) java.nio.DirectByteBuffer.<init>(long, int): unavailable
+[08:26:02] [Render thread/DEBUG] (io.netty.util.internal.PlatformDependent) sun.misc.Unsafe: available
+[08:26:02] [Render thread/DEBUG] (io.netty.util.internal.PlatformDependent) maxDirectMemory: 4219469824 bytes (maybe)
+[08:26:02] [Render thread/DEBUG] (io.netty.util.internal.PlatformDependent) -Dio.netty.tmpdir: C:\Users\fisha\AppData\Local\Temp (java.io.tmpdir)
+[08:26:02] [Render thread/DEBUG] (io.netty.util.internal.PlatformDependent) -Dio.netty.bitMode: 64 (sun.arch.data.model)
+[08:26:02] [Render thread/DEBUG] (io.netty.util.internal.PlatformDependent) Platform: Windows
+[08:26:02] [Render thread/DEBUG] (io.netty.util.internal.PlatformDependent) -Dio.netty.maxDirectMemory: -1 bytes
+[08:26:02] [Render thread/DEBUG] (io.netty.util.internal.PlatformDependent) -Dio.netty.uninitializedArrayAllocationThreshold: -1
+[08:26:02] [Render thread/DEBUG] (io.netty.util.internal.CleanerJava9) java.nio.ByteBuffer.cleaner(): available
+[08:26:02] [Render thread/DEBUG] (io.netty.util.internal.PlatformDependent) -Dio.netty.noPreferDirect: false
+[08:26:02] [Render thread/DEBUG] (io.netty.channel.nio.NioEventLoop) -Dio.netty.noKeySetOptimization: false
+[08:26:02] [Render thread/DEBUG] (io.netty.channel.nio.NioEventLoop) -Dio.netty.selectorAutoRebuildThreshold: 512
+[08:26:02] [Render thread/DEBUG] (io.netty.util.internal.PlatformDependent) org.jctools-core.MpscChunkedArrayQueue: available
+[08:26:02] [Render thread/DEBUG] (io.netty.channel.DefaultChannelId) -Dio.netty.processId: 11624 (auto-detected)
+[08:26:02] [Render thread/DEBUG] (io.netty.util.NetUtil) -Djava.net.preferIPv4Stack: false
+[08:26:02] [Render thread/DEBUG] (io.netty.util.NetUtil) -Djava.net.preferIPv6Addresses: false
+[08:26:02] [Render thread/DEBUG] (io.netty.util.NetUtilInitializations) Loopback interface: lo (Software Loopback Interface 1, 127.0.0.1)
+[08:26:02] [Render thread/DEBUG] (io.netty.util.NetUtil) Failed to get SOMAXCONN from sysctl and file \proc\sys\net\core\somaxconn. Default: 200
+[08:26:02] [Render thread/DEBUG] (io.netty.channel.DefaultChannelId) -Dio.netty.machineId: 4c:03:4f:ff:fe:e9:0c:5f (auto-detected)
+[08:26:02] [Render thread/DEBUG] (io.netty.buffer.PooledByteBufAllocator) -Dio.netty.allocator.numHeapArenas: 40
+[08:26:02] [Render thread/DEBUG] (io.netty.buffer.PooledByteBufAllocator) -Dio.netty.allocator.numDirectArenas: 40
+[08:26:02] [Render thread/DEBUG] (io.netty.buffer.PooledByteBufAllocator) -Dio.netty.allocator.pageSize: 8192
+[08:26:02] [Render thread/DEBUG] (io.netty.buffer.PooledByteBufAllocator) -Dio.netty.allocator.maxOrder: 9
+[08:26:02] [Render thread/DEBUG] (io.netty.buffer.PooledByteBufAllocator) -Dio.netty.allocator.chunkSize: 4194304
+[08:26:02] [Render thread/DEBUG] (io.netty.buffer.PooledByteBufAllocator) -Dio.netty.allocator.smallCacheSize: 256
+[08:26:02] [Render thread/DEBUG] (io.netty.buffer.PooledByteBufAllocator) -Dio.netty.allocator.normalCacheSize: 64
+[08:26:02] [Render thread/DEBUG] (io.netty.buffer.PooledByteBufAllocator) -Dio.netty.allocator.maxCachedBufferCapacity: 32768
+[08:26:02] [Render thread/DEBUG] (io.netty.buffer.PooledByteBufAllocator) -Dio.netty.allocator.cacheTrimInterval: 8192
+[08:26:02] [Render thread/DEBUG] (io.netty.buffer.PooledByteBufAllocator) -Dio.netty.allocator.cacheTrimIntervalMillis: 0
+[08:26:02] [Render thread/DEBUG] (io.netty.buffer.PooledByteBufAllocator) -Dio.netty.allocator.useCacheForAllThreads: false
+[08:26:02] [Render thread/DEBUG] (io.netty.buffer.PooledByteBufAllocator) -Dio.netty.allocator.maxCachedByteBuffersPerChunk: 1023
+[08:26:02] [Render thread/DEBUG] (io.netty.buffer.ByteBufUtil) -Dio.netty.allocator.type: pooled
+[08:26:02] [Render thread/DEBUG] (io.netty.buffer.ByteBufUtil) -Dio.netty.threadLocalDirectBufferSize: 0
+[08:26:02] [Render thread/DEBUG] (io.netty.buffer.ByteBufUtil) -Dio.netty.maxThreadLocalCharBufferSize: 16384
+[08:26:02] [Netty Local Client IO #0/DEBUG] (io.netty.util.Recycler) -Dio.netty.recycler.maxCapacityPerThread: 4096
+[08:26:02] [Netty Local Client IO #0/DEBUG] (io.netty.util.Recycler) -Dio.netty.recycler.ratio: 8
+[08:26:02] [Netty Local Client IO #0/DEBUG] (io.netty.util.Recycler) -Dio.netty.recycler.chunkSize: 32
+[08:26:02] [Netty Local Client IO #0/DEBUG] (io.netty.util.Recycler) -Dio.netty.recycler.blocking: false
+[08:26:02] [Server thread/INFO] (net.minecraft.server.players.PlayerList) Player197[local:E:3f8a233b] logged in with entity id 83 at (10.93834573651172, -36.88186403450352, -3.8021837880050464)
+[08:26:02] [Server thread/DEBUG] (io.netty.buffer.AbstractByteBuf) -Dio.netty.buffer.checkAccessible: true
+[08:26:02] [Server thread/DEBUG] (io.netty.buffer.AbstractByteBuf) -Dio.netty.buffer.checkBounds: true
+[08:26:02] [Server thread/DEBUG] (io.netty.util.ResourceLeakDetectorFactory) Loaded default ResourceLeakDetector: io.netty.util.ResourceLeakDetector@519b1f3d
+[08:26:03] [Server thread/INFO] (net.minecraft.server.MinecraftServer) Player197 joined the game
+[08:26:03] [Render thread/DEBUG] (FabricLoader/Mixin) Mixing DimensionSpecialEffectsMixin from celestial.mixins.json into net.minecraft.client.renderer.DimensionSpecialEffects
+[08:26:03] [Render thread/DEBUG] (FabricLoader/Mixin) celestial.mixins.json:DimensionSpecialEffectsMixin from mod celestial->@Inject::getCloudsHeight(Lorg/spongepowered/asm/mixin/injection/callback/CallbackInfoReturnable;)V does use it's CallbackInfoReturnable
+[08:26:03] [Render thread/DEBUG] (FabricLoader/Mixin) celestial.mixins.json:DimensionSpecialEffectsMixin from mod celestial->@Inject::getFogColorOverride(FFLorg/spongepowered/asm/mixin/injection/callback/CallbackInfoReturnable;)V does use it's CallbackInfoReturnable
+[08:26:03] [Render thread/DEBUG] (FabricLoader/Mixin) celestial.mixins.json:DimensionSpecialEffectsMixin from mod celestial->@Inject::getFogColorOverride(FFLorg/spongepowered/asm/mixin/injection/callback/CallbackInfoReturnable;)V does use it's CallbackInfoReturnable
+[08:26:03] [Render thread/DEBUG] (io.netty.util.internal.ThreadLocalRandom) -Dio.netty.initialSeedUniquifier: 0x3dce1cd4cc44b1e1
+[08:26:03] [Render thread/INFO] (net.minecraft.advancements.AdvancementList) Loaded 0 advancements
+[08:26:03] [Worker-Main-21/DEBUG] (com.mojang.authlib.HttpAuthenticationService) Opening connection to https://sessionserver.mojang.com/session/minecraft/profile/ccf0c278c21f3ec3a87c05202673a5dd?unsigned=true
+[08:26:03] [Worker-Main-21/DEBUG] (com.mojang.authlib.HttpAuthenticationService) Reading data from https://sessionserver.mojang.com/session/minecraft/profile/ccf0c278c21f3ec3a87c05202673a5dd?unsigned=true
+[08:26:03] [Worker-Main-21/DEBUG] (com.mojang.authlib.HttpAuthenticationService) Successful read, server response was 204
+[08:26:03] [Worker-Main-21/DEBUG] (com.mojang.authlib.HttpAuthenticationService) Response: 
+[08:26:03] [Worker-Main-21/DEBUG] (com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService) Couldn't fetch profile properties for com.mojang.authlib.GameProfile@c132cba[id=ccf0c278-c21f-3ec3-a87c-05202673a5dd,name=Player197,properties={},legacy=false] as the profile does not exist
+[08:26:04] [Render thread/DEBUG] (com.mojang.blaze3d.vertex.BufferBuilder) Needed to grow BufferBuilder buffer: Old size 1536 bytes, new size 2098688 bytes.
+[08:26:05] [Server thread/INFO] (net.minecraft.client.server.IntegratedServer) Saving and pausing game...
+[08:26:05] [Server thread/INFO] (net.minecraft.server.MinecraftServer) Saving chunks for level 'ServerLevel[New World]'/minecraft:overworld
+[08:26:05] [Server thread/INFO] (net.minecraft.server.MinecraftServer) Saving chunks for level 'ServerLevel[New World]'/minecraft:the_end
+[08:26:05] [Server thread/INFO] (net.minecraft.server.MinecraftServer) Saving chunks for level 'ServerLevel[New World]'/minecraft:the_nether
+[08:26:20] [Server thread/INFO] (net.minecraft.client.server.IntegratedServer) Saving and pausing game...
+[08:26:20] [Server thread/INFO] (net.minecraft.server.MinecraftServer) Saving chunks for level 'ServerLevel[New World]'/minecraft:overworld
+[08:26:20] [Server thread/INFO] (net.minecraft.server.MinecraftServer) Saving chunks for level 'ServerLevel[New World]'/minecraft:the_end
+[08:26:20] [Server thread/INFO] (net.minecraft.server.MinecraftServer) Saving chunks for level 'ServerLevel[New World]'/minecraft:the_nether

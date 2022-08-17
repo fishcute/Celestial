@@ -1,0 +1,8 @@
+v1	named	intermediary
+FIELD	fishcute/celestial/mixin/LevelRendererMixin	Lcom/mojang/blaze3d/vertex/VertexBuffer;	skyBuffer	field_4087
+FIELD	fishcute/celestial/mixin/LevelRendererMixin	Lcom/mojang/blaze3d/vertex/VertexBuffer;	starBuffer	field_4113
+FIELD	fishcute/celestial/mixin/LevelRendererMixin	Lcom/mojang/blaze3d/vertex/VertexBuffer;	darkBuffer	field_4102
+FIELD	fishcute/celestial/mixin/LevelRendererMixin	Lnet/minecraft/client/multiplayer/ClientLevel;	level	field_4085
+METHOD	fishcute/celestial/mixin/LevelRendererMixin	(Lnet/minecraft/client/Camera;)Z	doesMobEffectBlockSky	method_43788
+METHOD	fishcute/celestial/mixin/LevelRendererMixin	(Lcom/mojang/blaze3d/vertex/BufferBuilder;)Lcom/mojang/blaze3d/vertex/BufferBuilder$RenderedBuffer;	drawStars	method_3255
+METHOD	fishcute/celestial/mixin/LevelRendererMixin	(Lcom/mojang/blaze3d/vertex/PoseStack;FJZLnet/minecraft/client/Camera;Lnet/minecraft/client/renderer/GameRenderer;Lnet/minecraft/client/renderer/LightTexture;Lcom/mojang/math/Matrix4f;)V	renderLevel	method_22710

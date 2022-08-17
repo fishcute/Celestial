@@ -1,0 +1,42 @@
+{
+	"texture": "celestial:sky/overworld/objects/lightning_flash.png",
+	"display": {
+		"scale": "20",
+		"pos_x": "0",
+		"pos_y": "0",
+		"pos_z": "0",
+		"distance": "-100"
+	},
+	"rotation": {
+		"degrees_x": "0",
+		"degrees_y": "0",
+		"degrees_z": "0"
+	},
+	"properties": {
+		"is_solid": false,
+		"alpha": "(ceil((1 - (#random + 0.999))m1) - 0.5)M0"
+	},
+	"populate": {
+		"count": 75,
+		"rotation": {
+			"min_degrees_x": 0,
+			"max_degrees_x": 0,
+			"min_degrees_y": 0,
+			"max_degrees_y": 0,
+			"min_degrees_z": 0,
+			"max_degrees_z": 360
+		},
+		"display": {
+			"min_scale": 30,
+			"max_scale": 60,
+			"min_pos_x": 0,
+			"max_pos_x": 0,
+			"min_pos_y": 0,
+			"max_pos_y": 0,
+			"min_pos_z": -10,
+			"max_pos_z": 0,
+			"min_distance": -200,
+			"max_distance": -100
+		}
+	}
+}

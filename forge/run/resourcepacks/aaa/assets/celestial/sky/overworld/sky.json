@@ -1,0 +1,39 @@
+{
+	"sky_objects": [
+		"storm",
+		"storm_2",
+		"storm_3",
+		"lightning_flash"
+	],
+	"render_type": "normal",
+	"environment": {
+		"fog_color": "656565",
+		"sky_color": "7794c9",
+		"twilight_color": "b23333",
+		"twilight_alpha": "0",
+		"clouds": {
+			"height": -2147483647,
+			"color": "ffffff"
+		},
+		"fog": {
+			"has_thick_fog": false,
+			"fog_start": -1,
+			"fog_end": -1
+		},
+		"sky_darkness": "0"
+	},
+	"stars": {
+		"rotation": {
+			"degrees_x": "#skyAngle + 90",
+			"degrees_y": "0",
+			"degrees_z": "0"
+		},
+		"brightness": "0",
+		"count": 0,
+		"min_size": 0.1,
+		"max_size": 0.15,
+		"colors": [
+			"ffffff"
+		]
+	}
+}
