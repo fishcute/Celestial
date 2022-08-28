@@ -17,12 +17,12 @@ public class ClientTick {
 
     public static void tick() {
         //System.out.println(Minecraft.getInstance().level == null);
-        if (!(Minecraft.getInstance().level == null))
+        if (!(Minecraft.getInstance().world == null))
             worldTick();
     }
 
     public static void worldTick() {
         updateStars();
-        dimensionHasCustomSky = CelestialSky.dimensionSkyMap.containsKey(Minecraft.getInstance().level.dimension().location().getPath());
+        dimensionHasCustomSky = CelestialSky.dimensionSkyMap.containsKey(Minecraft.getInstance().world.getDimensionKey().getLocation().getPath());
     }
 }

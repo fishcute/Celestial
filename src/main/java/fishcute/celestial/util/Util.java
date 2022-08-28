@@ -4,17 +4,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fishcute.celestial.sky.CelestialSky;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Items;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.MutableTriple;
 
 import java.text.DecimalFormat;
 import java.util.*;
-
-import static java.util.Map.entry;
 
 public class Util {
 
@@ -124,15 +121,31 @@ public class Util {
                 }
 
                 switch (func) {
-                    case "sqrt" -> x = Math.sqrt(x);
-                    case "sin" -> x = Math.sin(Math.toRadians(x));
-                    case "cos" -> x = Math.cos(Math.toRadians(x));
-                    case "tan" -> x = Math.tan(Math.toRadians(x));
-                    case "floor" -> x = Math.floor(Math.toRadians(x));
-                    case "ceil" -> x = Math.ceil(Math.toRadians(x));
-                    case "round" -> x = Math.round(Math.toRadians(x));
-                    case "print" -> print(x);
-                    default -> {
+                    case "sqrt":
+                        x = Math.sqrt(x);
+                        break;
+                    case "sin":
+                        x = Math.sin(Math.toRadians(x));
+                        break;
+                    case "cos":
+                        x = Math.cos(Math.toRadians(x));
+                        break;
+                    case "tan":
+                        x = Math.tan(Math.toRadians(x));
+                        break;
+                    case "floor":
+                        x = Math.floor(Math.toRadians(x));
+                        break;
+                    case "ceil":
+                        x = Math.ceil(Math.toRadians(x));
+                        break;
+                    case "round":
+                        x = Math.round(Math.toRadians(x));
+                        break;
+                    case "print":
+                        print(x);
+                        break;
+                    default: {
                         if (!foundIssue) {
                             sendErrorInGame("Failed to perform math function \"" + finalStr + "\": Unknown math function \"" + func + "\"", false);
                             foundIssue = true;
@@ -157,16 +170,16 @@ public class Util {
     }
 
     static void print(double i) {
-        Minecraft.getInstance().player.displayClientMessage(Component.literal("Value: " + i), true);
+        Minecraft.getInstance().player.sendStatusMessage(ITextComponent.getTextComponentOrEmpty("Value: " + i), true);
     }
     public static void log(Object i) {
-        if (!Minecraft.getInstance().isPaused())
+        if (!Minecraft.getInstance().isGamePaused())
             System.out.println("[Celestial] " + i.toString());
     }
 
     public static void warn(Object i) {
         CelestialSky.warnings++;
-        if (!Minecraft.getInstance().isPaused()) {
+        if (!Minecraft.getInstance().isGamePaused()) {
             log("[Warn] " + i.toString());
             sendWarnInGame(i.toString());
         }
@@ -181,17 +194,17 @@ public class Util {
         if (errorList.contains(i) || errorList.size() > 25)
             return;
         errorList.add(i);
-        Minecraft.getInstance().player.displayClientMessage(Component.literal(ChatFormatting.RED +
+        Minecraft.getInstance().player.sendStatusMessage(ITextComponent.getTextComponentOrEmpty(TextFormatting.RED +
                 "[Celestial] " + i
         ), false);
 
         if (errorList.size() >= 25)
-            Minecraft.getInstance().player.displayClientMessage(Component.literal(ChatFormatting.RED +
+            Minecraft.getInstance().player.sendStatusMessage(ITextComponent.getTextComponentOrEmpty(TextFormatting.RED +
                     "[Celestial] Passing 25 error messages. Muting error messages."
             ), false);
 
         if (unloadResources) {
-            Minecraft.getInstance().player.displayClientMessage(Component.literal(ChatFormatting.RED +
+            Minecraft.getInstance().player.sendStatusMessage(ITextComponent.getTextComponentOrEmpty(TextFormatting.RED +
                     "[Celestial] Unloading Celestial resources."
             ), false);
         }
@@ -203,7 +216,7 @@ public class Util {
         if (errorList.contains(i))
             return;
         errorList.add(i);
-        Minecraft.getInstance().player.displayClientMessage(Component.literal(ChatFormatting.YELLOW +
+        Minecraft.getInstance().player.sendStatusMessage(ITextComponent.getTextComponentOrEmpty(TextFormatting.YELLOW +
                 "[Celestial] " + i
         ), false);
     }
@@ -269,35 +282,38 @@ public class Util {
     }
 
     public static Map<String, String> getReplaceMapNormal() {
-        return Map.ofEntries(
-                entry("#xPos", Minecraft.getInstance().player.getX() + ""),
-                entry("#yPos", Minecraft.getInstance().player.getY() + ""),
-                entry("#zPos", Minecraft.getInstance().player.getZ() + ""),
-                entry("#tickDelta", Minecraft.getInstance().getFrameTime() + ""),
-                entry("#dayLight", (1.0F - Minecraft.getInstance().level.getStarBrightness(Minecraft.getInstance().getFrameTime())) + ""),
-                entry("#rainGradient", (1.0F - Minecraft.getInstance().level.getRainLevel(Minecraft.getInstance().level.getRainLevel(Minecraft.getInstance().getFrameTime()))) + ""),
-                entry("#isUsingSpyglass", ((Minecraft.getInstance().player.isUsingItem() && Minecraft.getInstance().player.getUseItem().is(Items.SPYGLASS)) ? 1 : 0) + ""),
-                entry("#isSubmerged", (Minecraft.getInstance().player.isInWater() ? 1 : 0) + ""),
-                entry("#getTotalTime", (Minecraft.getInstance().level.getGameTime()) + ""),
-                entry("#starAlpha", (Minecraft.getInstance().level.getGameTime()) + ""),
-                entry("#random", Math.random() + "")
-        );
+        Map<String, String> toReplaceMap = new HashMap<>();
+        toReplaceMap.put("#xPos", Minecraft.getInstance().player.getPosX() + "");
+        toReplaceMap.put("#yPos", Minecraft.getInstance().player.getPosY() + "");
+        toReplaceMap.put("#zPos", Minecraft.getInstance().player.getPosZ() + "");
+        toReplaceMap.put("#tickDelta", Minecraft.getInstance().getTickLength() + "");
+        toReplaceMap.put("#dayLight", (1.0F - Minecraft.getInstance().world.getStarBrightness(Minecraft.getInstance().getTickLength())) + "");
+        toReplaceMap.put("#rainGradient", (1.0F - Minecraft.getInstance().world.getStarBrightness(Minecraft.getInstance().getTickLength())) + "");
+        toReplaceMap.put("#isUsingSpyglass", 0 + "");
+        // Spyglasses don't exist in 1.16, will return 0 for version compatibility
+        toReplaceMap.put("#isSubmerged", (Minecraft.getInstance().player.isInWater() ? 1 : 0) + "");
+        toReplaceMap.put("#getTotalTime", (Minecraft.getInstance().world.getGameTime()) + "");
+        toReplaceMap.put("#starAlpha", (Minecraft.getInstance().world.getGameTime()) + "");
+        toReplaceMap.put("#random", Math.random() + "");
+
+        return toReplaceMap;
     }
 
     public static Map<String, String> getReplaceMapAdd(Map<String, String> extraEntries) {
-        Map<String, String> toReturn = new HashMap<>(Map.ofEntries(
-                entry("#xPos", Minecraft.getInstance().player.getX() + ""),
-                entry("#yPos", Minecraft.getInstance().player.getY() + ""),
-                entry("#zPos", Minecraft.getInstance().player.getZ() + ""),
-                entry("#tickDelta", Minecraft.getInstance().getFrameTime() + ""),
-                entry("#dayLight", (1.0F - Minecraft.getInstance().level.getStarBrightness(Minecraft.getInstance().getFrameTime())) + ""),
-                entry("#rainGradient", (1.0F - Minecraft.getInstance().level.getRainLevel(Minecraft.getInstance().level.getRainLevel(Minecraft.getInstance().getFrameTime()))) + ""),
-                entry("#isUsingSpyglass", ((Minecraft.getInstance().player.isUsingItem() && Minecraft.getInstance().player.getUseItem().is(Items.SPYGLASS)) ? 1 : 0) + ""),
-                entry("#isSubmerged", (Minecraft.getInstance().player.isInWater() ? 1 : 0) + ""),
-                entry("#getTotalTime", (Minecraft.getInstance().level.getGameTime()) + ""),
-                entry("#starAlpha", (Minecraft.getInstance().level.getGameTime()) + ""),
-                entry("#random", Math.random() + "")
-        ));
+        Map<String, String> toReturn = new HashMap<>();
+        toReturn.put("#xPos", Minecraft.getInstance().player.getPosX() + "");
+        toReturn.put("#yPos", Minecraft.getInstance().player.getPosY() + "");
+        toReturn.put("#zPos", Minecraft.getInstance().player.getPosZ() + "");
+        toReturn.put("#tickDelta", Minecraft.getInstance().getTickLength() + "");
+        toReturn.put("#dayLight", (1.0F - Minecraft.getInstance().world.getStarBrightness(Minecraft.getInstance().getTickLength())) + "");
+        toReturn.put("#rainGradient", (1.0F - Minecraft.getInstance().world.getStarBrightness(Minecraft.getInstance().getTickLength())) + "");
+        toReturn.put("#isUsingSpyglass", 0 + "");
+        // Spyglasses don't exist in 1.16, will return 0 for version compatibility
+        toReturn.put("#isSubmerged", (Minecraft.getInstance().player.isInWater() ? 1 : 0) + "");
+        toReturn.put("#getTotalTime", (Minecraft.getInstance().world.getGameTime()) + "");
+        toReturn.put("#starAlpha", (Minecraft.getInstance().world.getGameTime()) + "");
+        toReturn.put("#random", Math.random() + "");
+
         toReturn.putAll(extraEntries);
         return toReturn;
     }

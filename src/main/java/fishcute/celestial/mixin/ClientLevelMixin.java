@@ -1,12 +1,12 @@
 package fishcute.celestial.mixin;
 
 import fishcute.celestial.sky.CelestialSky;
-import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.world.ClientWorld;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-@Mixin(ClientLevel.class)
+@Mixin(ClientWorld.class)
 public class ClientLevelMixin {
     @ModifyVariable(method = "getCloudColor", at = @At("STORE"), ordinal = 3)
     private float getRed(float h) {

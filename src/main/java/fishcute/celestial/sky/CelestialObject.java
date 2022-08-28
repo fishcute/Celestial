@@ -2,7 +2,7 @@ package fishcute.celestial.sky;
 
 import com.google.gson.JsonObject;
 import fishcute.celestial.util.Util;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.MutableTriple;
 

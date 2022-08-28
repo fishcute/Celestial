@@ -1,9 +1,11 @@
 package fishcute.celestial.mixin;
 
 import fishcute.celestial.util.ClientTick;
-import net.minecraft.server.packs.PackResources;
-import net.minecraft.server.packs.resources.ReloadInstance;
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
+import net.minecraft.client.resources.ReloadListener;
+import net.minecraft.profiler.IProfiler;
+import net.minecraft.resources.AsyncReloader;
+import net.minecraft.resources.IFutureReloadListener;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.Unit;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,11 +16,12 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-@Mixin(ReloadableResourceManager.class)
+@Mixin(AsyncReloader.class)
 public class ReloadableResourceManagerMixin {
 
-    @Inject(method = "createReload", at = @At("RETURN"))
-    private void reload(Executor executor, Executor executor2, CompletableFuture<Unit> completableFuture, List<PackResources> list, CallbackInfoReturnable<ReloadInstance> cir) {
+    @Inject(method = "create", at = @At("RETURN"))
+    private static void reload(IResourceManager resourceManager, List<IFutureReloadListener> listeners, Executor backgroundExecutor, Executor gameExecutor, CompletableFuture<Unit> alsoWaitedFor, CallbackInfoReturnable<AsyncReloader<Void>> cir) {
+
         ClientTick.reload();
     }
 }
