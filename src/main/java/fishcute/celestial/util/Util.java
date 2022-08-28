@@ -4,14 +4,15 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fishcute.celestial.sky.CelestialSky;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Items;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.MutableTriple;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 import static java.util.Map.entry;
 
@@ -19,146 +20,153 @@ public class Util {
 
     static Random random = new Random();
 
-    /*
-    Function below originally made by Boann on StackOverFlow, and slightly modified by me.
-     */
-
     static DecimalFormat numberFormat = new DecimalFormat("#.00000000");
     public static double solveEquation(String str, Map<String, String> toReplace) {
+        StringBuilder builder = new StringBuilder(str);
         for (String i : toReplace.keySet()) {
-            str = str.replaceAll(i, numberFormat.format(Double.valueOf(toReplace.get(i))));
+            while (builder.indexOf(i) != -1)
+                builder.replace(builder.indexOf(i), builder.indexOf(i) + i.length(), numberFormat.format(Double.valueOf(toReplace.get(i))));
         }
-        String finalStr = str;
+        String finalStr = builder.toString();
 
-        return new Object() {
-            boolean foundIssue = false;
-            int pos = -1, ch;
+        return new Equation(finalStr).parse();
+    }
 
-            void nextChar() {
-                ch = (++pos < finalStr.length()) ? finalStr.charAt(pos) : -1;
-            }
+    /*
+    Function below originally made by Boann on StackOverFlow, and slightly modified by me.
+    */
+    private static class Equation {
+        public Equation(String finalStr) {
+            this.finalStr = finalStr;
+        }
+        final String finalStr;
+        boolean foundIssue = false;
+        int pos = -1, ch;
 
-            boolean eat(int charToEat) {
-                while (ch == ' ') nextChar();
-                if (ch == charToEat) {
-                    nextChar();
-                    return true;
-                }
-                return false;
-            }
+        void nextChar() {
+            ch = (++pos < finalStr.length()) ? finalStr.charAt(pos) : -1;
+        }
 
-            double parse() {
+        boolean eat(int charToEat) {
+            while (ch == ' ') nextChar();
+            if (ch == charToEat) {
                 nextChar();
-                double x = parseExpression();
-                if (pos < finalStr.length()) {
+                return true;
+            }
+            return false;
+        }
+
+        double parse() {
+            nextChar();
+            double x = parseExpression();
+            if (pos < finalStr.length()) {
+                if (!foundIssue) {
+                    sendErrorInGame("Failed to perform math function \"" + finalStr + "\": Unexpected character '" + (char) ch + "'", false);
+                    foundIssue = true;
+                }
+                return 0;
+            }
+            if (foundIssue)
+                return 0;
+            return x;
+        }
+
+        double parseExpression() {
+            double x = parseTerm();
+            for (;;) {
+                if      (eat('+')) x += parseTerm(); // addition
+                else if (eat('-')) x -= parseTerm(); // subtraction
+                else return x;
+            }
+        }
+
+        double parseTerm() {
+            double x = parseFactor();
+            for (;;) {
+                if      (eat('*')) x *= parseFactor(); // multiplication
+                else if (eat('/')) x /= parseFactor(); // division
+                else return x;
+            }
+        }
+
+        double parseFactor() {
+            if (eat('+')) return +parseFactor(); // unary plus
+            if (eat('-')) return -parseFactor(); // unary minus
+
+            double x;
+            int startPos = this.pos;
+            if (eat('(')) { // parentheses
+                x = parseExpression();
+                if (!eat(')')) {
                     if (!foundIssue) {
-                        sendErrorInGame("Failed to perform math function \"" + finalStr + "\": Unexpected character '" + (char) ch + "'", false);
+                        sendErrorInGame("Failed to perform math function \"" + finalStr + "\": Missing closing parenthesis in function", false);
                         foundIssue = true;
                     }
                     return 0;
                 }
-                if (foundIssue)
-                    return 0;
-                return x;
-            }
-
-            double parseExpression() {
-                double x = parseTerm();
-                for (;;) {
-                    if      (eat('+')) x += parseTerm(); // addition
-                    else if (eat('-')) x -= parseTerm(); // subtraction
-                    else return x;
-                }
-            }
-
-            double parseTerm() {
-                double x = parseFactor();
-                for (;;) {
-                    if      (eat('*')) x *= parseFactor(); // multiplication
-                    else if (eat('/')) x /= parseFactor(); // division
-                    else return x;
-                }
-            }
-
-            double parseFactor() {
-                if (eat('+')) return +parseFactor(); // unary plus
-                if (eat('-')) return -parseFactor(); // unary minus
-
-                double x;
-                int startPos = this.pos;
-                if (eat('(')) { // parentheses
+            } else if ((ch >= '0' && ch <= '9') || ch == '.') { // numbers
+                while ((ch >= '0' && ch <= '9') || ch == '.') nextChar();
+                x = Double.parseDouble(finalStr.substring(startPos, this.pos));
+            } else if (ch >= 'a' && ch <= 'z') { // functions
+                while (ch >= 'a' && ch <= 'z') nextChar();
+                String func = finalStr.substring(startPos, this.pos);
+                if (eat('(')) {
                     x = parseExpression();
                     if (!eat(')')) {
                         if (!foundIssue) {
-                            sendErrorInGame("Failed to perform math function \"" + finalStr + "\": Missing closing parenthesis in function", false);
+                            sendErrorInGame("Failed to perform math function \"" + finalStr + "\": Missing closing parenthesis in function after argument to \"" + func + "\"", false);
                             foundIssue = true;
                         }
                         return 0;
                     }
-                } else if ((ch >= '0' && ch <= '9') || ch == '.') { // numbers
-                    while ((ch >= '0' && ch <= '9') || ch == '.') nextChar();
-                    x = Double.parseDouble(finalStr.substring(startPos, this.pos));
-                } else if (ch >= 'a' && ch <= 'z') { // functions
-                    while (ch >= 'a' && ch <= 'z') nextChar();
-                    String func = finalStr.substring(startPos, this.pos);
-                    if (eat('(')) {
-                        x = parseExpression();
-                        if (!eat(')')) {
-                            if (!foundIssue) {
-                                sendErrorInGame("Failed to perform math function \"" + finalStr + "\": Missing closing parenthesis in function after argument to \"" + func + "\"", false);
-                                foundIssue = true;
-                            }
-                            return 0;
-                        }
-                    } else {
-                        x = parseFactor();
-                    }
-
-                    switch (func) {
-                        case "sqrt" -> x = Math.sqrt(x);
-                        case "sin" -> x = Math.sin(Math.toRadians(x));
-                        case "cos" -> x = Math.cos(Math.toRadians(x));
-                        case "tan" -> x = Math.tan(Math.toRadians(x));
-                        case "floor" -> x = Math.floor(Math.toRadians(x));
-                        case "ceil" -> x = Math.ceil(Math.toRadians(x));
-                        case "round" -> x = Math.round(Math.toRadians(x));
-                        case "print" -> print(x);
-                        default -> {
-                            if (!foundIssue) {
-                                sendErrorInGame("Failed to perform math function \"" + finalStr + "\": Unknown math function \"" + func + "\"", false);
-                                foundIssue = true;
-                            }
-                            return 0;
-                        }
-                    }
                 } else {
-                    if (!foundIssue) {
-                        sendErrorInGame("Failed to perform math function \"" + finalStr + "\": Unexpected character '" + (char) ch + "'", false);
-                        foundIssue = true;
-                    }
-                    return 0;
+                    x = parseFactor();
                 }
 
-                if (eat('^')) x = Math.pow(x, parseFactor()); // exponentiation
-                else if (eat('m')) x = Math.min(x, parseFactor()); // min
-                else if (eat('M')) x = Math.max(x, parseFactor()); // max
-
-                return x;
+                switch (func) {
+                    case "sqrt" -> x = Math.sqrt(x);
+                    case "sin" -> x = Math.sin(Math.toRadians(x));
+                    case "cos" -> x = Math.cos(Math.toRadians(x));
+                    case "tan" -> x = Math.tan(Math.toRadians(x));
+                    case "floor" -> x = Math.floor(Math.toRadians(x));
+                    case "ceil" -> x = Math.ceil(Math.toRadians(x));
+                    case "round" -> x = Math.round(Math.toRadians(x));
+                    case "print" -> print(x);
+                    default -> {
+                        if (!foundIssue) {
+                            sendErrorInGame("Failed to perform math function \"" + finalStr + "\": Unknown math function \"" + func + "\"", false);
+                            foundIssue = true;
+                        }
+                        return 0;
+                    }
+                }
+            } else {
+                if (!foundIssue) {
+                    sendErrorInGame("Failed to perform math function \"" + finalStr + "\": Unexpected character '" + (char) ch + "'", false);
+                    foundIssue = true;
+                }
+                return 0;
             }
-        }.parse();
+
+            if (eat('^')) x = Math.pow(x, parseFactor()); // exponentiation
+            else if (eat('m')) x = Math.min(x, parseFactor()); // min
+            else if (eat('M')) x = Math.max(x, parseFactor()); // max
+
+            return x;
+        }
     }
 
     static void print(double i) {
-        MinecraftClient.getInstance().player.sendMessage(Text.of("Value: " + i), true);
+        Minecraft.getInstance().player.displayClientMessage(Component.literal("Value: " + i), true);
     }
     public static void log(Object i) {
-        if (!MinecraftClient.getInstance().isPaused())
+        if (!Minecraft.getInstance().isPaused())
             System.out.println("[Celestial] " + i.toString());
     }
 
     public static void warn(Object i) {
         CelestialSky.warnings++;
-        if (!MinecraftClient.getInstance().isPaused()) {
+        if (!Minecraft.getInstance().isPaused()) {
             log("[Warn] " + i.toString());
             sendWarnInGame(i.toString());
         }
@@ -168,36 +176,36 @@ public class Util {
 
     public static void sendErrorInGame(String i, boolean unloadResources) {
         CelestialSky.errors++;
-        if (MinecraftClient.getInstance().player == null)
+        if (Minecraft.getInstance().player == null)
             return;
         if (errorList.contains(i) || errorList.size() > 25)
             return;
         errorList.add(i);
-        MinecraftClient.getInstance().player.sendMessage(Text.of(Formatting.RED +
+        Minecraft.getInstance().player.displayClientMessage(Component.literal(ChatFormatting.RED +
                 "[Celestial] " + i
-        ));
+        ), false);
 
         if (errorList.size() >= 25)
-            MinecraftClient.getInstance().player.sendMessage(Text.of(Formatting.RED +
+            Minecraft.getInstance().player.displayClientMessage(Component.literal(ChatFormatting.RED +
                     "[Celestial] Passing 25 error messages. Muting error messages."
-            ));
+            ), false);
 
         if (unloadResources) {
-            MinecraftClient.getInstance().player.sendMessage(Text.of(Formatting.RED +
+            Minecraft.getInstance().player.displayClientMessage(Component.literal(ChatFormatting.RED +
                     "[Celestial] Unloading Celestial resources."
-            ));
+            ), false);
         }
     }
 
     public static void sendWarnInGame(String i) {
-        if (MinecraftClient.getInstance().player == null)
+        if (Minecraft.getInstance().player == null)
             return;
         if (errorList.contains(i))
             return;
         errorList.add(i);
-        MinecraftClient.getInstance().player.sendMessage(Text.of(Formatting.YELLOW +
+        Minecraft.getInstance().player.displayClientMessage(Component.literal(ChatFormatting.YELLOW +
                 "[Celestial] " + i
-        ));
+        ), false);
     }
 
     public static boolean getOptionalBoolean(JsonObject o, String toGet, boolean ifNull) {
@@ -246,29 +254,92 @@ public class Util {
     }
 
     public static int blendColors(int a, int b, float ratio){
+        if (ratio == 0)
+            return b;
+        else if (ratio == 1)
+            return a;
+
         ratio = 1-ratio;
-        int mask1 = 0x00ff00ff;
-        int mask2 = 0xff00ff00;
 
         int f2 = (int)(256 * ratio);
         int f1 = 256 - f2;
 
-        return (((((a & mask1) * f1) + ((b & mask1) * f2)) >> 8) & mask1)
-                | (((((a & mask2) * f1) + ((b & mask2) * f2)) >> 8) & mask2);
+        return (((((a & 0x00ff00ff) * f1) + ((b & 0x00ff00ff) * f2)) >> 8) & 0x00ff00ff)
+                | (((((a & 0xff00ff00) * f1) + ((b & 0xff00ff00) * f2)) >> 8) & 0xff00ff00);
     }
 
     public static Map<String, String> getReplaceMapNormal() {
         return Map.ofEntries(
-                entry("#xPos", MinecraftClient.getInstance().player.getPos().x + ""),
-                entry("#yPos", MinecraftClient.getInstance().player.getPos().y + ""),
-                entry("#zPos", MinecraftClient.getInstance().player.getPos().z + ""),
-                entry("#tickDelta", MinecraftClient.getInstance().getTickDelta() + ""),
-                entry("#dayLight", (1.0F - MinecraftClient.getInstance().world.method_23787(MinecraftClient.getInstance().getTickDelta())) + ""),
-                entry("#rainGradient", (1.0F - MinecraftClient.getInstance().world.getRainGradient(MinecraftClient.getInstance().world.method_23787(MinecraftClient.getInstance().getTickDelta()))) + ""),
-                entry("#isUsingSpyglass", (MinecraftClient.getInstance().player.isUsingSpyglass() ? 1 : 0) + ""),
-                entry("#isSubmerged", (MinecraftClient.getInstance().player.isSubmergedInWater() ? 1 : 0) + ""),
-                entry("#getTotalTime", (MinecraftClient.getInstance().world.getTime()) + ""),
+                entry("#xPos", Minecraft.getInstance().player.getX() + ""),
+                entry("#yPos", Minecraft.getInstance().player.getY() + ""),
+                entry("#zPos", Minecraft.getInstance().player.getZ() + ""),
+                entry("#tickDelta", Minecraft.getInstance().getFrameTime() + ""),
+                entry("#dayLight", (1.0F - Minecraft.getInstance().level.getStarBrightness(Minecraft.getInstance().getFrameTime())) + ""),
+                entry("#rainGradient", (1.0F - Minecraft.getInstance().level.getRainLevel(Minecraft.getInstance().level.getRainLevel(Minecraft.getInstance().getFrameTime()))) + ""),
+                entry("#isUsingSpyglass", ((Minecraft.getInstance().player.isUsingItem() && Minecraft.getInstance().player.getUseItem().is(Items.SPYGLASS)) ? 1 : 0) + ""),
+                entry("#isSubmerged", (Minecraft.getInstance().player.isInWater() ? 1 : 0) + ""),
+                entry("#getTotalTime", (Minecraft.getInstance().level.getGameTime()) + ""),
+                entry("#starAlpha", (Minecraft.getInstance().level.getGameTime()) + ""),
                 entry("#random", Math.random() + "")
         );
+    }
+
+    public static Map<String, String> getReplaceMapAdd(Map<String, String> extraEntries) {
+        Map<String, String> toReturn = new HashMap<>(Map.ofEntries(
+                entry("#xPos", Minecraft.getInstance().player.getX() + ""),
+                entry("#yPos", Minecraft.getInstance().player.getY() + ""),
+                entry("#zPos", Minecraft.getInstance().player.getZ() + ""),
+                entry("#tickDelta", Minecraft.getInstance().getFrameTime() + ""),
+                entry("#dayLight", (1.0F - Minecraft.getInstance().level.getStarBrightness(Minecraft.getInstance().getFrameTime())) + ""),
+                entry("#rainGradient", (1.0F - Minecraft.getInstance().level.getRainLevel(Minecraft.getInstance().level.getRainLevel(Minecraft.getInstance().getFrameTime()))) + ""),
+                entry("#isUsingSpyglass", ((Minecraft.getInstance().player.isUsingItem() && Minecraft.getInstance().player.getUseItem().is(Items.SPYGLASS)) ? 1 : 0) + ""),
+                entry("#isSubmerged", (Minecraft.getInstance().player.isInWater() ? 1 : 0) + ""),
+                entry("#getTotalTime", (Minecraft.getInstance().level.getGameTime()) + ""),
+                entry("#starAlpha", (Minecraft.getInstance().level.getGameTime()) + ""),
+                entry("#random", Math.random() + "")
+        ));
+        toReturn.putAll(extraEntries);
+        return toReturn;
+    }
+
+    //I have nightmares about ArrayList<MutablePair<MutableTriple<String, String, String>, MutablePair<String, String>>>
+    //This was a mistake
+    public static ArrayList<MutablePair<MutableTriple<String, String, String>, MutablePair<String, String>>> convertToPointUvList(ArrayList<String> array) {
+        //There's always a better way to do things, and here, I really don't care.
+
+        ArrayList<MutablePair<MutableTriple<String, String, String>, MutablePair<String, String>>> returnArray = new ArrayList<>();
+        String[] splitString1;
+        String[] splitString2;
+        try {
+            if (array == null)
+                return new ArrayList<>();
+            for (String i : array) {
+                //1, 2, 3 : 1, 2
+
+                // If there is UV stuff
+                if (i.contains(":")) {
+
+                    //vertex points
+                    String a = i.split(":")[0];
+
+                    //uv
+                    String b = i.split(":")[1];
+
+                    splitString1 = a.split(",");
+                    splitString2 = b.split(",");
+                    returnArray.add(new MutablePair<>(new MutableTriple<>(splitString1[0], splitString1[1], splitString1[2]), new MutablePair<>(splitString2[0], splitString2[1])));
+                }
+                // If there is no UV stuff
+                else {
+                    splitString1 = i.split(",");
+                    returnArray.add(new MutablePair<>(new MutableTriple<>(splitString1[0], splitString1[1], splitString1[2]), new MutablePair<>("0", "0")));
+                }
+            }
+            return returnArray;
+        }
+        catch (Exception e) {
+            warn("Failed to parse vertex point array \"" + array.toString() + "\"");
+            return new ArrayList<>();
+        }
     }
 }

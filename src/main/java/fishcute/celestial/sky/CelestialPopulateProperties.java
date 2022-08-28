@@ -23,6 +23,7 @@ public class CelestialPopulateProperties {
 
     public final double minDistance;
     public final double maxDistance;
+    public final boolean perObjectCalculations;
 
     public CelestialPopulateProperties(int count,
                                        double minDegreesX, double maxDegreesX,
@@ -32,7 +33,8 @@ public class CelestialPopulateProperties {
                                        double minPosX, double maxPosX,
                                        double minPosY, double maxPosY,
                                        double minPosZ, double maxPosZ,
-                                       double minDistance, double maxDistance) {
+                                       double minDistance, double maxDistance,
+                                       boolean perObjectCalculations) {
         this.count = count;
         this.minDegreesX = minDegreesX;
         this.maxDegreesX = maxDegreesX;
@@ -50,11 +52,8 @@ public class CelestialPopulateProperties {
         this.maxPosZ = maxPosZ;
         this.minDistance = minDistance;
         this.maxDistance = maxDistance;
+        this.perObjectCalculations = perObjectCalculations;
     }
-
-    public static CelestialPopulateProperties DEFAULT = new CelestialPopulateProperties(
-            0, 0, 360, 0, 360, 0, 360, 10, 10, 0, 0, 0, 0, 0, 0, 0, 0
-    );
 
     public static CelestialPopulateProperties getPopulationPropertiesFromJson(JsonObject o) {
         JsonObject rotation = o.getAsJsonObject("rotation");
@@ -62,13 +61,13 @@ public class CelestialPopulateProperties {
         return new CelestialPopulateProperties(
                 Util.getOptionalInteger(o, "count", 0),
                 Util.getOptionalDouble(rotation, "min_degrees_x", 0),
-                Util.getOptionalDouble(rotation, "max_degrees_x", 360),
+                Util.getOptionalDouble(rotation, "max_degrees_x", 0),
                 Util.getOptionalDouble(rotation, "min_degrees_y", 0),
-                Util.getOptionalDouble(rotation, "max_degrees_y", 360),
+                Util.getOptionalDouble(rotation, "max_degrees_y", 0),
                 Util.getOptionalDouble(rotation, "min_degrees_z", 0),
-                Util.getOptionalDouble(rotation, "max_degrees_z", 360),
-                Util.getOptionalDouble(display, "min_scale", 10),
-                Util.getOptionalDouble(display, "max_scale", 10),
+                Util.getOptionalDouble(rotation, "max_degrees_z", 0),
+                Util.getOptionalDouble(display, "min_scale", 0),
+                Util.getOptionalDouble(display, "max_scale", 0),
                 Util.getOptionalDouble(display, "min_pos_x", 0),
                 Util.getOptionalDouble(display, "max_pos_x", 0),
                 Util.getOptionalDouble(display, "min_pos_y", 0),
@@ -76,25 +75,30 @@ public class CelestialPopulateProperties {
                 Util.getOptionalDouble(display, "min_pos_z", 0),
                 Util.getOptionalDouble(display, "max_pos_z", 0),
                 Util.getOptionalDouble(display, "min_distance", 0),
-                Util.getOptionalDouble(display, "max_distance", 0)
+                Util.getOptionalDouble(display, "max_distance", 0),
+                Util.getOptionalBoolean(o, "per_object_calculations", false)
         );
     }
 
     public CelestialObject generateObject(CelestialObject object) {
         return new CelestialObject(
                 object.texture,
-                Util.generateRandomDouble(this.minScale, this.maxScale) + "",
-                Util.generateRandomDouble(this.minPosX, this.maxPosX) + "",
-                Util.generateRandomDouble(this.minPosY, this.maxPosY) + "",
-                Util.generateRandomDouble(this.minPosZ, this.maxPosZ) + "",
-                Util.generateRandomDouble(this.minDistance, this.maxDistance) + "",
-                object.degreesX + "+" + Util.generateRandomDouble(this.minDegreesX, this.maxDegreesX),
-                object.degreesY + "+" + Util.generateRandomDouble(this.minDegreesY, this.maxDegreesY),
-                object.degreesZ + "+" + Util.generateRandomDouble(this.minDegreesZ, this.maxDegreesZ),
+                object.scale,
+                Util.generateRandomDouble(this.minScale, this.maxScale),
+                Util.generateRandomDouble(this.minPosX, this.maxPosX),
+                Util.generateRandomDouble(this.minPosY, this.maxPosY),
+                Util.generateRandomDouble(this.minPosZ, this.maxPosZ),
+                object.distance,
+                Util.generateRandomDouble(this.minDistance, this.maxDistance),
+                Util.generateRandomDouble(this.minDegreesX, this.maxDegreesX),
+                Util.generateRandomDouble(this.minDegreesY, this.maxDegreesY),
+                Util.generateRandomDouble(this.minDegreesZ, this.maxDegreesZ),
                 object.baseDegreesX,
                 object.baseDegreesY,
                 object.baseDegreesZ,
-                object.celestialObjectProperties
+                object.celestialObjectProperties,
+                object.solidColor,
+                object.vertexList
                 );
     }
 }

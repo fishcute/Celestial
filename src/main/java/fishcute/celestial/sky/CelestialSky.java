@@ -4,16 +4,16 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import fishcute.celestial.util.ClientTick;
 import fishcute.celestial.util.Util;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.Format;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -26,12 +26,11 @@ public class CelestialSky {
     public static HashMap<String, CelestialRenderInfo> dimensionSkyMap = new HashMap<>();
 
     public static boolean doesDimensionHaveCustomSky() {
-        assert MinecraftClient.getInstance().world != null;
-        return dimensionSkyMap.containsKey(MinecraftClient.getInstance().world.getRegistryKey().getValue().getPath());
+        return ClientTick.dimensionHasCustomSky && getDimensionRenderInfo() != null;
     }
 
     public static CelestialRenderInfo getDimensionRenderInfo() {
-        return dimensionSkyMap.get(MinecraftClient.getInstance().world.getRegistryKey().getValue().getPath());
+        return dimensionSkyMap.get(Minecraft.getInstance().level.dimension().location().getPath());
     }
     public static void loadResources() {
         warnings = 0;
@@ -63,12 +62,13 @@ public class CelestialSky {
             for (String i : getAllCelestialObjects(dimension)) {
                 Util.log("[" + dimension + "] Loading celestial object \"" + i + "\"");
                 JsonObject object = getFile("celestial:sky/" + dimension + "/objects/" + i + ".json");
-                celestialObjects.addAll(CelestialObject.createSkyObjectFromJson(object, i, dimension));
+                CelestialObject o = CelestialObject.createSkyObjectFromJson(object, i, dimension);
+                if (o != null)
+                    celestialObjects.add(o);
                 objectCount++;
             }
             dimensionSkyMap.put(dimension, new CelestialRenderInfo(
                     celestialObjects,
-                    CelestialStarRenderInfo.createStarRenderInfoFromJson(getFile("celestial:sky/" + dimension + "/sky.json"), dimension),
                     CelestialEnvironmentRenderInfo.createEnvironmentRenderInfoFromJson(getFile("celestial:sky/" + dimension + "/sky.json"), dimension),
                     Util.getOptionalString(getFile("celestial:sky/" + dimension + "/sky.json"), "render_type", "normal"),
                     Util.getOptionalString(getFile("celestial:sky/" + dimension + "/sky.json"), "skybox_texture", "minecraft:textures/environment/end_sky.png")
@@ -77,8 +77,8 @@ public class CelestialSky {
             dimensionCount++;
         }
         Util.log("Finished loading skies for " + dimensionCount + " dimension(s). Loaded " + objectCount + " celestial object(s) with " + warnings + " warning(s) and " + errors + " error(s).");
-        if (MinecraftClient.getInstance().player != null)
-            MinecraftClient.getInstance().player.sendMessage(Text.of(Formatting.GRAY + "[Celestial] Reloaded with " + warnings + " warning(s) and " +errors + " error(s)."));
+        if (Minecraft.getInstance().player != null)
+            Minecraft.getInstance().player.displayClientMessage(Component.literal(ChatFormatting.GRAY + "[Celestial] Reloaded with " + warnings + " warning(s) and " +errors + " error(s)."), false);
     }
 
     public static ArrayList<String> getAsStringList(JsonArray array) {
@@ -108,7 +108,7 @@ public class CelestialSky {
 
     public static JsonObject getFile(String path) {
         try {
-            InputStream inputStream = MinecraftClient.getInstance().getResourceManager().getResource(new Identifier(path)).get().getInputStream();
+            InputStream inputStream = Minecraft.getInstance().getResourceManager().getResource(new ResourceLocation(path)).get().open();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             JsonElement jsonElement = reader.fromJson(bufferedReader, JsonElement.class);
             return jsonElement.getAsJsonObject();

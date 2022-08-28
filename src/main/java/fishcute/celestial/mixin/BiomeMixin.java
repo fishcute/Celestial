@@ -2,7 +2,7 @@ package fishcute.celestial.mixin;
 
 import fishcute.celestial.sky.CelestialSky;
 import fishcute.celestial.util.Util;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.world.level.biome.Biome;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,7 +20,6 @@ public class BiomeMixin {
     private void getSkyColor(CallbackInfoReturnable<Integer> info) {
         if (CelestialSky.doesDimensionHaveCustomSky()) {
             info.setReturnValue(Util.blendColors(CelestialSky.getDimensionRenderInfo().environment.skyColor, 0, 1 - (float) Util.solveEquation(CelestialSky.getDimensionRenderInfo().environment.skyDarkness, Util.getReplaceMapNormal())));
-
         }
     }
 }

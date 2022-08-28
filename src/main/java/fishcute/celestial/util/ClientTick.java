@@ -1,27 +1,28 @@
 package fishcute.celestial.util;
 
 import fishcute.celestial.sky.CelestialSky;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 public class ClientTick {
-    static String previousDimension = "";
 
-    public static boolean canUpdateStars = false;
+    public static boolean dimensionHasCustomSky = false;
 
     static void updateStars() {
-        //TODO: make stars do stuff when game reload
-        if (!previousDimension.equals(MinecraftClient.getInstance().world.getRegistryKey().getValue().getPath()))
-            canUpdateStars = true;
-        previousDimension = MinecraftClient.getInstance().world.getRegistryKey().getValue().getPath();
     }
 
     public static void reload() {
         CelestialSky.loadResources();
-        ClientTick.canUpdateStars = true;
         Util.errorList.clear();
+    }
+
+    public static void tick() {
+        //System.out.println(Minecraft.getInstance().level == null);
+        if (!(Minecraft.getInstance().level == null))
+            worldTick();
     }
 
     public static void worldTick() {
         updateStars();
+        dimensionHasCustomSky = CelestialSky.dimensionSkyMap.containsKey(Minecraft.getInstance().level.dimension().location().getPath());
     }
 }
