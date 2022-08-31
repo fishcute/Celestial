@@ -25,16 +25,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Map.entry;
 
 @Mixin(LevelRenderer.class)
 public class LevelRendererMixin {
-    @Shadow
-    private boolean doesMobEffectBlockSky(Camera camera) {
-        return false;
-    }
     @Shadow
     private VertexBuffer skyBuffer;
     @Shadow
@@ -44,8 +41,7 @@ public class LevelRendererMixin {
     private ClientLevel level;
 
     @Shadow
-    private BufferBuilder.RenderedBuffer drawStars(BufferBuilder buffer) {
-        return null;
+    private void drawStars(BufferBuilder p_109555_) {
     }
 
     private static Matrix4f setRotation(PoseStack PoseStack, Quaternion i, Quaternion j, Quaternion k, Vector3d move) {
@@ -77,9 +73,10 @@ public class LevelRendererMixin {
             runnable.run();
             if (!bl) {
                 FogType fogType = camera.getFluidInCamera();
-                if (fogType != FogType.POWDER_SNOW && fogType != FogType.LAVA && !(doesMobEffectBlockSky(camera))) {
+                if (fogType != FogType.POWDER_SNOW && fogType != FogType.LAVA) {
                     if (this.level.effects().skyType() == DimensionSpecialEffects.SkyType.NORMAL) {
                         RenderSystem.disableTexture();
+
                         Vec3 Vector3d = this.level.getSkyColor(Minecraft.getInstance().gameRenderer.getMainCamera().getPosition(), tickDelta);
                         float f = (float) Vector3d.x;
                         float g = (float) Vector3d.y;
@@ -98,6 +95,44 @@ public class LevelRendererMixin {
 
                         CelestialRenderInfo renderInfo = CelestialSky.getDimensionRenderInfo();
 
+                        if (renderInfo.renderType.equals(CelestialRenderInfo.RenderType.SKYBOX)) {
+                            RenderSystem.setShaderTexture(0, renderInfo.skyboxTexture);
+                            Tesselator tesselator = Tesselator.getInstance();
+                            BufferBuilder bufferbuilder = tesselator.getBuilder();
+
+                            for(int l = 0; l < 6; ++l) {
+                                matrices.pushPose();
+                                if (l == 1) {
+                                    matrices.mulPose(Vector3f.XP.rotationDegrees(90.0F));
+                                }
+
+                                if (l == 2) {
+                                    matrices.mulPose(Vector3f.XP.rotationDegrees(-90.0F));
+                                }
+
+                                if (l == 3) {
+                                    matrices.mulPose(Vector3f.XP.rotationDegrees(180.0F));
+                                }
+
+                                if (l == 4) {
+                                    matrices.mulPose(Vector3f.ZP.rotationDegrees(90.0F));
+                                }
+
+                                if (l == 5) {
+                                    matrices.mulPose(Vector3f.ZP.rotationDegrees(-90.0F));
+                                }
+
+                                Matrix4f matrix4f = matrices.last().pose();
+                                bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+                                bufferbuilder.vertex(matrix4f, -100.0F, -100.0F, -100.0F).uv(0.0F, 0.0F).color(255, 255, 255, 255).endVertex();
+                                bufferbuilder.vertex(matrix4f, -100.0F, -100.0F, 100.0F).uv(0.0F, 16.0F).color(255, 255, 255, 255).endVertex();
+                                bufferbuilder.vertex(matrix4f, 100.0F, -100.0F, 100.0F).uv(16.0F, 16.0F).color(255, 255, 255, 255).endVertex();
+                                bufferbuilder.vertex(matrix4f, 100.0F, -100.0F, -100.0F).uv(16.0F, 0.0F).color(255, 255, 255, 255).endVertex();
+                                tesselator.end();
+                                matrices.popPose();
+                            }
+                        }
+
                         VertexBuffer.unbind();
                         RenderSystem.enableBlend();
                         RenderSystem.defaultBlendFunc();
@@ -111,8 +146,8 @@ public class LevelRendererMixin {
                                 RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
                                 matrices.pushPose();
                                 matrices.mulPose(Vector3f.XP.rotationDegrees(90.0F));
-                                i = Mth.sin(this.level.getTimeOfDay(tickDelta)) < 0.0F ? 180.0F : 0.0F;
-                                matrices.mulPose(Vector3f.ZP.rotationDegrees(i));
+                                float f3 = Mth.sin(this.level.getSunAngle(tickDelta)) < 0.0F ? 180.0F : 0.0F;
+                                matrices.mulPose(Vector3f.ZP.rotationDegrees(f3));
                                 matrices.mulPose(Vector3f.ZP.rotationDegrees(90.0F));
                                 float j = fs[0];
                                 k = fs[1];
@@ -128,48 +163,11 @@ public class LevelRendererMixin {
                                     bufferBuilder.vertex(matrix4f, p * 120.0F, q * 120.0F, -q * 40.0F * fs[3]).color(fs[0], fs[1], fs[2], 0.0F).endVertex();
                                 }
 
-                                BufferUploader.drawWithShader(bufferBuilder.end());
+                                bufferBuilder.end();
+                                BufferUploader.end(bufferBuilder);
                                 matrices.popPose();
                             }
                         }
-                        else if (renderInfo.renderType.equals(CelestialRenderInfo.RenderType.SKYBOX)) {
-                            RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-                            RenderSystem.setShaderTexture(0, renderInfo.skyboxTexture);
-                            Tesselator tesselator = Tesselator.getInstance();
-
-                            for(int j = 0; j < 6; ++j) {
-                                matrices.pushPose();
-                                if (j == 1) {
-                                    matrices.mulPose(Vector3f.XP.rotationDegrees(90.0F));
-                                }
-
-                                if (j == 2) {
-                                    matrices.mulPose(Vector3f.XP.rotationDegrees(-90.0F));
-                                }
-
-                                if (j == 3) {
-                                    matrices.mulPose(Vector3f.XP.rotationDegrees(180.0F));
-                                }
-
-                                if (j == 4) {
-                                    matrices.mulPose(Vector3f.ZP.rotationDegrees(90.0F));
-                                }
-
-                                if (j == 5) {
-                                    matrices.mulPose(Vector3f.ZP.rotationDegrees(-90.0F));
-                                }
-
-                                Matrix4f matrix4f = matrices.last().pose();
-                                bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
-                                bufferBuilder.vertex(matrix4f, -100.0F, -100.0F, -100.0F).uv(0.0F, 0.0F).color(255, 255, 255, 255).endVertex();
-                                bufferBuilder.vertex(matrix4f, -100.0F, -100.0F, 100.0F).uv(0.0F, 16.0F).color(255, 255, 255, 255).endVertex();
-                                bufferBuilder.vertex(matrix4f, 100.0F, -100.0F, 100.0F).uv(16.0F, 16.0F).color(255, 255, 255, 255).endVertex();
-                                bufferBuilder.vertex(matrix4f, 100.0F, -100.0F, -100.0F).uv(16.0F, 0.0F).color(255, 255, 255, 255).endVertex();
-                                tesselator.end();
-                                matrices.popPose();
-                            }
-                        }
-
                         float a = level.dimensionType().timeOfDay(level.dayTime()) * 360;
 
                         Map<String, String> toReplaceMapRotation = Util.getReplaceMapAdd(Map.ofEntries(
@@ -376,9 +374,9 @@ public class LevelRendererMixin {
         //solid colors 12
         if (c.solidColor != null)
             dataArray[12] = (new Vector3f(
-                    (c.solidColor.getRed() * 255) * (((Vector3f) dataArray[11]).x()),
-                    (c.solidColor.getGreen() * 255) * (((Vector3f) dataArray[11]).y()),
-                    (c.solidColor.getBlue() * 255) * (((Vector3f) dataArray[11]).z())));
+                    (c.solidColor.getRed()) * (((Vector3f) dataArray[11]).x()),
+                    (c.solidColor.getGreen()) * (((Vector3f) dataArray[11]).y()),
+                    (c.solidColor.getBlue()) * (((Vector3f) dataArray[11]).z())));
         else
             dataArray[12] = (null);
         return dataArray;
@@ -407,8 +405,8 @@ public class LevelRendererMixin {
             RenderSystem.defaultBlendFunc();
 
         if (c.texture != null) {
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderColor(color.x(), color.y(), color.z(), alpha);
+            RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+            RenderSystem.setShaderColor(color.x(), color.y(), color.z(), 1.0f);
 
             if (c.celestialObjectProperties.hasMoonPhases) {
                 int l = (moonPhase % 4);
@@ -445,7 +443,8 @@ public class LevelRendererMixin {
             }
         }
         else if (colorsSolid != null) {
-            RenderSystem.setShaderColor(colorsSolid.x(), colorsSolid.y(), colorsSolid.z(), alpha);
+            RenderSystem.setShader(GameRenderer::getPositionColorShader);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0f);
 
             if (c.vertexList.size() > 0) {
                 bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
@@ -462,16 +461,17 @@ public class LevelRendererMixin {
                 }
             } else {
                 bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-                bufferBuilder.vertex(matrix4f2, -scale, distance, (distance < 0 ? scale : -scale)).color(colorsSolid.x(), colorsSolid.y(), colorsSolid.z(), alpha).endVertex();
-                bufferBuilder.vertex(matrix4f2, scale, distance, (distance < 0 ? scale : -scale)).color(colorsSolid.x(), colorsSolid.y(), colorsSolid.z(), alpha).endVertex();
-                bufferBuilder.vertex(matrix4f2, scale, distance, (distance < 0 ? -scale : scale)).color(colorsSolid.x(), colorsSolid.y(), colorsSolid.z(), alpha).endVertex();
-                bufferBuilder.vertex(matrix4f2, -scale, distance, (distance < 0 ? -scale : scale)).color(colorsSolid.x(), colorsSolid.y(), colorsSolid.z(), alpha).endVertex();
+                bufferBuilder.vertex(matrix4f2, -scale, distance, (distance < 0 ? scale : -scale)).color(colorsSolid.x() / 255.0F, colorsSolid.y() / 255.0F, colorsSolid.z() / 255.0F, alpha).endVertex();
+                bufferBuilder.vertex(matrix4f2, scale, distance, (distance < 0 ? scale : -scale)).color(colorsSolid.x() / 255.0F, colorsSolid.y() / 255.0F, colorsSolid.z() / 255.0F, alpha).endVertex();
+                bufferBuilder.vertex(matrix4f2, scale, distance, (distance < 0 ? -scale : scale)).color(colorsSolid.x() / 255.0F, colorsSolid.y() / 255.0F, colorsSolid.z() / 255.0F, alpha).endVertex();
+                bufferBuilder.vertex(matrix4f2, -scale, distance, (distance < 0 ? -scale : scale)).color(colorsSolid.x() / 255.0F, colorsSolid.y() / 255.0F, colorsSolid.z() / 255.0F, alpha).endVertex();
             }
 
             RenderSystem.enableTexture();
         }
 
-        BufferUploader.drawWithShader(bufferBuilder.end());
+        bufferBuilder.end();
+        BufferUploader.end(bufferBuilder);
 
         if (c.celestialObjectProperties.isSolid)
             RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);

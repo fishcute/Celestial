@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Map.entry;
@@ -36,11 +37,9 @@ public class DimensionSpecialEffectsMixin {
                 this.rgba[1] = i * i * 0.7F + (CelestialSky.getDimensionRenderInfo().environment.twilightColor.getGreen() / 255.0F);
                 this.rgba[2] = i * i * 0.0F + (CelestialSky.getDimensionRenderInfo().environment.twilightColor.getBlue() / 255.0F);
 
-                Map<String, String> toReplaceMap = new java.util.HashMap<>(Map.ofEntries(
+                Map<String, String> toReplaceMap = Util.getReplaceMapAdd(Map.ofEntries(
                         entry("#twilightAlpha", j + "")
                 ));
-
-                toReplaceMap.putAll(Util.getReplaceMapNormal());
 
                 this.rgba[3] = Math.min(j, (float) Util.solveEquation(CelestialSky.getDimensionRenderInfo().environment.twilightAlpha, toReplaceMap));
                 info.setReturnValue(this.rgba);

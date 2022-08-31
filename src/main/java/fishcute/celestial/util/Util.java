@@ -157,7 +157,7 @@ public class Util {
     }
 
     static void print(double i) {
-        Minecraft.getInstance().player.displayClientMessage(Component.literal("Value: " + i), true);
+        Minecraft.getInstance().player.displayClientMessage(Component.nullToEmpty("Value: " + i), true);
     }
     public static void log(Object i) {
         if (!Minecraft.getInstance().isPaused())
@@ -181,17 +181,17 @@ public class Util {
         if (errorList.contains(i) || errorList.size() > 25)
             return;
         errorList.add(i);
-        Minecraft.getInstance().player.displayClientMessage(Component.literal(ChatFormatting.RED +
+        Minecraft.getInstance().player.displayClientMessage(Component.nullToEmpty(ChatFormatting.RED +
                 "[Celestial] " + i
         ), false);
 
         if (errorList.size() >= 25)
-            Minecraft.getInstance().player.displayClientMessage(Component.literal(ChatFormatting.RED +
+            Minecraft.getInstance().player.displayClientMessage(Component.nullToEmpty(ChatFormatting.RED +
                     "[Celestial] Passing 25 error messages. Muting error messages."
             ), false);
 
         if (unloadResources) {
-            Minecraft.getInstance().player.displayClientMessage(Component.literal(ChatFormatting.RED +
+            Minecraft.getInstance().player.displayClientMessage(Component.nullToEmpty(ChatFormatting.RED +
                     "[Celestial] Unloading Celestial resources."
             ), false);
         }
@@ -203,7 +203,7 @@ public class Util {
         if (errorList.contains(i))
             return;
         errorList.add(i);
-        Minecraft.getInstance().player.displayClientMessage(Component.literal(ChatFormatting.YELLOW +
+        Minecraft.getInstance().player.displayClientMessage(Component.nullToEmpty(ChatFormatting.YELLOW +
                 "[Celestial] " + i
         ), false);
     }
@@ -280,6 +280,7 @@ public class Util {
                 entry("#isSubmerged", (Minecraft.getInstance().player.isInWater() ? 1 : 0) + ""),
                 entry("#getTotalTime", (Minecraft.getInstance().level.getGameTime()) + ""),
                 entry("#starAlpha", (Minecraft.getInstance().level.getGameTime()) + ""),
+                // TODO: Fix this /\
                 entry("#random", Math.random() + "")
         );
     }
