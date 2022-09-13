@@ -2,7 +2,7 @@ package fishcute.celestial.mixin;
 
 import fishcute.celestial.sky.CelestialSky;
 import fishcute.celestial.util.Util;
-import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.biome.Biome;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

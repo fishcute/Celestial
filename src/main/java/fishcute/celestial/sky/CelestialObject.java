@@ -2,11 +2,10 @@ package fishcute.celestial.sky;
 
 import com.google.gson.JsonObject;
 import fishcute.celestial.util.Util;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.MutableTriple;
 
-import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -32,11 +31,9 @@ public class CelestialObject {
     public double populatePosY;
     public double populatePosZ;
 
-    @Nullable
     public Color solidColor;
 
-    @Nullable
-    public ResourceLocation texture;
+    public Identifier texture;
     public final CelestialObjectProperties celestialObjectProperties;
 
     public final ArrayList<MutablePair<MutableTriple<String, String, String>, MutablePair<String, String>>> vertexList;
@@ -71,13 +68,13 @@ public class CelestialObject {
         this.celestialObjectProperties = celestialObjectProperties;
         this.vertexList = vertexList;
         if (texturePath != null)
-            this.texture = new ResourceLocation(texturePath);
+            this.texture = new Identifier(texturePath);
         if (color != null)
             this.solidColor = Color.decode(color.startsWith("#") ? color : "#" + color);
     }
 
     // Used for populate objects only
-    public CelestialObject(ResourceLocation texture, String scale, double scaleAdd, double posX, double posY, double posZ, String distance, double distanceAdd, double degreesX, double degreesY, double degreesZ, String baseDegreesX, String baseDegreesY, String baseDegreesZ, CelestialObjectProperties celestialObjectProperties, Color color, ArrayList<MutablePair<MutableTriple<String, String, String>, MutablePair<String, String>>> vertexList) {
+    public CelestialObject(Identifier texture, String scale, double scaleAdd, double posX, double posY, double posZ, String distance, double distanceAdd, double degreesX, double degreesY, double degreesZ, String baseDegreesX, String baseDegreesY, String baseDegreesZ, CelestialObjectProperties celestialObjectProperties, Color color, ArrayList<MutablePair<MutableTriple<String, String, String>, MutablePair<String, String>>> vertexList) {
         this.texture = texture;
         this.scale = scale;
         this.populatePosX = posX;

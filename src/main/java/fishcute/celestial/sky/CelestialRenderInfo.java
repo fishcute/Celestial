@@ -1,6 +1,6 @@
 package fishcute.celestial.sky;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 
@@ -11,12 +11,12 @@ public class CelestialRenderInfo {
 
     public final RenderType renderType;
 
-    public final ResourceLocation skyboxTexture;
+    public final Identifier skyboxTexture;
     public CelestialRenderInfo(ArrayList<CelestialObject> skyObjects, CelestialEnvironmentRenderInfo environment, String renderType, String skyboxTexture) {
         this.skyObjects = skyObjects;
         this.environment = environment;
         this.renderType = value(renderType);
-        this.skyboxTexture = new ResourceLocation(skyboxTexture);
+        this.skyboxTexture = new Identifier(skyboxTexture);
 
     }
 

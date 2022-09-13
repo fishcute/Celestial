@@ -6,10 +6,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fishcute.celestial.util.ClientTick;
 import fishcute.celestial.util.Util;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -30,7 +30,7 @@ public class CelestialSky {
     }
 
     public static CelestialRenderInfo getDimensionRenderInfo() {
-        return dimensionSkyMap.get(Minecraft.getInstance().level.dimension().location().getPath());
+        return dimensionSkyMap.get(MinecraftClient.getInstance().world.getRegistryKey().getValue().getPath());
     }
     public static void loadResources() {
         warnings = 0;
@@ -77,8 +77,13 @@ public class CelestialSky {
             dimensionCount++;
         }
         Util.log("Finished loading skies for " + dimensionCount + " dimension(s). Loaded " + objectCount + " celestial object(s) with " + warnings + " warning(s) and " + errors + " error(s).");
+<<<<<<< Updated upstream
         if (Minecraft.getInstance().player != null)
             Minecraft.getInstance().player.displayClientMessage(Component.literal(ChatFormatting.GRAY + "[Celestial] Reloaded with " + warnings + " warning(s) and " +errors + " error(s)."), false);
+=======
+        if (MinecraftClient.getInstance().player != null)
+            MinecraftClient.getInstance().player.sendMessage(Text.of(Formatting.GRAY + "[Celestial] Reloaded with " + warnings + " warning(s) and " +errors + " error(s)."), false);
+>>>>>>> Stashed changes
     }
 
     public static ArrayList<String> getAsStringList(JsonArray array) {
@@ -108,7 +113,11 @@ public class CelestialSky {
 
     public static JsonObject getFile(String path) {
         try {
+<<<<<<< Updated upstream
             InputStream inputStream = Minecraft.getInstance().getResourceManager().getResource(new ResourceLocation(path)).get().open();
+=======
+            InputStream inputStream = MinecraftClient.getInstance().getResourceManager().getResource(new Identifier(path)).getInputStream();
+>>>>>>> Stashed changes
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             JsonElement jsonElement = reader.fromJson(bufferedReader, JsonElement.class);
             return jsonElement.getAsJsonObject();
