@@ -170,11 +170,7 @@ public class Util {
     }
 
     static void print(double i) {
-<<<<<<< Updated upstream
-        Minecraft.getInstance().player.displayClientMessage(Component.literal("Value: " + i), true);
-=======
         MinecraftClient.getInstance().player.sendMessage(Text.of("Value: " + i), true);
->>>>>>> Stashed changes
     }
     public static void log(Object i) {
         if (!MinecraftClient.getInstance().isPaused())
@@ -198,29 +194,17 @@ public class Util {
         if (errorList.contains(i) || errorList.size() > 25)
             return;
         errorList.add(i);
-<<<<<<< Updated upstream
-        Minecraft.getInstance().player.displayClientMessage(Component.literal(ChatFormatting.RED +
-=======
         MinecraftClient.getInstance().player.sendMessage(Text.of(Formatting.RED +
->>>>>>> Stashed changes
                 "[Celestial] " + i
         ), false);
 
         if (errorList.size() >= 25)
-<<<<<<< Updated upstream
-            Minecraft.getInstance().player.displayClientMessage(Component.literal(ChatFormatting.RED +
-=======
             MinecraftClient.getInstance().player.sendMessage(Text.of(Formatting.RED +
->>>>>>> Stashed changes
                     "[Celestial] Passing 25 error messages. Muting error messages."
             ), false);
 
         if (unloadResources) {
-<<<<<<< Updated upstream
-            Minecraft.getInstance().player.displayClientMessage(Component.literal(ChatFormatting.RED +
-=======
             MinecraftClient.getInstance().player.sendMessage(Text.of(Formatting.RED +
->>>>>>> Stashed changes
                     "[Celestial] Unloading Celestial resources."
             ), false);
         }
@@ -232,11 +216,7 @@ public class Util {
         if (errorList.contains(i))
             return;
         errorList.add(i);
-<<<<<<< Updated upstream
-        Minecraft.getInstance().player.displayClientMessage(Component.literal(ChatFormatting.YELLOW +
-=======
         MinecraftClient.getInstance().player.sendMessage(Text.of(Formatting.YELLOW +
->>>>>>> Stashed changes
                 "[Celestial] " + i
         ), false);
     }
@@ -302,21 +282,6 @@ public class Util {
     }
 
     public static Map<String, String> getReplaceMapNormal() {
-<<<<<<< Updated upstream
-        return Map.ofEntries(
-                entry("#xPos", Minecraft.getInstance().player.getX() + ""),
-                entry("#yPos", Minecraft.getInstance().player.getY() + ""),
-                entry("#zPos", Minecraft.getInstance().player.getZ() + ""),
-                entry("#tickDelta", Minecraft.getInstance().getFrameTime() + ""),
-                entry("#dayLight", (1.0F - Minecraft.getInstance().level.getStarBrightness(Minecraft.getInstance().getFrameTime())) + ""),
-                entry("#rainGradient", (1.0F - Minecraft.getInstance().level.getRainLevel(Minecraft.getInstance().level.getRainLevel(Minecraft.getInstance().getFrameTime()))) + ""),
-                entry("#isUsingSpyglass", ((Minecraft.getInstance().player.isUsingItem() && Minecraft.getInstance().player.getUseItem().is(Items.SPYGLASS)) ? 1 : 0) + ""),
-                entry("#isSubmerged", (Minecraft.getInstance().player.isInWater() ? 1 : 0) + ""),
-                entry("#getTotalTime", (Minecraft.getInstance().level.getGameTime()) + ""),
-                entry("#starAlpha", (Minecraft.getInstance().level.getGameTime()) + ""),
-                entry("#random", Math.random() + "")
-        );
-=======
         Map<String, String> toReplaceMap = new HashMap<>();
         toReplaceMap.put("#xPos", MinecraftClient.getInstance().player.getX() + "");
         toReplaceMap.put("#yPos", MinecraftClient.getInstance().player.getY() + "");
@@ -331,7 +296,6 @@ public class Util {
         toReplaceMap.put("#random", Math.random() + "");
 
         return toReplaceMap;
->>>>>>> Stashed changes
     }
 
     public static Map<String, String> getReplaceMapAdd(Map<String, String> extraEntries) {

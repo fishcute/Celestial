@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Mixin(SkyProperties.class)
@@ -34,18 +35,10 @@ public class DimensionRenderInfoMixin {
                 this.rgba[1] = i * i * 0.7F + (CelestialSky.getDimensionRenderInfo().environment.twilightColor.getGreen() / 255.0F);
                 this.rgba[2] = i * i * 0.0F + (CelestialSky.getDimensionRenderInfo().environment.twilightColor.getBlue() / 255.0F);
 
-<<<<<<< Updated upstream:src/main/java/fishcute/celestial/mixin/DimensionSpecialEffectsMixin.java
-                Map<String, String> toReplaceMap = new java.util.HashMap<>(Map.ofEntries(
-                        entry("#twilightAlpha", j + "")
-                ));
-=======
                 // Java 8 is so nice
 
                 Map<String, String> toReplaceMap = new HashMap<>();
                 toReplaceMap.put("#twilightAlpha", j + "");
-
-                toReplaceMap.putAll(Util.getReplaceMapNormal());
->>>>>>> Stashed changes:src/main/java/fishcute/celestial/mixin/DimensionRenderInfoMixin.java
 
                 toReplaceMap.putAll(Util.getReplaceMapNormal());
 

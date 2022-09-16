@@ -26,33 +26,16 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 @Mixin(WorldRenderer.class)
 public class LevelRendererMixin {
     @Shadow
-<<<<<<< Updated upstream
-    private boolean doesMobEffectBlockSky(Camera camera) {
-        return false;
-    }
-    @Shadow
-    private VertexBuffer skyBuffer;
-    @Shadow
-    private VertexBuffer darkBuffer;
-    
-    @Shadow
-    private ClientLevel level;
-
-    @Shadow
-    private BufferBuilder.RenderedBuffer drawStars(BufferBuilder buffer) {
-        return null;
-    }
-=======
     private VertexFormat skyVertexFormat;
 
     @Shadow
     private VertexBuffer lightSkyBuffer;
->>>>>>> Stashed changes
 
     @Shadow
     private ClientWorld world;
@@ -96,105 +79,6 @@ public class LevelRendererMixin {
 
         if (CelestialSky.doesDimensionHaveCustomSky()) {
             info.cancel();
-<<<<<<< Updated upstream
-            runnable.run();
-            if (!bl) {
-                FogType fogType = camera.getFluidInCamera();
-                if (fogType != FogType.POWDER_SNOW && fogType != FogType.LAVA && !(doesMobEffectBlockSky(camera))) {
-                    if (this.level.effects().skyType() == DimensionSpecialEffects.SkyType.NORMAL) {
-                        RenderSystem.disableTexture();
-                        Vec3 Vector3d = this.level.getSkyColor(Minecraft.getInstance().gameRenderer.getMainCamera().getPosition(), tickDelta);
-                        float f = (float) Vector3d.x;
-                        float g = (float) Vector3d.y;
-                        float h = (float) Vector3d.z;
-                        FogRenderer.levelFogColor();
-                        BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
-                        RenderSystem.depthMask(false);
-                        RenderSystem.setShaderColor(f, g, h, 1.0F);
-                        ShaderInstance shader = RenderSystem.getShader();
-                        float[] fs = Minecraft.getInstance().level.effects().getSunriseColor(this.level.getTimeOfDay(tickDelta), tickDelta);
-                        float i;
-                        float k;
-                        float o;
-                        float p;
-                        float q;
-
-                        CelestialRenderInfo renderInfo = CelestialSky.getDimensionRenderInfo();
-
-                        VertexBuffer.unbind();
-                        RenderSystem.enableBlend();
-                        RenderSystem.defaultBlendFunc();
-
-                        if (renderInfo.renderType.equals(CelestialRenderInfo.RenderType.NORMAL)) {
-                            this.skyBuffer.bind();
-                            this.skyBuffer.drawWithShader(matrices.last().pose(), projectionMatrix, shader);
-                            if (fs != null) {
-                                RenderSystem.setShader(GameRenderer::getPositionColorShader);
-                                RenderSystem.disableTexture();
-                                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-                                matrices.pushPose();
-                                matrices.mulPose(Vector3f.XP.rotationDegrees(90.0F));
-                                i = Mth.sin(this.level.getTimeOfDay(tickDelta)) < 0.0F ? 180.0F : 0.0F;
-                                matrices.mulPose(Vector3f.ZP.rotationDegrees(i));
-                                matrices.mulPose(Vector3f.ZP.rotationDegrees(90.0F));
-                                float j = fs[0];
-                                k = fs[1];
-                                float l = fs[2];
-                                Matrix4f matrix4f = matrices.last().pose();
-                                bufferBuilder.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
-                                bufferBuilder.vertex(matrix4f, 0.0F, 100.0F, 0.0F).color(j, k, l, fs[3]).endVertex();
-
-                                for (int n = 0; n <= 16; ++n) {
-                                    o = (float) n * 6.2831855F / 16.0F;
-                                    p = Mth.sin(o);
-                                    q = Mth.cos(o);
-                                    bufferBuilder.vertex(matrix4f, p * 120.0F, q * 120.0F, -q * 40.0F * fs[3]).color(fs[0], fs[1], fs[2], 0.0F).endVertex();
-                                }
-
-                                BufferUploader.drawWithShader(bufferBuilder.end());
-                                matrices.popPose();
-                            }
-                        }
-                        else if (renderInfo.renderType.equals(CelestialRenderInfo.RenderType.SKYBOX)) {
-                            RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-                            RenderSystem.setShaderTexture(0, renderInfo.skyboxTexture);
-                            Tesselator tesselator = Tesselator.getInstance();
-
-                            for(int j = 0; j < 6; ++j) {
-                                matrices.pushPose();
-                                if (j == 1) {
-                                    matrices.mulPose(Vector3f.XP.rotationDegrees(90.0F));
-                                }
-
-                                if (j == 2) {
-                                    matrices.mulPose(Vector3f.XP.rotationDegrees(-90.0F));
-                                }
-
-                                if (j == 3) {
-                                    matrices.mulPose(Vector3f.XP.rotationDegrees(180.0F));
-                                }
-
-                                if (j == 4) {
-                                    matrices.mulPose(Vector3f.ZP.rotationDegrees(90.0F));
-                                }
-
-                                if (j == 5) {
-                                    matrices.mulPose(Vector3f.ZP.rotationDegrees(-90.0F));
-                                }
-
-                                Matrix4f matrix4f = matrices.last().pose();
-                                bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
-                                bufferBuilder.vertex(matrix4f, -100.0F, -100.0F, -100.0F).uv(0.0F, 0.0F).color(255, 255, 255, 255).endVertex();
-                                bufferBuilder.vertex(matrix4f, -100.0F, -100.0F, 100.0F).uv(0.0F, 16.0F).color(255, 255, 255, 255).endVertex();
-                                bufferBuilder.vertex(matrix4f, 100.0F, -100.0F, 100.0F).uv(16.0F, 16.0F).color(255, 255, 255, 255).endVertex();
-                                bufferBuilder.vertex(matrix4f, 100.0F, -100.0F, -100.0F).uv(16.0F, 0.0F).color(255, 255, 255, 255).endVertex();
-                                tesselator.end();
-                                matrices.popPose();
-                            }
-                        }
-
-                        float a = level.dimensionType().timeOfDay(level.dayTime()) * 360;
-=======
             if (MinecraftClient.getInstance().world.getSkyProperties().getSkyType() == SkyProperties.SkyType.NORMAL) {
                 RenderSystem.disableTexture();
                 Vec3d vector3d = this.world.method_23777(MinecraftClient.getInstance().gameRenderer.getCamera().getBlockPos(), tickDelta);
@@ -263,7 +147,6 @@ public class LevelRendererMixin {
                         if (l == 2) {
                             matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90.0F));
                         }
->>>>>>> Stashed changes
 
                         if (l == 3) {
                             matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(180.0F));
@@ -491,17 +374,10 @@ public class LevelRendererMixin {
 
         //solid colors 12
         if (c.solidColor != null)
-<<<<<<< Updated upstream
-            dataArray[12] = (new Vector3f(
-                    (c.solidColor.getRed() * 255) * (((Vector3f) dataArray[11]).x()),
-                    (c.solidColor.getGreen() * 255) * (((Vector3f) dataArray[11]).y()),
-                    (c.solidColor.getBlue() * 255) * (((Vector3f) dataArray[11]).z())));
-=======
             dataArray[12] = (new Vec3f(
                     (c.solidColor.getRed()) * (((Vec3f) dataArray[11]).getX()),
                     (c.solidColor.getGreen()) * (((Vec3f) dataArray[11]).getY()),
                     (c.solidColor.getBlue()) * (((Vec3f) dataArray[11]).getZ())));
->>>>>>> Stashed changes
         else
             dataArray[12] = (null);
         return dataArray;
@@ -531,12 +407,7 @@ public class LevelRendererMixin {
             RenderSystem.defaultBlendFunc();
 
         if (c.texture != null) {
-<<<<<<< Updated upstream
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderColor(color.x(), color.y(), color.z(), alpha);
-=======
             RenderSystem.color4f(color.getX(), color.getY(), color.getZ(), alpha);
->>>>>>> Stashed changes
 
             if (c.celestialObjectProperties.hasMoonPhases) {
                 int l = (moonPhase % 4);
@@ -573,11 +444,7 @@ public class LevelRendererMixin {
             }
         }
         else if (colorsSolid != null) {
-<<<<<<< Updated upstream
-            RenderSystem.setShaderColor(colorsSolid.x(), colorsSolid.y(), colorsSolid.z(), alpha);
-=======
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, alpha);
->>>>>>> Stashed changes
 
             if (c.vertexList.size() > 0) {
                 bufferBuilder.begin(7, VertexFormats.POSITION_COLOR);
@@ -593,30 +460,18 @@ public class LevelRendererMixin {
                     ).color(color.getX(), color.getY(), color.getZ(), alpha).next();
                 }
             } else {
-<<<<<<< Updated upstream
-                bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-                bufferBuilder.vertex(matrix4f2, -scale, distance, (distance < 0 ? scale : -scale)).color(colorsSolid.x(), colorsSolid.y(), colorsSolid.z(), alpha).endVertex();
-                bufferBuilder.vertex(matrix4f2, scale, distance, (distance < 0 ? scale : -scale)).color(colorsSolid.x(), colorsSolid.y(), colorsSolid.z(), alpha).endVertex();
-                bufferBuilder.vertex(matrix4f2, scale, distance, (distance < 0 ? -scale : scale)).color(colorsSolid.x(), colorsSolid.y(), colorsSolid.z(), alpha).endVertex();
-                bufferBuilder.vertex(matrix4f2, -scale, distance, (distance < 0 ? -scale : scale)).color(colorsSolid.x(), colorsSolid.y(), colorsSolid.z(), alpha).endVertex();
-=======
                 bufferBuilder.begin(7, VertexFormats.POSITION_COLOR);
                 bufferBuilder.vertex(matrix4f2, -scale, distance, (distance < 0 ? scale : -scale)).color(colorsSolid.getX() / 255.0F, colorsSolid.getY() / 255.0F, colorsSolid.getZ() / 255.0F, alpha).next();
                 bufferBuilder.vertex(matrix4f2, scale, distance, (distance < 0 ? scale : -scale)).color(colorsSolid.getX() / 255.0F, colorsSolid.getY() / 255.0F, colorsSolid.getZ() / 255.0F, alpha).next();
                 bufferBuilder.vertex(matrix4f2, scale, distance, (distance < 0 ? -scale : scale)).color(colorsSolid.getX() / 255.0F, colorsSolid.getY() / 255.0F, colorsSolid.getZ() / 255.0F, alpha).next();
                 bufferBuilder.vertex(matrix4f2, -scale, distance, (distance < 0 ? -scale : scale)).color(colorsSolid.getX() / 255.0F, colorsSolid.getY() / 255.0F, colorsSolid.getZ() / 255.0F, alpha).next();
->>>>>>> Stashed changes
             }
 
             RenderSystem.enableTexture();
         }
 
-<<<<<<< Updated upstream
-        BufferUploader.drawWithShader(bufferBuilder.end());
-=======
         bufferBuilder.end();
         BufferRenderer.draw(bufferBuilder);
->>>>>>> Stashed changes
 
         if (c.celestialObjectProperties.isSolid)
             RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
