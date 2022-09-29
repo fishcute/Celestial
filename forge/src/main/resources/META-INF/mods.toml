@@ -1,0 +1,28 @@
+modLoader = "javafml"
+loaderVersion = "[36,)"
+#issueTrackerURL = ""
+license = "MIT"
+
+[[mods]]
+modId = "celestial"
+version = "${version}"
+displayName = "Celestial"
+authors = "fishcute, block36_"
+description = '''
+Allows you to customize the sky
+'''
+#logoFile = ""
+
+[[dependencies.celestial]]
+modId = "forge"
+mandatory = true
+versionRange = "[36,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.celestial]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.16.5,)"
+ordering = "NONE"
+side = "BOTH"

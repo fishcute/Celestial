@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "celestial",
+  "version": "${version}",
+  "name": "Celestial",
+  "description": "Allows you to customize the sky",
+  "authors": [
+    "fishcute",
+    "block36_"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "Insert License Here",
+  "icon": "assets/celestial/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "fishcute.celestial.fabric.CelestialFabric"
+    ]
+  },
+  "mixins": [
+    "celestial.mixins.json"
+  ],
+  "depends": {
+    "fabric": "*",
+    "minecraft": ">=1.16.5"
+  }
+}
