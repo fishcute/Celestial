@@ -82,6 +82,7 @@ public class CelestialPopulateProperties {
 
     public CelestialObject generateObject(CelestialObject object) {
         return new CelestialObject(
+                object.type,
                 object.texture,
                 object.scale,
                 Util.generateRandomDouble(this.minScale, this.maxScale),

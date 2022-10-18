@@ -16,7 +16,7 @@ plugins {
 apply plugin: 'org.spongepowered.mixin'
 
 group = 'fishcute'
-version = '1.2'
+version = project.mod_version
 
 java {
     archivesBaseName = 'celestial'
@@ -172,7 +172,7 @@ jar {
                 "Specification-Vendor"    : "fishcute",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
-                "Implementation-Version"  : "1.0",
+                "Implementation-Version"  : project.mod_version,
                 "Implementation-Vendor"   : "fishcute",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])

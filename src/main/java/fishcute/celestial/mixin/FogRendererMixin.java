@@ -23,16 +23,18 @@ public class FogRendererMixin {
             return CelestialSky.getDimensionRenderInfo().environment.hasThickFog;
         return thickFog;
     }
-  @Inject(method = "setupFog", at = @At("RETURN"))
+    @Inject(method = "setupFog", at = @At("RETURN"))
     private static void setupFog(Camera camera, FogRenderer.FogMode fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo info) {
-      if (CelestialSky.doesDimensionHaveCustomSky() && !CelestialSky.getDimensionRenderInfo().environment.useSimpleFog()) {
-          Map<String, String> toReplaceMap = new java.util.HashMap<>(Map.ofEntries(
-                  entry("#viewDistance", viewDistance + ""),
-                  entry("#minViewDistance", Math.min(viewDistance, 192.0F) + "")
-          ));
-          toReplaceMap.putAll(Util.getReplaceMapNormal());
-          RenderSystem.setShaderFogStart((float) Util.solveEquation(CelestialSky.getDimensionRenderInfo().environment.fogStart, toReplaceMap));
-          RenderSystem.setShaderFogEnd((float) Util.solveEquation(CelestialSky.getDimensionRenderInfo().environment.fogEnd, toReplaceMap));
-      }
+        if (CelestialSky.doesDimensionHaveCustomSky() && !CelestialSky.getDimensionRenderInfo().environment.useSimpleFog()) {
+            Map<String, Double> toReplaceMapBefore = new java.util.HashMap<>(Map.ofEntries(
+                    entry("#viewDistance", (double) viewDistance),
+                    entry("#minViewDistance", (double) Math.min(viewDistance, 192.0F))
+            ));
+
+            Map<String, Util.DynamicValue> toReplaceMap = Util.getReplaceMapAdd(toReplaceMapBefore);
+
+            RenderSystem.setShaderFogStart((float) Util.solveEquation(CelestialSky.getDimensionRenderInfo().environment.fogStart, toReplaceMap));
+            RenderSystem.setShaderFogEnd((float) Util.solveEquation(CelestialSky.getDimensionRenderInfo().environment.fogEnd, toReplaceMap));
+        }
     }
 }

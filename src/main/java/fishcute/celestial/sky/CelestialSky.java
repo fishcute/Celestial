@@ -10,7 +10,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.apache.commons.lang3.tuple.Pair;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,6 +26,8 @@ public class CelestialSky {
     static Gson reader = new Gson();
 
     public static HashMap<String, CelestialRenderInfo> dimensionSkyMap = new HashMap<>();
+
+    public static HashMap<String, Variable> variables = new HashMap<>();
 
     public static boolean doesDimensionHaveCustomSky() {
         return ClientTick.dimensionHasCustomSky && getDimensionRenderInfo() != null;
@@ -69,13 +73,12 @@ public class CelestialSky {
             }
             dimensionSkyMap.put(dimension, new CelestialRenderInfo(
                     celestialObjects,
-                    CelestialEnvironmentRenderInfo.createEnvironmentRenderInfoFromJson(getFile("celestial:sky/" + dimension + "/sky.json"), dimension),
-                    Util.getOptionalString(getFile("celestial:sky/" + dimension + "/sky.json"), "render_type", "normal"),
-                    Util.getOptionalString(getFile("celestial:sky/" + dimension + "/sky.json"), "skybox_texture", "minecraft:textures/environment/end_sky.png")
-
+                    CelestialEnvironmentRenderInfo.createEnvironmentRenderInfoFromJson(getFile("celestial:sky/" + dimension + "/sky.json"), dimension)
             ));
             dimensionCount++;
         }
+        Util.initalizeToReplaceMap(setupVariables());
+
         Util.log("Finished loading skies for " + dimensionCount + " dimension(s). Loaded " + objectCount + " celestial object(s) with " + warnings + " warning(s) and " + errors + " error(s).");
         if (Minecraft.getInstance().player != null)
             Minecraft.getInstance().player.displayClientMessage(Component.literal(ChatFormatting.GRAY + "[Celestial] Reloaded with " + warnings + " warning(s) and " +errors + " error(s)."), false);
@@ -90,6 +93,59 @@ public class CelestialSky {
                 Util.warn("Found null JsonElement in array \"" + array + "\"");
         }
         return returnObject;
+    }
+
+    public static boolean forceUpdateVariables = false;
+
+    public static HashMap<String, Util.DynamicValue> setupVariables() {
+        try {
+            getFile("celestial:sky/variables.json").getAsJsonArray("variables").toString();
+        }
+        catch (Exception e) {
+            Util.log("Found no variables.json file. Skipping variable initialization.");
+            return new HashMap<>();
+        }
+
+
+        HashMap<String, Util.DynamicValue> variableReplaceMap = new HashMap<>();
+
+        int variableCount = 0;
+        for (JsonElement o : getFile("celestial:sky/variables.json").getAsJsonArray("variables")) {
+            variables.put("#" + Util.getOptionalString(o.getAsJsonObject(), "name", "undefined"),
+                    new Variable(Util.getOptionalString(o.getAsJsonObject(), "value", "0"), Util.getOptionalInteger(o.getAsJsonObject(), "update_frequency", 0)));
+            variableReplaceMap.put("#" + Util.getOptionalString(o.getAsJsonObject(), "name", "undefined"),
+                    new Util.DynamicValue() {@Override
+                    public double getValue() {return
+                            variables.get("#" + Util.getOptionalString(o.getAsJsonObject(), "name", "undefined")).storedValue;
+                    }}
+            );
+            variableCount++;
+        }
+
+        Util.log("Registered " + variableCount + " variable(s).");
+
+        forceUpdateVariables = true;
+
+        return variableReplaceMap;
+    }
+
+    public static void updateVariableValues() {
+        Variable v;
+        for (String name : variables.keySet()) {
+            v = variables.get(name);
+            if (v.updateTick <= 0 || forceUpdateVariables) {
+                v.updateTick = v.updateFrequency;
+                v.updateValue();
+            }
+            else
+                v.updateTick--;
+        }
+
+        if (doesDimensionHaveCustomSky())
+            getDimensionRenderInfo().environment.updateColorEntries();
+
+        if (forceUpdateVariables)
+            forceUpdateVariables = false;
     }
 
     public static ArrayList<String> getAllCelestialObjects(String dimension) {
@@ -114,6 +170,24 @@ public class CelestialSky {
             return jsonElement.getAsJsonObject();
         } catch (Exception exception) {
             return null;
+        }
+    }
+
+    static class Variable {
+        public int updateFrequency;
+        public int updateTick;
+        public String value;
+
+        public double storedValue = 0;
+
+        public Variable(String value, int updateFrequency) {
+            this.value = value;
+            this.updateFrequency = updateFrequency;
+            this.updateTick = updateFrequency;
+        }
+
+        public void updateValue() {
+            this.storedValue = Util.solveEquation(this.value, Util.getReplaceMapNormal());
         }
     }
 }

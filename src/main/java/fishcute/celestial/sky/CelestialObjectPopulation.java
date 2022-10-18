@@ -13,7 +13,7 @@ public class CelestialObjectPopulation extends CelestialObject {
     public final boolean perObjectCalculation;
 
     public CelestialObjectPopulation(ArrayList<CelestialObject> population, CelestialObject baseObject, boolean perObjectCalculation) {
-        super(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        super(null, null, null, 0, 0, 0, 0, null, 0, 0, 0, 0, null, null, null, null, null, null);
         this.population = population;
         this.baseObject = baseObject;
         this.perObjectCalculation = perObjectCalculation;

@@ -1,17 +1,18 @@
 package fishcute.celestial.sky;
 
 import com.google.gson.JsonObject;
+import fishcute.celestial.util.ColorEntry;
 import fishcute.celestial.util.Util;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.MutableTriple;
 
-import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 
 public class CelestialObject {
     public final String scale;
+    public final CelestialObjectType type;
     public String posX;
     public String posY;
     public String posZ;
@@ -32,16 +33,18 @@ public class CelestialObject {
     public double populatePosY;
     public double populatePosZ;
 
-    @Nullable
-    public Color solidColor;
+    public ColorEntry solidColor;
 
-    @Nullable
     public ResourceLocation texture;
+
+    public SkyBoxObjectProperties skyBoxProperties;
+
     public final CelestialObjectProperties celestialObjectProperties;
 
     public final ArrayList<MutablePair<MutableTriple<String, String, String>, MutablePair<String, String>>> vertexList;
 
-    public CelestialObject(String texturePath, String scale, String posX, String posY, String posZ, String distance, String degreesX, String degreesY, String degreesZ, String baseDegreesX, String baseDegreesY, String baseDegreesZ, CelestialObjectProperties celestialObjectProperties, String parent, String dimension, String color, ArrayList<MutablePair<MutableTriple<String, String, String>, MutablePair<String, String>>> vertexList) {
+    public CelestialObject(CelestialObjectType type, String texturePath, String scale, String posX, String posY, String posZ, String distance, String degreesX, String degreesY, String degreesZ, String baseDegreesX, String baseDegreesY, String baseDegreesZ, CelestialObjectProperties celestialObjectProperties, String parent, String dimension, ColorEntry color, ArrayList<MutablePair<MutableTriple<String, String, String>, MutablePair<String, String>>> vertexList, SkyBoxObjectProperties skyBoxProperties) {
+        this.type = type;
         if (parent != null) {
             CelestialObject o = createSkyObjectFromJson(CelestialSky.getFile("celestial:sky/" + dimension + "/objects/" + parent + ".json"), parent, dimension);
             this.posX = o.posX + "+" + posX;
@@ -70,14 +73,16 @@ public class CelestialObject {
         this.scale = scale;
         this.celestialObjectProperties = celestialObjectProperties;
         this.vertexList = vertexList;
+        this.skyBoxProperties = skyBoxProperties;
         if (texturePath != null)
             this.texture = new ResourceLocation(texturePath);
         if (color != null)
-            this.solidColor = Color.decode(color.startsWith("#") ? color : "#" + color);
+            this.solidColor = color;
     }
 
     // Used for populate objects only
-    public CelestialObject(ResourceLocation texture, String scale, double scaleAdd, double posX, double posY, double posZ, String distance, double distanceAdd, double degreesX, double degreesY, double degreesZ, String baseDegreesX, String baseDegreesY, String baseDegreesZ, CelestialObjectProperties celestialObjectProperties, Color color, ArrayList<MutablePair<MutableTriple<String, String, String>, MutablePair<String, String>>> vertexList) {
+    public CelestialObject(CelestialObjectType type, ResourceLocation texture, String scale, double scaleAdd, double posX, double posY, double posZ, String distance, double distanceAdd, double degreesX, double degreesY, double degreesZ, String baseDegreesX, String baseDegreesY, String baseDegreesZ, CelestialObjectProperties celestialObjectProperties, ColorEntry color, ArrayList<MutablePair<MutableTriple<String, String, String>, MutablePair<String, String>>> vertexList) {
+        this.type = type;
         this.texture = texture;
         this.scale = scale;
         this.populatePosX = posX;
@@ -95,6 +100,7 @@ public class CelestialObject {
         this.celestialObjectProperties = celestialObjectProperties;
         this.vertexList = vertexList;
         this.solidColor = color;
+        this.skyBoxProperties = null;
     }
 
     public boolean isPopulation() {
@@ -107,10 +113,16 @@ public class CelestialObject {
             return null;
         }
 
+        CelestialObjectType type = findObjectType(o);
+
+        if (type == CelestialObjectType.SKYBOX)
+            return createSkyBoxObjectFromJson(o, name, dimension);
+
         JsonObject display = o.getAsJsonObject("display");
         JsonObject rotation = o.getAsJsonObject("rotation");
         //I love parameters
         CelestialObject object = new CelestialObject(
+                type,
                 Util.getOptionalString(o, "texture", null),
                 Util.getOptionalString(display, "scale", "0"),
                 Util.getOptionalString(display, "pos_x", "0"),
@@ -126,8 +138,9 @@ public class CelestialObject {
                 CelestialObjectProperties.createCelestialObjectPropertiesFromJson(o.getAsJsonObject("properties")),
                 Util.getOptionalString(o, "parent", null),
                 dimension,
-                Util.getOptionalString(o, "solid_color", null),
-                Util.convertToPointUvList(Util.getOptionalStringArray(o, "vertex", null))
+                ColorEntry.createColorEntry(o, "solid_color", null),
+                Util.convertToPointUvList(Util.getOptionalStringArray(o, "vertex", null)),
+                null
         );
 
         //Check if it's normal
@@ -143,6 +156,59 @@ public class CelestialObject {
                 objectList.add(properties.generateObject(object));
             }
             return new CelestialObjectPopulation(objectList, object, properties.perObjectCalculations);
+        }
+    }
+
+    public static CelestialObject createSkyBoxObjectFromJson(JsonObject o, String name, String dimension) {
+        JsonObject display = o.getAsJsonObject("display");
+        JsonObject rotation = o.getAsJsonObject("rotation");
+        //I love parameters
+        CelestialObject object = new CelestialObject(
+                findObjectType(o),
+                Util.getOptionalString(o, "texture", null),
+                Util.getOptionalString(display, "scale", "0"),
+                Util.getOptionalString(display, "pos_x", "0"),
+                Util.getOptionalString(display, "pos_y", "0"),
+                Util.getOptionalString(display, "pos_z", "0"),
+                Util.getOptionalString(display, "distance", "0"),
+                Util.getOptionalString(rotation, "degrees_x", "0"),
+                Util.getOptionalString(rotation, "degrees_y", "0"),
+                Util.getOptionalString(rotation, "degrees_z", "0"),
+                Util.getOptionalString(rotation, "base_degrees_x", "-90"),
+                Util.getOptionalString(rotation, "base_degrees_y", "0"),
+                Util.getOptionalString(rotation, "base_degrees_z", "-90"),
+                CelestialObjectProperties.createCelestialObjectPropertiesFromJson(o.getAsJsonObject("properties")),
+                Util.getOptionalString(o, "parent", null),
+                dimension,
+                ColorEntry.createColorEntry(o, Util.getOptionalString(o, "solid_color", null), null),
+                null,
+                SkyBoxObjectProperties.getSkyboxPropertiesFromJson(o)
+        );
+        return object;
+    }
+
+    public enum CelestialObjectType {
+        DEFAULT,
+        COLOR,
+        SKYBOX
+    }
+
+    public static CelestialObjectType findObjectType(JsonObject o) {
+        String objectType = Util.getOptionalString(o, "type", "default");
+        if (o.has("texture") && !objectType.equals("skybox"))
+            return CelestialObjectType.DEFAULT;
+        else if (o.has("solid_color") && !objectType.equals("skybox"))
+            return CelestialObjectType.COLOR;
+        return getCelestialObjectType(objectType);
+    }
+    public static CelestialObjectType getCelestialObjectType(String i) {
+        switch (i) {
+            case "color":
+                return CelestialObjectType.COLOR;
+            case "skybox":
+                return CelestialObjectType.SKYBOX;
+            default:
+                return CelestialObjectType.DEFAULT;
         }
     }
 }

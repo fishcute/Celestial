@@ -32,17 +32,15 @@ public class DimensionSpecialEffectsMixin {
                 float i = (g + 0.0F) / 0.4F * 0.5F + 0.5F;
                 float j = 1.0F - (1.0F - Mth.sin(i * 3.1415927F)) * 0.99F;
                 j *= j;
-                this.rgba[0] = i * 0.3F + (CelestialSky.getDimensionRenderInfo().environment.twilightColor.getRed() / 255.0F);
-                this.rgba[1] = i * i * 0.7F + (CelestialSky.getDimensionRenderInfo().environment.twilightColor.getGreen() / 255.0F);
-                this.rgba[2] = i * i * 0.0F + (CelestialSky.getDimensionRenderInfo().environment.twilightColor.getBlue() / 255.0F);
+                this.rgba[0] = i * 0.3F + (CelestialSky.getDimensionRenderInfo().environment.twilightColor.storedColor.getRed() / 255.0F);
+                this.rgba[1] = i * i * 0.7F + (CelestialSky.getDimensionRenderInfo().environment.twilightColor.storedColor.getGreen() / 255.0F);
+                this.rgba[2] = i * i * 0.0F + (CelestialSky.getDimensionRenderInfo().environment.twilightColor.storedColor.getBlue() / 255.0F);
 
-                Map<String, String> toReplaceMap = new java.util.HashMap<>(Map.ofEntries(
-                        entry("#twilightAlpha", j + "")
+                Map<String, Double> toReplaceMap = new java.util.HashMap<>(Map.ofEntries(
+                        entry("#twilightAlpha", (double) j)
                 ));
 
-                toReplaceMap.putAll(Util.getReplaceMapNormal());
-
-                this.rgba[3] = Math.min(j, (float) Util.solveEquation(CelestialSky.getDimensionRenderInfo().environment.twilightAlpha, toReplaceMap));
+                this.rgba[3] = Math.min(j, (float) Util.solveEquation(CelestialSky.getDimensionRenderInfo().environment.twilightAlpha, Util.getReplaceMapAdd(toReplaceMap)));
                 info.setReturnValue(this.rgba);
             } else {
                 info.setReturnValue(null);
