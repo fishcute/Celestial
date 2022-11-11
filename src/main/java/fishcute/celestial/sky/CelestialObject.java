@@ -41,9 +41,9 @@ public class CelestialObject {
 
     public final CelestialObjectProperties celestialObjectProperties;
 
-    public final ArrayList<MutablePair<MutableTriple<String, String, String>, MutablePair<String, String>>> vertexList;
+    public final ArrayList<Util.VertexPoint> vertexList;
 
-    public CelestialObject(CelestialObjectType type, String texturePath, String scale, String posX, String posY, String posZ, String distance, String degreesX, String degreesY, String degreesZ, String baseDegreesX, String baseDegreesY, String baseDegreesZ, CelestialObjectProperties celestialObjectProperties, String parent, String dimension, ColorEntry color, ArrayList<MutablePair<MutableTriple<String, String, String>, MutablePair<String, String>>> vertexList, SkyBoxObjectProperties skyBoxProperties) {
+    public CelestialObject(CelestialObjectType type, String texturePath, String scale, String posX, String posY, String posZ, String distance, String degreesX, String degreesY, String degreesZ, String baseDegreesX, String baseDegreesY, String baseDegreesZ, CelestialObjectProperties celestialObjectProperties, String parent, String dimension, ColorEntry color, ArrayList<Util.VertexPoint> vertexList, SkyBoxObjectProperties skyBoxProperties) {
         this.type = type;
         if (parent != null) {
             CelestialObject o = createSkyObjectFromJson(CelestialSky.getFile("celestial:sky/" + dimension + "/objects/" + parent + ".json"), parent, dimension);
@@ -81,7 +81,7 @@ public class CelestialObject {
     }
 
     // Used for populate objects only
-    public CelestialObject(CelestialObjectType type, ResourceLocation texture, String scale, double scaleAdd, double posX, double posY, double posZ, String distance, double distanceAdd, double degreesX, double degreesY, double degreesZ, String baseDegreesX, String baseDegreesY, String baseDegreesZ, CelestialObjectProperties celestialObjectProperties, ColorEntry color, ArrayList<MutablePair<MutableTriple<String, String, String>, MutablePair<String, String>>> vertexList) {
+    public CelestialObject(CelestialObjectType type, ResourceLocation texture, String scale, double scaleAdd, double posX, double posY, double posZ, String distance, double distanceAdd, double degreesX, double degreesY, double degreesZ, String baseDegreesX, String baseDegreesY, String baseDegreesZ, CelestialObjectProperties celestialObjectProperties, ColorEntry color, ArrayList<Util.VertexPoint> vertexList) {
         this.type = type;
         this.texture = texture;
         this.scale = scale;
@@ -139,7 +139,7 @@ public class CelestialObject {
                 Util.getOptionalString(o, "parent", null),
                 dimension,
                 ColorEntry.createColorEntry(o, "solid_color", null),
-                Util.convertToPointUvList(Util.getOptionalStringArray(o, "vertex", null)),
+                Util.convertToPointUvList(o, "vertex"),
                 null
         );
 
@@ -149,13 +149,8 @@ public class CelestialObject {
         }
         //Or... it's not :(
         else {
-            ArrayList<CelestialObject> objectList = new ArrayList<>();
-            CelestialPopulateProperties properties = CelestialPopulateProperties.getPopulationPropertiesFromJson(o.getAsJsonObject("populate"));
-
-            for (int i = 0; i <= o.getAsJsonObject("populate").get("count").getAsInt(); i++) {
-                objectList.add(properties.generateObject(object));
-            }
-            return new CelestialObjectPopulation(objectList, object, properties.perObjectCalculations);
+            return CelestialPopulateProperties.getPopulationPropertiesFromJson(o.getAsJsonObject("populate")).generatePopulateObjects(object,
+                    o.getAsJsonObject("populate"));
         }
     }
 

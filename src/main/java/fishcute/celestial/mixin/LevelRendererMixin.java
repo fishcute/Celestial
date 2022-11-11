@@ -13,8 +13,6 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.material.FogType;
 import net.minecraft.world.phys.Vec3;
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.MutableTriple;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,9 +20,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
-import java.util.Map;
-
-import static java.util.Map.entry;
 
 @Mixin(LevelRenderer.class)
 public class LevelRendererMixin {
@@ -32,6 +27,7 @@ public class LevelRendererMixin {
     private boolean doesMobEffectBlockSky(Camera camera) {
         return false;
     }
+
     @Shadow
     private VertexBuffer skyBuffer;
     @Shadow
@@ -72,213 +68,206 @@ public class LevelRendererMixin {
         if (CelestialSky.doesDimensionHaveCustomSky()) {
             info.cancel();
             runnable.run();
-            if (!bl) {
-                FogType fogType = camera.getFluidInCamera();
-                if (fogType != FogType.POWDER_SNOW && fogType != FogType.LAVA && !(doesMobEffectBlockSky(camera))) {
-                    if (this.level.effects().skyType() == DimensionSpecialEffects.SkyType.NORMAL) {
-                        RenderSystem.disableTexture();
-                        Vec3 Vector3d = this.level.getSkyColor(Minecraft.getInstance().gameRenderer.getMainCamera().getPosition(), tickDelta);
-                        float f = (float) Vector3d.x;
-                        float g = (float) Vector3d.y;
-                        float h = (float) Vector3d.z;
-                        FogRenderer.levelFogColor();
-                        BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
-                        RenderSystem.depthMask(false);
-                        RenderSystem.setShaderColor(f, g, h, 1.0F);
-                        ShaderInstance shader = RenderSystem.getShader();
-                        float[] fs = Minecraft.getInstance().level.effects().getSunriseColor(this.level.getTimeOfDay(tickDelta), tickDelta);
-                        float i;
-                        float k;
-                        float o;
-                        float p;
-                        float q;
+            FogType fogType = camera.getFluidInCamera();
+            if (fogType != FogType.POWDER_SNOW && fogType != FogType.LAVA && !(doesMobEffectBlockSky(camera))) {
+                RenderSystem.disableTexture();
+                Vec3 Vector3d = this.level.getSkyColor(Minecraft.getInstance().gameRenderer.getMainCamera().getPosition(), tickDelta);
+                float f = (float) Vector3d.x;
+                float g = (float) Vector3d.y;
+                float h = (float) Vector3d.z;
+                FogRenderer.levelFogColor();
+                BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
+                RenderSystem.depthMask(false);
+                RenderSystem.setShaderColor(f, g, h, 1.0F);
+                ShaderInstance shader = RenderSystem.getShader();
+                float[] fs = Minecraft.getInstance().level.effects().getSunriseColor(this.level.getTimeOfDay(tickDelta), tickDelta);
+                float k;
+                float o;
+                float p;
+                float q;
 
-                        CelestialRenderInfo renderInfo = CelestialSky.getDimensionRenderInfo();
+                CelestialRenderInfo renderInfo = CelestialSky.getDimensionRenderInfo();
 
-                        VertexBuffer.unbind();
-                        RenderSystem.enableBlend();
-                        RenderSystem.defaultBlendFunc();
+                VertexBuffer.unbind();
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
 
-                            this.skyBuffer.bind();
-                            this.skyBuffer.drawWithShader(matrices.last().pose(), projectionMatrix, shader);
-                            if (fs != null) {
-                                RenderSystem.setShader(GameRenderer::getPositionColorShader);
-                                RenderSystem.disableTexture();
-                                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-                                matrices.pushPose();
-                                matrices.mulPose(Vector3f.XP.rotationDegrees(90.0F));
-                                float f3 = Mth.sin(this.level.getSunAngle(tickDelta)) < 0.0F ? 180.0F : 0.0F;
-                                matrices.mulPose(Vector3f.ZP.rotationDegrees(f3));
-                                matrices.mulPose(Vector3f.ZP.rotationDegrees(90.0F));
-                                float j = fs[0];
-                                k = fs[1];
-                                float l = fs[2];
-                                Matrix4f matrix4f = matrices.last().pose();
-                                bufferBuilder.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
-                                bufferBuilder.vertex(matrix4f, 0.0F, 100.0F, 0.0F).color(j, k, l, fs[3]).endVertex();
+                this.skyBuffer.bind();
+                this.skyBuffer.drawWithShader(matrices.last().pose(), projectionMatrix, shader);
+                if (fs != null) {
+                    RenderSystem.setShader(GameRenderer::getPositionColorShader);
+                    RenderSystem.disableTexture();
+                    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+                    matrices.pushPose();
+                    matrices.mulPose(Vector3f.XP.rotationDegrees(90.0F));
+                    float f3 = Mth.sin(this.level.getSunAngle(tickDelta)) < 0.0F ? 180.0F : 0.0F;
+                    matrices.mulPose(Vector3f.ZP.rotationDegrees(f3));
+                    matrices.mulPose(Vector3f.ZP.rotationDegrees(90.0F));
+                    float j = fs[0];
+                    k = fs[1];
+                    float l = fs[2];
+                    Matrix4f matrix4f = matrices.last().pose();
+                    bufferBuilder.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
+                    bufferBuilder.vertex(matrix4f, 0.0F, 100.0F, 0.0F).color(j, k, l, fs[3]).endVertex();
 
-                                for (int n = 0; n <= 16; ++n) {
-                                    o = (float) n * 6.2831855F / 16.0F;
-                                    p = Mth.sin(o);
-                                    q = Mth.cos(o);
-                                    bufferBuilder.vertex(matrix4f, p * 120.0F, q * 120.0F, -q * 40.0F * fs[3]).color(fs[0], fs[1], fs[2], 0.0F).endVertex();
-                                }
+                    for (int n = 0; n <= 16; ++n) {
+                        o = (float) n * 6.2831855F / 16.0F;
+                        p = Mth.sin(o);
+                        q = Mth.cos(o);
+                        bufferBuilder.vertex(matrix4f, p * 120.0F, q * 120.0F, -q * 40.0F * fs[3]).color(fs[0], fs[1], fs[2], 0.0F).endVertex();
+                    }
 
-                                BufferUploader.drawWithShader(bufferBuilder.end());
-                                matrices.popPose();
-                            }
+                    BufferUploader.drawWithShader(bufferBuilder.end());
+                    matrices.popPose();
+                }
 
-                        RenderSystem.enableTexture();
-                        RenderSystem.enableBlend();
+                RenderSystem.enableTexture();
+                RenderSystem.enableBlend();
 
-                        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+                RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
-                        //I probably shouldn't have to do this
-                        ArrayList<CelestialObject> renderOrderColor = new ArrayList<>();
+                //I probably shouldn't have to do this
+                ArrayList<CelestialObject> renderOrderColor = new ArrayList<>();
 
-                        ArrayList<CelestialObject> renderOrderTexture = new ArrayList<>();
+                ArrayList<CelestialObject> renderOrderTexture = new ArrayList<>();
 
-                        ArrayList<CelestialObject> renderOrder = new ArrayList<>();
+                ArrayList<CelestialObject> renderOrder = new ArrayList<>();
 
-                        for (CelestialObject c : renderInfo.skyObjects) {
-                            if (c.isPopulation() && ((CelestialObjectPopulation) c).population.size() > 0) {
+                for (CelestialObject c : renderInfo.skyObjects) {
+                    if (c.isPopulation() && ((CelestialObjectPopulation) c).population.size() > 0) {
 
-                                if (((CelestialObjectPopulation) c).baseObject.texture != null)
-                                    renderOrderTexture.add(c);
-                                else if (((CelestialObjectPopulation) c).baseObject.solidColor != null) {
-                                    renderOrderColor.add(c);
+                        if (((CelestialObjectPopulation) c).baseObject.texture != null)
+                            renderOrderTexture.add(c);
+                        else if (((CelestialObjectPopulation) c).baseObject.solidColor != null) {
+                            renderOrderColor.add(c);
 
-                                    ((CelestialObjectPopulation) c).baseObject.solidColor.tick();
-                                }
-                            }
-                            else {
-                                if (c.type == CelestialObject.CelestialObjectType.DEFAULT || c.type == CelestialObject.CelestialObjectType.SKYBOX)
-                                    renderOrderTexture.add(c);
-                                else if (c.solidColor != null) {
-                                    renderOrderColor.add(c);
-                                    c.solidColor.tick();
-                                }
-                            }
+                            ((CelestialObjectPopulation) c).baseObject.solidColor.tick();
                         }
-
-                        renderOrder.addAll(renderOrderColor);
-                        renderOrder.addAll(renderOrderTexture);
-
-                        for (CelestialObject c : renderOrder) {
-
-                            matrices.pushPose();
-
-                            if (c.isPopulation()) {
-                                matrices.mulPose(Vector3f.XP.rotationDegrees((float) Util.solveEquation(((CelestialObjectPopulation) c).baseObject.baseDegreesX, Util.getReplaceMapNormal())));
-                                matrices.mulPose(Vector3f.YP.rotationDegrees((float) Util.solveEquation(((CelestialObjectPopulation) c).baseObject.baseDegreesY, Util.getReplaceMapNormal())));
-                                matrices.mulPose(Vector3f.ZP.rotationDegrees((float) Util.solveEquation(((CelestialObjectPopulation) c).baseObject.baseDegreesZ, Util.getReplaceMapNormal())));
-
-                                Object[] dataArray = null;
-
-                                if (!((CelestialObjectPopulation) c).perObjectCalculation)
-                                    dataArray = getObjectDataArray(((CelestialObjectPopulation) c).baseObject);
-
-                                for (CelestialObject c2 : ((CelestialObjectPopulation) c).population) {
-                                    if (((CelestialObjectPopulation) c).perObjectCalculation)
-                                        dataArray = getObjectDataArray(((CelestialObjectPopulation) c).baseObject);
-
-                                    // Making things people will never understand is my passion
-                                    // The function below this text is truly beautiful, isn't it?
-
-                                    renderSkyObject(bufferBuilder, dataArray, matrices,
-                                            setRotation(matrices,
-                                                    Vector3f.XP.rotationDegrees((float) ((float) dataArray[0] + c2.populateDegreesX)),
-                                                    Vector3f.YP.rotationDegrees((float) ((float) dataArray[1] + c2.populateDegreesY)),
-                                                    Vector3f.ZP.rotationDegrees((float) ((float) dataArray[2] + c2.populateDegreesZ)),
-                                                    new Vector3d(
-                                                            (float) dataArray[3] + c2.populatePosX,
-                                                            (float) dataArray[4] + c2.populatePosY,
-                                                            (float) dataArray[5] + c2.populatePosZ
-                                                    ))
-                                            , c2,
-                                            (Vector3f) dataArray[11],
-                                            (Vector3f) dataArray[12],
-                                            (float) dataArray[6],
-                                            (float) dataArray[7],
-                                            (float) dataArray[8],
-                                            (int) dataArray[9],
-                                            (ArrayList<MutablePair<MutableTriple<Float, Float, Float>, MutablePair<Float, Float>>>) dataArray[10]
-                                    );
-                                }
-                            }
-                            else {
-                                if (!c.type.equals(CelestialObject.CelestialObjectType.SKYBOX)) {
-                                    matrices.mulPose(Vector3f.XP.rotationDegrees((float) Util.solveEquation(c.baseDegreesX, Util.getReplaceMapNormal())));
-                                    matrices.mulPose(Vector3f.YP.rotationDegrees((float) Util.solveEquation(c.baseDegreesY, Util.getReplaceMapNormal())));
-                                    matrices.mulPose(Vector3f.ZP.rotationDegrees((float) Util.solveEquation(c.baseDegreesZ, Util.getReplaceMapNormal())));
-                                }
-
-                                Object[] dataArray = getObjectDataArray(c);
-
-                                if (c.type.equals(CelestialObject.CelestialObjectType.SKYBOX))
-                                    renderSkyObject(bufferBuilder, dataArray, matrices,
-                                            matrices.last().pose()
-                                            , c,
-                                            (Vector3f) dataArray[11],
-                                            (Vector3f) dataArray[12],
-                                            (float) dataArray[6],
-                                            (float) dataArray[7],
-                                            (float) dataArray[8],
-                                            (int) dataArray[9],
-                                            (ArrayList<MutablePair<MutableTriple<Float, Float, Float>, MutablePair<Float, Float>>>) dataArray[10]
-                                    );
-                                else
-                                    renderSkyObject(bufferBuilder, dataArray, matrices,
-                                        setRotation(matrices,
-                                                Vector3f.XP.rotationDegrees((float) dataArray[0]),
-                                                Vector3f.YP.rotationDegrees((float) dataArray[1]),
-                                                Vector3f.ZP.rotationDegrees((float) dataArray[2]),
-                                                new Vector3d(
-                                                        (float) dataArray[3],
-                                                        (float) dataArray[4],
-                                                        (float) dataArray[5]
-                                                ))
-                                        , c,
-                                        (Vector3f) dataArray[11],
-                                        (Vector3f) dataArray[12],
-                                        (float) dataArray[6],
-                                        (float) dataArray[7],
-                                        (float) dataArray[8],
-                                        (int) dataArray[9],
-                                        (ArrayList<MutablePair<MutableTriple<Float, Float, Float>, MutablePair<Float, Float>>>) dataArray[10]
-                                );
-                            }
-
-                            matrices.popPose();
+                    } else {
+                        if (c.type == CelestialObject.CelestialObjectType.DEFAULT || c.type == CelestialObject.CelestialObjectType.SKYBOX)
+                            renderOrderTexture.add(c);
+                        else if (c.solidColor != null) {
+                            renderOrderColor.add(c);
+                            c.solidColor.tick();
                         }
-
-                        FogRenderer.levelFogColor();
-
-                        RenderSystem.disableBlend();
-                        RenderSystem.disableTexture();
-                        RenderSystem.setShaderColor(0.0F, 0.0F, 0.0F, 1.0F);
-
-
-                        double d = Minecraft.getInstance().player.getEyePosition(tickDelta).y - this.level.getLevelData().getHorizonHeight(this.level);
-                        if (d < 0.0) {
-                            matrices.pushPose();
-                            matrices.translate(0.0, 12.0, 0.0);
-                            this.darkBuffer.bind();
-                            this.darkBuffer.drawWithShader(matrices.last().pose(), projectionMatrix, shader);
-                            VertexBuffer.unbind();
-                            matrices.popPose();
-                        }
-
-                        if (this.level.effects().hasGround()) {
-                            RenderSystem.setShaderColor(f * 0.2F + 0.04F, g * 0.2F + 0.04F, h * 0.6F + 0.1F, 1.0F);
-                        } else {
-                            RenderSystem.setShaderColor(f, g, h, 1.0F);
-                        }
-
-                        RenderSystem.enableTexture();
-                        RenderSystem.depthMask(true);
                     }
                 }
+
+                renderOrder.addAll(renderOrderColor);
+                renderOrder.addAll(renderOrderTexture);
+
+                for (CelestialObject c : renderOrder) {
+
+                    matrices.pushPose();
+
+                    if (c.isPopulation()) {
+                        matrices.mulPose(Vector3f.XP.rotationDegrees((float) Util.solveEquation(((CelestialObjectPopulation) c).baseObject.baseDegreesX, Util.getReplaceMapNormal())));
+                        matrices.mulPose(Vector3f.YP.rotationDegrees((float) Util.solveEquation(((CelestialObjectPopulation) c).baseObject.baseDegreesY, Util.getReplaceMapNormal())));
+                        matrices.mulPose(Vector3f.ZP.rotationDegrees((float) Util.solveEquation(((CelestialObjectPopulation) c).baseObject.baseDegreesZ, Util.getReplaceMapNormal())));
+
+                        Object[] dataArray = null;
+
+                        if (!((CelestialObjectPopulation) c).perObjectCalculation)
+                            dataArray = getObjectDataArray(((CelestialObjectPopulation) c).baseObject);
+
+                        for (CelestialObject c2 : ((CelestialObjectPopulation) c).population) {
+                            if (((CelestialObjectPopulation) c).perObjectCalculation)
+                                dataArray = getObjectDataArray(((CelestialObjectPopulation) c).baseObject);
+
+                            // Making things people will never understand is my passion
+                            // The function below this text is truly beautiful, isn't it?
+
+                            renderSkyObject(bufferBuilder, matrices,
+                                    setRotation(matrices,
+                                            Vector3f.XP.rotationDegrees((float) ((float) dataArray[0] + c2.populateDegreesX)),
+                                            Vector3f.YP.rotationDegrees((float) ((float) dataArray[1] + c2.populateDegreesY)),
+                                            Vector3f.ZP.rotationDegrees((float) ((float) dataArray[2] + c2.populateDegreesZ)),
+                                            new Vector3d(
+                                                    (float) dataArray[3] + c2.populatePosX,
+                                                    (float) dataArray[4] + c2.populatePosY,
+                                                    (float) dataArray[5] + c2.populatePosZ
+                                            ))
+                                    , c2,
+                                    (Vector3f) dataArray[11],
+                                    (Vector3f) dataArray[12],
+                                    (float) dataArray[6],
+                                    (float) dataArray[7],
+                                    (float) dataArray[8],
+                                    (int) dataArray[9],
+                                    (ArrayList<Util.VertexPointValue>) dataArray[10]
+                            );
+                        }
+                    } else {
+                        if (!c.type.equals(CelestialObject.CelestialObjectType.SKYBOX)) {
+                            matrices.mulPose(Vector3f.XP.rotationDegrees((float) Util.solveEquation(c.baseDegreesX, Util.getReplaceMapNormal())));
+                            matrices.mulPose(Vector3f.YP.rotationDegrees((float) Util.solveEquation(c.baseDegreesY, Util.getReplaceMapNormal())));
+                            matrices.mulPose(Vector3f.ZP.rotationDegrees((float) Util.solveEquation(c.baseDegreesZ, Util.getReplaceMapNormal())));
+                        }
+
+                        Object[] dataArray = getObjectDataArray(c);
+
+                        if (c.type.equals(CelestialObject.CelestialObjectType.SKYBOX))
+                            renderSkyObject(bufferBuilder, matrices,
+                                    matrices.last().pose()
+                                    , c,
+                                    (Vector3f) dataArray[11],
+                                    (Vector3f) dataArray[12],
+                                    (float) dataArray[6],
+                                    (float) dataArray[7],
+                                    (float) dataArray[8],
+                                    (int) dataArray[9],
+                                    (ArrayList<Util.VertexPointValue>) dataArray[10]
+                            );
+                        else
+                            renderSkyObject(bufferBuilder, matrices,
+                                    setRotation(matrices,
+                                            Vector3f.XP.rotationDegrees((float) dataArray[0]),
+                                            Vector3f.YP.rotationDegrees((float) dataArray[1]),
+                                            Vector3f.ZP.rotationDegrees((float) dataArray[2]),
+                                            new Vector3d(
+                                                    (float) dataArray[3],
+                                                    (float) dataArray[4],
+                                                    (float) dataArray[5]
+                                            ))
+                                    , c,
+                                    (Vector3f) dataArray[11],
+                                    (Vector3f) dataArray[12],
+                                    (float) dataArray[6],
+                                    (float) dataArray[7],
+                                    (float) dataArray[8],
+                                    (int) dataArray[9],
+                                    (ArrayList<Util.VertexPointValue>) dataArray[10]
+                            );
+                    }
+
+                    matrices.popPose();
+                }
+
+                FogRenderer.levelFogColor();
+
+                RenderSystem.disableBlend();
+                RenderSystem.disableTexture();
+                RenderSystem.setShaderColor(0.0F, 0.0F, 0.0F, 1.0F);
+
+
+                double d = Minecraft.getInstance().player.getEyePosition(tickDelta).y - this.level.getLevelData().getHorizonHeight(this.level);
+                if (d < 0.0) {
+                    matrices.pushPose();
+                    matrices.translate(0.0, 12.0 + Util.solveEquation(renderInfo.environment.voidCullingLevel, Util.getReplaceMapNormal()), 0.0);
+                    this.darkBuffer.bind();
+                    this.darkBuffer.drawWithShader(matrices.last().pose(), projectionMatrix, shader);
+                    VertexBuffer.unbind();
+                    matrices.popPose();
+                }
+
+                if (this.level.effects().hasGround()) {
+                    RenderSystem.setShaderColor(f * 0.2F + 0.04F, g * 0.2F + 0.04F, h * 0.6F + 0.1F, 1.0F);
+                } else {
+                    RenderSystem.setShaderColor(f, g, h, 1.0F);
+                }
+
+                RenderSystem.enableTexture();
+                RenderSystem.depthMask(true);
             }
         }
     }
@@ -314,25 +303,13 @@ public class LevelRendererMixin {
         dataArray[8] = ((float) Util.solveEquation(c.scale, Util.getReplaceMapNormal()));
 
         //moon phase 9
-        dataArray[9] = ((int) Util.solveEquation(c.celestialObjectProperties.moonPhase, Util.getReplaceMapAdd(
-                Map.ofEntries(
-                        entry("#moonPhase", (double) this.level.getMoonPhase())
-                )
-        )));
+        dataArray[9] = ((int) Util.solveEquation(c.celestialObjectProperties.moonPhase, Util.getReplaceMapNormal()));
 
-        ArrayList<MutablePair<MutableTriple<Float, Float, Float>, MutablePair<Float, Float>>> vertexList = new ArrayList<>();
+        ArrayList<Util.VertexPointValue> vertexList = new ArrayList<>();
 
         if (c.vertexList != null && c.vertexList.size() > 0)
-
-            for (MutablePair<MutableTriple<String, String, String>, MutablePair<String, String>> v : c.vertexList)
-                vertexList.add(new MutablePair<>(new MutableTriple<>(
-                        (float) Util.solveEquation(v.getLeft().getLeft(), Util.getReplaceMapNormal()),
-                        (float) Util.solveEquation(v.getLeft().getMiddle(), Util.getReplaceMapNormal()),
-                        (float) Util.solveEquation(v.getLeft().getRight(), Util.getReplaceMapNormal())
-                ), new MutablePair<>(
-                        (float) Util.solveEquation(v.getRight().getLeft(), Util.getReplaceMapNormal()),
-                        (float) Util.solveEquation(v.getRight().getRight(), Util.getReplaceMapNormal())
-                )));
+            for (Util.VertexPoint v : c.vertexList)
+                vertexList.add(new Util.VertexPointValue(v));
 
         // vertex list 10
         dataArray[10] = (vertexList);
@@ -355,7 +332,7 @@ public class LevelRendererMixin {
     }
 
     // Render sky object
-    private void renderSkyObject(BufferBuilder bufferBuilder, Object[] dataArray, PoseStack matrices, Matrix4f matrix4f2, CelestialObject c, Vector3f color, Vector3f colorsSolid, float alpha, float distancePre, float scalePre, int moonPhase, ArrayList<MutablePair<MutableTriple<Float, Float, Float>, MutablePair<Float, Float>>> vertexList) {
+    private void renderSkyObject(BufferBuilder bufferBuilder, PoseStack matrices, Matrix4f matrix4f2, CelestialObject c, Vector3f color, Vector3f colorsSolid, float alpha, float distancePre, float scalePre, int moonPhase, ArrayList<Util.VertexPointValue> vertexList) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         float distance = (float) (distancePre + c.populateDistanceAdd);
@@ -392,18 +369,16 @@ public class LevelRendererMixin {
                 bufferBuilder.vertex(matrix4f2, scale, -100.0F, (distance < 0 ? scale : -scale)).uv(f13, f16).color(color.x(), color.y(), color.z(), alpha).endVertex();
                 bufferBuilder.vertex(matrix4f2, scale, -100.0F, (distance < 0 ? -scale : scale)).uv(f13, f14).color(color.x(), color.y(), color.z(), alpha).endVertex();
                 bufferBuilder.vertex(matrix4f2, -scale, -100.0F, (distance < 0 ? -scale : scale)).uv(f15, f14).color(color.x(), color.y(), color.z(), alpha).endVertex();
-            } else if (c.vertexList.size() > 0) {
-                //Stuff for custom vertex stuff
-                //Honestly, don't even ask what's going on here anymore
+            } else if (vertexList.size() > 0) {
                 bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-                for (MutablePair<MutableTriple<Float, Float, Float>, MutablePair<Float, Float>> v : vertexList) {
+                for (Util.VertexPointValue v : vertexList) {
                     bufferBuilder.vertex(matrix4f2,
-                            v.getLeft().getLeft(),
-                            v.getLeft().getMiddle(),
-                            v.getLeft().getRight()
+                            (float) v.pointX,
+                            (float) v.pointY,
+                            (float) v.pointZ
                     ).uv(
-                            v.getRight().getLeft(),
-                            v.getRight().getRight()
+                            (float) v.uvX,
+                            (float) v.uvY
                     ).color(color.x(), color.y(), color.z(), alpha).endVertex();
                 }
             } else {
@@ -415,24 +390,20 @@ public class LevelRendererMixin {
             }
 
             BufferUploader.drawWithShader(bufferBuilder.end());
-        }
-        else if (c.type.equals(CelestialObject.CelestialObjectType.COLOR)) {
+        } else if (c.type.equals(CelestialObject.CelestialObjectType.COLOR)) {
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
             RenderSystem.disableTexture();
 
-            if (c.vertexList.size() > 0) {
+            if (vertexList.size() > 0) {
                 bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
-                for (MutablePair<MutableTriple<Float, Float, Float>, MutablePair<Float, Float>> v : vertexList) {
+                for (Util.VertexPointValue v : vertexList) {
                     bufferBuilder.vertex(matrix4f2,
-                            v.getLeft().getLeft(),
-                            v.getLeft().getMiddle(),
-                            v.getLeft().getRight()
-                    ).uv(
-                            v.getRight().getLeft(),
-                            v.getRight().getRight()
-                    ).color(color.x(), color.y(), color.z(), alpha).endVertex();
+                            (float) v.pointX,
+                            (float) v.pointY,
+                            (float) v.pointZ
+                    ).color(colorsSolid.x() / 255.0F, colorsSolid.y() / 255.0F, colorsSolid.z() / 255.0F, alpha).endVertex();
                 }
             } else {
                 bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
@@ -445,8 +416,7 @@ public class LevelRendererMixin {
             BufferUploader.drawWithShader(bufferBuilder.end());
 
             RenderSystem.enableTexture();
-        }
-        else if (c.type.equals(CelestialObject.CelestialObjectType.SKYBOX)) {
+        } else if (c.type.equals(CelestialObject.CelestialObjectType.SKYBOX)) {
             matrices.popPose();
 
             SkyBoxObjectProperties.SkyBoxSideTexture side;
@@ -463,14 +433,13 @@ public class LevelRendererMixin {
             float textureSizeX = c.solidColor != null ? 0 : (float) Util.solveEquation(c.skyBoxProperties.textureSizeX, Util.getReplaceMapNormal());
             float textureSizeY = c.solidColor != null ? 0 : (float) Util.solveEquation(c.skyBoxProperties.textureSizeY, Util.getReplaceMapNormal());
 
-            for(int l = 0; l < 6; ++l) {
+            for (int l = 0; l < 6; ++l) {
                 matrices.pushPose();
                 side = c.skyBoxProperties.sides.get(l);
                 if (c.solidColor == null) {
                     RenderSystem.setShaderTexture(0, side.texture);
                     RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-                }
-                else {
+                } else {
                     RenderSystem.setShader(GameRenderer::getPositionColorShader);
                 }
                 if (l == 0) {
@@ -514,8 +483,7 @@ public class LevelRendererMixin {
                     BufferUploader.drawWithShader(bufferBuilder.end());
 
                     RenderSystem.enableTexture();
-                }
-                else {
+                } else {
                     uvX = (float) Util.solveEquation(side.uvX, Util.getReplaceMapNormal());
                     uvY = (float) Util.solveEquation(side.uvY, Util.getReplaceMapNormal());
                     uvSizeX = (float) Util.solveEquation(side.uvSizeX, Util.getReplaceMapNormal());

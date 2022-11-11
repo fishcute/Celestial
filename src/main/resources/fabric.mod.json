@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "celestial",
+  "version": "${version}",
+  "name": "Celestial",
+  "description": "Allows you to customize the sky",
+  "authors": [
+    "fishcute"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/celestial/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "fishcute.celestial.CelestialClient"
+    ]
+  },
+  "mixins": [
+    "celestial.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.9",
+    "fabric": "*",
+    "minecraft": ">=1.19"
+  }
+}

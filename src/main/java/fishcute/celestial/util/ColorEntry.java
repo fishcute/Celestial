@@ -2,6 +2,8 @@ package fishcute.celestial.util;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import fishcute.celestial.CelestialClient;
+import fishcute.celestial.sky.CelestialEnvironmentRenderInfo;
 import fishcute.celestial.sky.CelestialSky;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -11,6 +13,8 @@ import java.util.ArrayList;
 
 public class ColorEntry {
     public static ColorEntry createColorEntry(JsonObject o, String elementName, ColorEntry defaultEntry) {
+        if (o == null)
+            return defaultEntry;
         try {
             o.get(elementName).getAsJsonObject().getAsJsonArray(elementName);
         }
@@ -22,26 +26,36 @@ public class ColorEntry {
         JsonObject skyColors = o.get(elementName).getAsJsonObject();
 
         ArrayList<MutablePair<Color, String>> colors = new ArrayList<>();
-        Color baseColor = Util.decodeColor(Util.getOptionalString(skyColors, "base_color", "#ffffff"));
+        String baseColor = Util.getOptionalString(skyColors, "base_color", "#ffffff");
 
         if (skyColors.has("colors"))
-            for (JsonElement color : skyColors.getAsJsonArray("colors")) {
-                colors.add(new MutablePair<>(
-                        Util.decodeColor(Util.getOptionalString(color.getAsJsonObject(), "color", "#ffffff")),
-                        Util.getOptionalString(color.getAsJsonObject(), "alpha", "0")
-                ));
+            try {
+                for (JsonElement color : skyColors.getAsJsonArray("colors")) {
+                    colors.add(new MutablePair<>(
+                            Util.decodeColor(Util.getOptionalString(color.getAsJsonObject(), "color", "#ffffff")),
+                            Util.getOptionalString(color.getAsJsonObject(), "alpha", "0")
+                    ));
+                }
+            }
+            catch (Exception e) {
+                Util.sendErrorInGame("Failed to parse color entry \"" + elementName + "\".", false);
             }
         return new ColorEntry(colors, baseColor, Util.getOptionalInteger(skyColors, "update_frequency", 0));
     }
-    public ColorEntry(ArrayList<MutablePair<Color, String>> colors, Color baseColor, int updateFrequency) {
+    public ColorEntry(ArrayList<MutablePair<Color, String>> colors, String baseColor, int updateFrequency) {
         this.colors = colors;
-        this.baseColor = baseColor;
+        if (baseColor.equals("inherit")) {
+            this.inheritColor = true;
+        }
+        else
+            this.baseColor = Util.decodeColor(baseColor);
         this.updateFrequency = updateFrequency;
     }
 
     public ColorEntry(Color color) {
         this.storedColor = color;
         this.isBasicColor = true;
+        this.inheritColor = false;
     }
 
     public void tick() {
@@ -57,13 +71,20 @@ public class ColorEntry {
 
     public boolean isBasicColor = false;
     public ArrayList<MutablePair<Color, String>> colors;
-    public Color baseColor;
+    public Color baseColor = new Color(255, 255, 255);
+
+    public boolean inheritColor;
 
     public Color storedColor = new Color(255, 255, 255);
 
     public int updateFrequency;
 
     public int updateTick;
+
+    public void setInheritColor(Color c) {
+        if (this.inheritColor)
+            this.baseColor = c;
+    }
 
     public void updateColor() {
         this.storedColor = getResultColor();

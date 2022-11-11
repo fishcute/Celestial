@@ -6,17 +6,18 @@ import com.google.gson.JsonObject;
 import fishcute.celestial.sky.CelestialSky;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.MutableTriple;
+import net.minecraft.world.level.biome.Biome;
+import oshi.util.tuples.Pair;
 
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.*;
 
 public class Util {
-
     static Random random = new Random();
 
     static DecimalFormat numberFormat = new DecimalFormat("#.00000000");
@@ -70,6 +71,33 @@ public class Util {
                 builder.replace(index, index + result.length() + 17, numberFormat.format(getDistanceToArea(result)));
             else
                 sendErrorInGame("Failed to parse #isInArea variable at index " + index, false);
+        }
+
+        // Checks for #isInBiome
+        for (int index = builder.indexOf("#isInBiome"); index >= 0; index = builder.indexOf("#isInBiome", index + 1)) {
+            result = parseStringVariable(builder.toString(), index, 10);
+            if (result != null)
+                builder.replace(index, index + result.length() + 12, numberFormat.format(isInBiome(result) ? 1 : 0));
+            else
+                sendErrorInGame("Failed to parse #isInBiome variable at index " + index, false);
+        }
+
+        // Checks for #distanceToBiomeIgnoreY
+        for (int index = builder.indexOf("#distanceToBiomeIgnoreY"); index >= 0; index = builder.indexOf("#distanceToBiomeIgnoreY", index + 1)) {
+            result = parseStringVariable(builder.toString(), index, 23);
+            if (result != null)
+                builder.replace(index, index + result.length() + 25, numberFormat.format(getBiomeBlendIgnoreY(result)));
+            else
+                sendErrorInGame("Failed to parse #distanceToBiomeIgnoreY variable at index " + index, false);
+        }
+
+        // Checks for #distanceToBiome
+        for (int index = builder.indexOf("#distanceToBiome"); index >= 0; index = builder.indexOf("#distanceToBiome", index + 1)) {
+            result = parseStringVariable(builder.toString(), index, 16);
+            if (result != null)
+                builder.replace(index, index + result.length() + 18, numberFormat.format(getBiomeBlend(result)));
+            else
+                sendErrorInGame("Failed to parse #distanceToBiome variable at index " + index, false);
         }
 
         // Checks for #distanceTo
@@ -223,6 +251,17 @@ public class Util {
                         break;
                     case "tan":
                         x = Math.tan(Math.toRadians(x));
+                    case "arctan":
+                        x = Math.atan(Math.toRadians(x));
+                    case "arcsin":
+                        x = Math.asin(Math.toRadians(x));
+                    case "arccos":
+                        x = Math.acos(Math.toRadians(x));
+                    case "abs":
+                        x = Math.abs(x);
+                        break;
+                    case "radians":
+                        x = Math.toRadians(x);
                         break;
                     case "floor":
                         x = Math.floor(x);
@@ -279,7 +318,7 @@ public class Util {
     }
 
     static void print(double i) {
-        Minecraft.getInstance().player.displayClientMessage(Component.literal("Value: " + i), true);
+        sendMessage("Value: " + i, true);
     }
     public static void log(Object i) {
         if (!Minecraft.getInstance().isPaused())
@@ -303,19 +342,13 @@ public class Util {
         if (errorList.contains(i) || errorList.size() > 25)
             return;
         errorList.add(i);
-        Minecraft.getInstance().player.displayClientMessage(Component.literal(ChatFormatting.RED +
-                "[Celestial] " + i
-        ), false);
+        sendMessage(ChatFormatting.RED + "[Celestial] " + i, false);
 
         if (errorList.size() >= 25)
-            Minecraft.getInstance().player.displayClientMessage(Component.literal(ChatFormatting.RED +
-                    "[Celestial] Passing 25 error messages. Muting error messages."
-            ), false);
+            sendMessage(ChatFormatting.RED + "[Celestial] Passing 25 error messages. Muting error messages.", false);
 
         if (unloadResources) {
-            Minecraft.getInstance().player.displayClientMessage(Component.literal(ChatFormatting.RED +
-                    "[Celestial] Unloading Celestial resources."
-            ), false);
+            sendMessage(ChatFormatting.RED + "[Celestial] Unloading Celestial resources.", false);
         }
     }
 
@@ -325,9 +358,11 @@ public class Util {
         if (errorList.contains(i))
             return;
         errorList.add(i);
-        Minecraft.getInstance().player.displayClientMessage(Component.literal(ChatFormatting.YELLOW +
-                "[Celestial] " + i
-        ), false);
+        sendMessage(ChatFormatting.YELLOW + "[Celestial] " + i, false);
+    }
+
+    public static void sendMessage(String text, boolean actionBar) {
+        Minecraft.getInstance().player.displayClientMessage(Component.literal(text), actionBar);
     }
 
     public static boolean getOptionalBoolean(JsonObject o, String toGet, boolean ifNull) {
@@ -446,6 +481,15 @@ public class Util {
         toReplaceMap.put("#isRightClicking", new DynamicValue() {@Override public double getValue() { return
                 isRightClicking() ? 1 : 0;
         }});
+        toReplaceMap.put("#pi", new DynamicValue() {@Override public double getValue() { return
+                Math.PI;
+        }});
+        toReplaceMap.put("#viewDistance", new DynamicValue() {@Override public double getValue() { return
+                Minecraft.getInstance().options.getEffectiveRenderDistance();
+        }});
+        toReplaceMap.put("#moonPhase", new DynamicValue() {@Override public double getValue() {return
+            Minecraft.getInstance().level.getMoonPhase();
+        }});
 
         toReplaceMap.putAll(extraValues);
     }
@@ -467,48 +511,76 @@ public class Util {
         public abstract double getValue();
     }
 
-    //I have nightmares about ArrayList<MutablePair<MutableTriple<String, String, String>, MutablePair<String, String>>>
-    //This was a mistake
-    public static ArrayList<MutablePair<MutableTriple<String, String, String>, MutablePair<String, String>>> convertToPointUvList(ArrayList<String> array) {
-        //There's always a better way to do things, and here, I really don't care.
+    public static ArrayList<VertexPoint> convertToPointUvList(JsonObject o, String name) {
 
-        ArrayList<MutablePair<MutableTriple<String, String, String>, MutablePair<String, String>>> returnArray = new ArrayList<>();
-        String[] splitString1;
-        String[] splitString2;
+        ArrayList<VertexPoint> returnList = new ArrayList<>();
         try {
-            if (array == null)
+            if (!o.has(name))
                 return new ArrayList<>();
-            for (String i : array) {
-                //1, 2, 3 : 1, 2
-
-                // If there is UV stuff
-                if (i.contains(":")) {
-
-                    //vertex points
-                    String a = i.split(":")[0];
-
-                    //uv
-                    String b = i.split(":")[1];
-
-                    splitString1 = a.split(",");
-                    splitString2 = b.split(",");
-                    returnArray.add(new MutablePair<>(new MutableTriple<>(splitString1[0], splitString1[1], splitString1[2]), new MutablePair<>(splitString2[0], splitString2[1])));
-                }
-                // If there is no UV stuff
-                else {
-                    splitString1 = i.split(",");
-                    returnArray.add(new MutablePair<>(new MutableTriple<>(splitString1[0], splitString1[1], splitString1[2]), new MutablePair<>("0", "0")));
-                }
+            for (JsonElement e : o.getAsJsonArray(name)) {
+                JsonObject entry = e.getAsJsonObject();
+                returnList.add(
+                    new VertexPoint(
+                         getOptionalString(entry, "x", ""),
+                         getOptionalString(entry, "y", ""),
+                         getOptionalString(entry, "z", ""),
+                         getOptionalString(entry, "uv_x", null),
+                         getOptionalString(entry, "uv_y", null)
+                    )
+                );
             }
-            return returnArray;
         }
         catch (Exception e) {
-            warn("Failed to parse vertex point array \"" + array.toString() + "\"");
+            sendErrorInGame("Failed to parse vertex point list \"" + name + "\".", false);
             return new ArrayList<>();
+        }
+
+        return returnList;
+    }
+
+    public static class VertexPoint {
+        public String pointX;
+        public String pointY;
+        public String pointZ;
+        public String uvX = null;
+        public String uvY = null;
+
+        public boolean hasUv;
+
+        public VertexPoint(String pointX, String pointY, String pointZ, String uvX, String uvY) {
+            this.pointX = pointX;
+            this.pointY = pointY;
+            this.pointZ = pointZ;
+
+            this.hasUv = uvX != null || uvY != null;
+
+            this.uvX = uvX;
+            this.uvY = uvY;
         }
     }
 
-    static String[] a;
+    public static class VertexPointValue {
+        public double pointX;
+        public double pointY;
+        public double pointZ;
+        public double uvX = 0;
+        public double uvY = 0;
+
+        public boolean hasUv;
+
+        public VertexPointValue(VertexPoint point) {
+            this.pointX = Util.solveEquation(point.pointX, Util.getReplaceMapNormal());
+            this.pointY = Util.solveEquation(point.pointY, Util.getReplaceMapNormal());
+            this.pointZ = Util.solveEquation(point.pointZ, Util.getReplaceMapNormal());
+
+            this.hasUv = point.hasUv;
+
+            if (this.hasUv) {
+                this.uvX = Util.solveEquation(point.uvX, Util.getReplaceMapNormal());
+                this.uvY = Util.solveEquation(point.uvY, Util.getReplaceMapNormal());
+            }
+        }
+    }
 
     public static boolean isUsing(String item) {
         return Minecraft.getInstance().mouseHandler.isRightPressed() && isHolding(item);
@@ -528,9 +600,9 @@ public class Util {
 
     public static boolean isHolding(String item) {
         if (item.contains(":")) {
-            a = item.split(":");
-            return (Registry.ITEM.getKey(Minecraft.getInstance().player.getMainHandItem().getItem()).getNamespace().equals(a[0])) &&
-                    (Registry.ITEM.getKey(Minecraft.getInstance().player.getMainHandItem().getItem()).getPath().equals(a[1]));
+            String[] str = item.split(":");
+            return (Registry.ITEM.getKey(Minecraft.getInstance().player.getMainHandItem().getItem()).getNamespace().equals(str[0])) &&
+                    (Registry.ITEM.getKey(Minecraft.getInstance().player.getMainHandItem().getItem()).getPath().equals(str[1]));
         }
         else {
             return (Registry.ITEM.getKey(Minecraft.getInstance().player.getMainHandItem().getItem()).getPath().equals(item));
@@ -555,17 +627,17 @@ public class Util {
         try {
             String[] str = arguments.split(",");
 
-            return Math.sqrt((Minecraft.getInstance().player.getX() - Double.parseDouble(str[0])) *
-                        (Minecraft.getInstance().player.getX() - Double.parseDouble(str[0])) +
-                        (Minecraft.getInstance().player.getY() - Double.parseDouble(str[1])) *
-                        (Minecraft.getInstance().player.getY() - Double.parseDouble(str[1])) +
-                        (Minecraft.getInstance().player.getZ() - Double.parseDouble(str[2])) *
-                        (Minecraft.getInstance().player.getZ() - Double.parseDouble(str[2])));
+            return distanceTo(Minecraft.getInstance().player.getX(), Minecraft.getInstance().player.getY(), Minecraft.getInstance().player.getZ(),
+                    Double.parseDouble(str[0]), Double.parseDouble(str[1]), Double.parseDouble(str[2]));
             }
         catch (Exception e) {
             sendErrorInGame("Failed to parse #distanceTo variable with arguments \"" + arguments + "\".", false);
             return 0;
         }
+    }
+
+    public static double distanceTo(double x1, double y1, double z1, double x2, double y2, double z2) {
+        return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2));
     }
 
     static float getDistance(float a, float b){
@@ -628,5 +700,129 @@ public class Util {
                 ),
                 axisDistances[2]
         );
+    }
+
+    public static double getBiomeBlend(String arguments) {
+        String[] a = arguments.split(",");
+        try {
+            if (a.length == 1)
+                return getBiomeBlend(a[0], 6);
+            return getBiomeBlend(a[0], Integer.parseInt(a[1].replaceAll("\\s", "")));
+        }
+        catch (Exception e) {
+            sendErrorInGame("Failed to parse arguments \"" + arguments + "\" for #distanceToBiome variable.", false);
+            return 0;
+        }
+    }
+
+    public static double getBiomeBlend(String biomeName, int searchDistance) {
+        if (isInBiome(biomeName))
+            return 1;
+        boolean foundSpot = false;
+        double dist;
+        double closestDist = searchDistance;
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+        for (int i = -searchDistance; i <= searchDistance; i++) {
+            for (int j = -searchDistance; j <= searchDistance; j++) {
+                for (int k = -searchDistance; k <= searchDistance; k++) {
+                    pos.set(i + Minecraft.getInstance().player.getX(), j + Minecraft.getInstance().player.getY(), k + Minecraft.getInstance().player.getZ());
+                    dist = distanceTo(pos.getX(), pos.getY(), pos.getZ(),
+                            Minecraft.getInstance().player.getX(),
+                            Minecraft.getInstance().player.getY(),
+                            Minecraft.getInstance().player.getZ());
+                    if (equalToBiome(
+                            Minecraft.getInstance().level.getBiome(pos), biomeName) && (
+                                    !foundSpot || dist < closestDist
+                            )
+                    ) {
+                        closestDist = getDistanceToArea(pos.getX() - 0.5, pos.getY() - 0.5, pos.getZ() + 0.5, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+                        foundSpot = true;
+                    }
+                }
+            }
+        }
+
+        if (foundSpot) {
+            double a = 0.05 * searchDistance;
+            a = 0.2 + Math.max(a, 0.25);
+            closestDist = ((closestDist - a) / searchDistance) > 1 ? 1 : ((closestDist - a) / searchDistance);
+            closestDist = closestDist < 0 ? 0 : closestDist;
+            closestDist = 1 - closestDist;
+            return closestDist;
+        }
+        return 0;
+    }
+
+    public static double getBiomeBlendIgnoreY(String arguments) {
+        String[] a = arguments.split(",");
+        try {
+            if (a.length == 1)
+                return getBiomeBlendIgnoreY(a[0], 6, Minecraft.getInstance().player.getY());
+            else if (a.length == 2)
+                return getBiomeBlendIgnoreY(a[0], Integer.parseInt(a[1].replaceAll("\\s", "")), Minecraft.getInstance().player.getY());
+            return getBiomeBlendIgnoreY(a[0], Integer.parseInt(a[1].replaceAll("\\s", "")), Double.parseDouble(a[2].replaceAll("\\s", "")));
+        }
+        catch (Exception e) {
+            sendErrorInGame("Failed to parse arguments \"" + arguments + "\" for #distanceToBiomeIgnoreY variable.", false);
+            return 0;
+        }
+    }
+
+    public static double getBiomeBlendIgnoreY(String biomeName, int searchDistance, double yLevel) {
+        if (isInBiome(biomeName))
+            return 1;
+        boolean foundSpot = false;
+        double dist;
+        double closestDist = searchDistance;
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+        for (int i = -searchDistance; i <= searchDistance; i++) {
+                for (int k = -searchDistance; k <= searchDistance; k++) {
+                    pos.set(i + Minecraft.getInstance().player.getX(), yLevel, k + Minecraft.getInstance().player.getZ());
+                    dist = distanceTo(pos.getX(), yLevel, pos.getZ(),
+                            Minecraft.getInstance().player.getX(),
+                            yLevel,
+                            Minecraft.getInstance().player.getZ());
+                    if (equalToBiome(
+                            Minecraft.getInstance().level.getBiome(pos), biomeName) && (
+                            !foundSpot || dist < closestDist
+                    )
+                    ) {
+                        closestDist = dist;
+                        foundSpot = true;
+                    }
+            }
+        }
+
+        if (foundSpot) {
+            double a = 0.05 * searchDistance;
+            a = 0.2 + Math.max(a, 0.25);
+            closestDist = ((closestDist - a) / searchDistance) > 1 ? 1 : ((closestDist - a) / searchDistance);
+            closestDist = closestDist < 0 ? 0 : closestDist;
+            closestDist = 1 - closestDist;
+            return closestDist;
+        }
+        return 0;
+    }
+
+    //TODO: Allow for simple biome names (eg. plains, swamp, not minecraft:plains)
+
+    public static boolean isInBiome(String biome) {
+        return equalToBiome(Minecraft.getInstance().level.getBiome(Minecraft.getInstance().player.blockPosition()), biome);
+    }
+
+    static HashMap<Biome, Pair<String, String>> biomeNameMap = new HashMap<>();
+
+    static void addToBiomeMap(Holder<Biome> b) {
+        biomeNameMap.put(b.value(),
+                new Pair<>(
+                        b.unwrapKey().get().location().getNamespace() + ":" + b.unwrapKey().get().location().getPath(),
+                        b.unwrapKey().get().location().getPath()
+                ));
+    }
+
+    public static boolean equalToBiome(Holder<Biome> b, String name) {
+        if (!biomeNameMap.containsKey(b.value()))
+            addToBiomeMap(b);
+        return biomeNameMap.get(b.value()).getA().equals(name) || biomeNameMap.get(b.value()).getB().equals(name);
     }
 }

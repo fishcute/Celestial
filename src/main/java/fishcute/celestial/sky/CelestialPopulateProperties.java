@@ -1,7 +1,10 @@
 package fishcute.celestial.sky;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fishcute.celestial.util.Util;
+
+import java.util.ArrayList;
 
 public class CelestialPopulateProperties {
     public final int count;
@@ -101,5 +104,38 @@ public class CelestialPopulateProperties {
                 object.solidColor,
                 object.vertexList
                 );
+    }
+
+    public CelestialObjectPopulation generatePopulateObjects(CelestialObject base, JsonObject populate) {
+        ArrayList<CelestialObject> objectList = new ArrayList<>();
+        for (int i = 0; i <= this.count; i++) {
+            objectList.add(this.generateObject(base));
+        }
+
+        if (populate.has("objects")) {
+            for (JsonElement e : populate.getAsJsonArray("objects")) {
+                JsonObject o = e.getAsJsonObject();
+                objectList.add(new CelestialObject(
+                    base.type, base.texture, base.scale,
+                        Util.getOptionalDouble(o, "scale", 0),
+                        Util.getOptionalDouble(o, "pos_x", 0),
+                        Util.getOptionalDouble(o, "pos_y", 0),
+                        Util.getOptionalDouble(o, "pos_z", 0),
+                        base.distance,
+                        Util.getOptionalDouble(o, "distance", 0),
+                        Util.getOptionalDouble(o, "degrees_x", 0),
+                        Util.getOptionalDouble(o, "degrees_y", 0),
+                        Util.getOptionalDouble(o, "degrees_z", 0),
+                        base.baseDegreesX,
+                        base.baseDegreesY,
+                        base.baseDegreesZ,
+                        base.celestialObjectProperties,
+                        base.solidColor,
+                        base.vertexList
+                ));
+            }
+        }
+
+        return new CelestialObjectPopulation(objectList, base, this.perObjectCalculations);
     }
 }

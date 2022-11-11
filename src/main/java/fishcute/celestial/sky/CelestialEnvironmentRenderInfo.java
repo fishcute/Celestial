@@ -16,14 +16,16 @@ public class CelestialEnvironmentRenderInfo {
     public final boolean hasThickFog;
     public final ColorEntry fogColor;
     public final ColorEntry skyColor;
-    public final int cloudHeight;
+    public final String cloudHeight;
     public final ColorEntry cloudColor;
     public final String fogStart;
     public final String fogEnd;
     public final ColorEntry twilightColor;
     public final String twilightAlpha;
 
-    public CelestialEnvironmentRenderInfo(boolean hasThickFog, ColorEntry fogColor, ColorEntry skyColor, int cloudHeight, ColorEntry cloudColor, String fogStart, String fogEnd, ColorEntry twilightColor, String twilightAlpha) {
+    public final String voidCullingLevel;
+
+    public CelestialEnvironmentRenderInfo(boolean hasThickFog, ColorEntry fogColor, ColorEntry skyColor, String cloudHeight, ColorEntry cloudColor, String fogStart, String fogEnd, ColorEntry twilightColor, String twilightAlpha, String voidCullingLevel) {
         this.hasThickFog = hasThickFog;
         this.fogColor = fogColor;
         this.skyColor = skyColor;
@@ -33,6 +35,7 @@ public class CelestialEnvironmentRenderInfo {
         this.fogEnd = fogEnd;
         this.twilightColor = twilightColor;
         this.twilightAlpha = twilightAlpha;
+        this.voidCullingLevel = voidCullingLevel;
     }
 
     public final static ColorEntry DEFAULT_COLOR_SKY = new ColorEntry(Util.decodeColor("#78a7ff"));
@@ -47,12 +50,13 @@ public class CelestialEnvironmentRenderInfo {
             false,
             DEFAULT_COLOR_FOG,
             DEFAULT_COLOR_SKY,
-            128,
+            "128",
             DEFAULT_COLOR_CLOUD,
             "-1",
             "-1",
             DEFAULT_COLOR_TWILIGHT,
-            "1"
+            "1",
+            "0"
     );
     public static CelestialEnvironmentRenderInfo createEnvironmentRenderInfoFromJson(JsonObject o, String dimension) {
         if (o == null) {
@@ -70,12 +74,13 @@ public class CelestialEnvironmentRenderInfo {
                 Util.getOptionalBoolean(fog, "has_thick_fog", false),
                 ColorEntry.createColorEntry(environment, "fog_color", DEFAULT_COLOR_FOG),
                 ColorEntry.createColorEntry(environment, "sky_color", DEFAULT_COLOR_SKY),
-                Util.getOptionalInteger(clouds, "height", 128),
+                Util.getOptionalString(clouds, "height", "128"),
                 ColorEntry.createColorEntry(clouds, "color", DEFAULT_COLOR_CLOUD),
                 Util.getOptionalString(fog, "fog_start", "-1"),
                 Util.getOptionalString(fog, "fog_end", "-1"),
                 ColorEntry.createColorEntry(environment, "twilight_color", DEFAULT_COLOR_TWILIGHT),
-                Util.getOptionalString(environment, "twilight_alpha", "1")
+                Util.getOptionalString(environment, "twilight_alpha", "1"),
+                Util.getOptionalString(environment, "void_culling_level", "0")
         );
     }
 

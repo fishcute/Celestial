@@ -98,6 +98,7 @@ public class CelestialSky {
     public static boolean forceUpdateVariables = false;
 
     public static HashMap<String, Util.DynamicValue> setupVariables() {
+        variables.clear();
         try {
             getFile("celestial:sky/variables.json").getAsJsonArray("variables").toString();
         }
@@ -111,15 +112,24 @@ public class CelestialSky {
 
         int variableCount = 0;
         for (JsonElement o : getFile("celestial:sky/variables.json").getAsJsonArray("variables")) {
-            variables.put("#" + Util.getOptionalString(o.getAsJsonObject(), "name", "undefined"),
-                    new Variable(Util.getOptionalString(o.getAsJsonObject(), "value", "0"), Util.getOptionalInteger(o.getAsJsonObject(), "update_frequency", 0)));
-            variableReplaceMap.put("#" + Util.getOptionalString(o.getAsJsonObject(), "name", "undefined"),
-                    new Util.DynamicValue() {@Override
-                    public double getValue() {return
-                            variables.get("#" + Util.getOptionalString(o.getAsJsonObject(), "name", "undefined")).storedValue;
-                    }}
-            );
-            variableCount++;
+            try {
+                variables.put("#" + Util.getOptionalString(o.getAsJsonObject(), "name", "undefined"),
+                        new Variable(Util.getOptionalString(o.getAsJsonObject(), "value", "0"), Util.getOptionalInteger(o.getAsJsonObject(), "update_frequency", 0)));
+                variableReplaceMap.put("#" + Util.getOptionalString(o.getAsJsonObject(), "name", "undefined"),
+                        new Util.DynamicValue() {
+                            @Override
+                            public double getValue() {
+                                return
+                                        variables.get("#" + Util.getOptionalString(o.getAsJsonObject(), "name", "undefined")).storedValue;
+                            }
+                        }
+                );
+                variableCount++;
+            }
+            catch (Exception e) {
+                Util.sendErrorInGame("Failed to load empty variable entry. Skipping variable initialization.", false);
+                break;
+            }
         }
 
         Util.log("Registered " + variableCount + " variable(s).");

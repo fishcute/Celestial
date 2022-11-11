@@ -1,11 +1,11 @@
 package fishcute.celestial;
 
 import fishcute.celestial.util.Util;
-import net.minecraftforge.fml.common.Mod;
+import net.fabricmc.api.ClientModInitializer;
 
-@Mod("celestial")
-public class CelestialClient {
-    public CelestialClient() {
+public class CelestialClient implements ClientModInitializer {
+    @Override
+    public void onInitializeClient() {
         Util.log("Loading Celestial");
     }
 }
