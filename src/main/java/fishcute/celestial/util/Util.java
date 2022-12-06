@@ -6,15 +6,23 @@ import com.google.gson.JsonObject;
 import fishcute.celestial.sky.CelestialSky;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.CubicSampler;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.phys.Vec3;
 import oshi.util.tuples.Pair;
 
 import java.awt.*;
 import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 public class Util {
@@ -393,8 +401,8 @@ public class Util {
         return toReturn;
     }
 
-    public static int getDecimal(String hex){
-        String digits = "0123456789ABCDEF";
+    private static final String digits = "0123456789ABCDEF";
+    public static int getDecimal(String hex) {
         hex = hex.toUpperCase();
         int val = 0;
         for (int i = 0; i < hex.length(); i++)
@@ -416,6 +424,12 @@ public class Util {
 
     public static Color decodeColor(String hex) {
         try {
+            switch (hex) {
+                case "#skyColor":
+                    return Util.getSkyColor();
+                case "#fogColor":
+                    return Util.getFogColor();
+            }
             return Color.decode(hex.startsWith("#") ? hex : "#" + hex);
         }
         catch (Exception ignored) {
@@ -443,7 +457,7 @@ public class Util {
                 Minecraft.getInstance().getFrameTime();
         }});
         toReplaceMap.put("#dayLight", new DynamicValue() {@Override public double getValue() { return
-                1.0F - Minecraft.getInstance().level.getStarBrightness(Minecraft.getInstance().getFrameTime());
+                getDayLight();
         }});
         toReplaceMap.put("#rainGradient", new DynamicValue() {@Override public double getValue() { return
                 1.0F - Minecraft.getInstance().level.getRainLevel(Minecraft.getInstance().getFrameTime());
@@ -490,8 +504,67 @@ public class Util {
         toReplaceMap.put("#moonPhase", new DynamicValue() {@Override public double getValue() {return
             Minecraft.getInstance().level.getMoonPhase();
         }});
+        toReplaceMap.put("#localDayOfYear", new DynamicValue() {@Override public double getValue() {return
+                LocalDate.now().getDayOfYear();
+        }});
+        toReplaceMap.put("#localDayOfMonth", new DynamicValue() {@Override public double getValue() {return
+                LocalDate.now().getDayOfMonth();
+        }});
+        toReplaceMap.put("#localDayOfWeek", new DynamicValue() {@Override public double getValue() {return
+                LocalDate.now().getDayOfWeek().getValue();
+        }});
+        toReplaceMap.put("#localMonth", new DynamicValue() {@Override public double getValue() {return
+                LocalDate.now().getMonthValue();
+        }});
+        toReplaceMap.put("#localYear", new DynamicValue() {@Override public double getValue() {return
+                LocalDate.now().getYear();
+        }});
+        toReplaceMap.put("#localSecondOfHour", new DynamicValue() {@Override public double getValue() {return
+                LocalDate.now().atTime(LocalTime.now()).getSecond();
+        }});
+        toReplaceMap.put("#localMinuteOfHour", new DynamicValue() {@Override public double getValue() {return
+                LocalDate.now().atTime(LocalTime.now()).getMinute();
+        }});
+        toReplaceMap.put("#localSecondOfDay", new DynamicValue() {@Override public double getValue() {return
+                getTotalSeconds();
+        }});
+        toReplaceMap.put("#localMinuteOfDay", new DynamicValue() {@Override public double getValue() {return
+                getTotalMinutes();
+        }});
+        toReplaceMap.put("#localHour", new DynamicValue() {@Override public double getValue() {return
+                LocalDate.now().atTime(LocalTime.now()).getHour();
+        }});
+        toReplaceMap.put("#skyDarken", new DynamicValue() {@Override public double getValue() {return
+                Minecraft.getInstance().level.getSkyDarken();
+        }});
+        toReplaceMap.put("#lightningFlashTime", new DynamicValue() {@Override public double getValue() {return
+                Minecraft.getInstance().level.getSkyFlashTime();
+        }});
+        toReplaceMap.put("#thunderGradient", new DynamicValue() {@Override public double getValue() {return
+                Minecraft.getInstance().level.getThunderLevel(Minecraft.getInstance().getFrameTime());
+        }});
+        toReplaceMap.put("#skyLightLevel", new DynamicValue() {@Override public double getValue() {return
+                Minecraft.getInstance().level.getBrightness(LightLayer.SKY, Minecraft.getInstance().player.blockPosition());
+        }});
+        toReplaceMap.put("#blockLightLevel", new DynamicValue() {@Override public double getValue() {return
+                Minecraft.getInstance().level.getBrightness(LightLayer.BLOCK, Minecraft.getInstance().player.blockPosition());
+        }});
+        toReplaceMap.put("#twilightAlpha", new DynamicValue() {@Override public double getValue() {
+            float g = Mth.cos(Minecraft.getInstance().level.getTimeOfDay(Minecraft.getInstance().getFrameTime()) * 6.2831855F) - 0.0F;
+            if (g >= -0.4F && g <= 0.4F)
+                return Math.pow(1.0F - (1.0F - Mth.sin(((g + 0.0F) / 0.4F * 0.5F + 0.5F) * 3.1415927F)) * 0.99F, 2);
+            return 0;
+        }});
 
         toReplaceMap.putAll(extraValues);
+    }
+
+    public static int getTotalSeconds() {
+        return (getTotalMinutes() * 60) + LocalDate.now().atTime(LocalTime.now()).getSecond();
+    }
+
+    public static int getTotalMinutes() {
+        return (LocalDate.now().atTime(LocalTime.now()).getHour() * 60) + LocalDate.now().atTime(LocalTime.now()).getMinute();
     }
     public static HashMap<String, DynamicValue> getReplaceMapNormal() {
         return toReplaceMap;
@@ -509,6 +582,25 @@ public class Util {
 
     public static abstract class DynamicValue {
         public abstract double getValue();
+    }
+
+    public static class MutableDynamicValue extends DynamicValue {
+        public double value;
+        public double getValue() {
+            return this.value;
+        }
+
+        public MutableDynamicValue() {
+            this.value = 0;
+        }
+
+        public MutableDynamicValue(double value) {
+            this.value = value;
+        }
+
+        public MutableDynamicValue clone() {
+            return new MutableDynamicValue(this.value);
+        }
     }
 
     public static ArrayList<VertexPoint> convertToPointUvList(JsonObject o, String name) {
@@ -824,5 +916,32 @@ public class Util {
         if (!biomeNameMap.containsKey(b.value()))
             addToBiomeMap(b);
         return biomeNameMap.get(b.value()).getA().equals(name) || biomeNameMap.get(b.value()).getB().equals(name);
+    }
+
+    public static boolean getRealSkyColor = false;
+    public static boolean getRealFogColor = false;
+
+    public static Color getSkyColor() {
+        getRealSkyColor = true;
+        Vec3 vec33 = CubicSampler.gaussianSampleVec3(Minecraft.getInstance().player.position(), (ix, jx, kx) -> {
+            return Vec3.fromRGB24((Minecraft.getInstance().level.getBiome(new BlockPos(ix, jx, kx)).value()).getSkyColor());
+        });
+        getRealSkyColor = false;
+
+        return new Color((int) (vec33.x * 255), (int) (vec33.y * 255), (int) (vec33.z * 255));
+    }
+
+    public static Color getFogColor() {
+        getRealFogColor = true;
+        Vec3 vec33 = CubicSampler.gaussianSampleVec3(Minecraft.getInstance().player.position(), (ix, jx, kx) -> {
+            return Vec3.fromRGB24((Minecraft.getInstance().level.getBiome(new BlockPos(ix, jx, kx)).value()).getFogColor());
+        });
+        getRealFogColor = false;
+
+        return new Color((int) (vec33.x * 255), (int) (vec33.y * 255), (int) (vec33.z * 255));
+    }
+
+    public static float getDayLight() {
+        return 1 - (float) (1 + ((Minecraft.getInstance().level.getStarBrightness(Minecraft.getInstance().getFrameTime()) - 0.5) * 2));
     }
 }

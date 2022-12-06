@@ -34,7 +34,12 @@ public class CelestialSky {
     }
 
     public static CelestialRenderInfo getDimensionRenderInfo() {
-        return dimensionSkyMap.get(Minecraft.getInstance().level.dimension().location().getPath());
+        try {
+            return dimensionSkyMap.get(Minecraft.getInstance().level.dimension().location().getPath());
+        }
+        catch (Exception e) {
+            return null;
+        }
     }
     public static void loadResources() {
         warnings = 0;

@@ -42,11 +42,7 @@ public class DimensionSpecialEffectsMixin {
                 this.rgba[1] = i * i * 0.7F + (CelestialSky.getDimensionRenderInfo().environment.twilightColor.storedColor.getGreen() / 255.0F);
                 this.rgba[2] = i * i * 0.0F + (CelestialSky.getDimensionRenderInfo().environment.twilightColor.storedColor.getBlue() / 255.0F);
 
-                Map<String, Double> toReplaceMap = new java.util.HashMap<>(Map.ofEntries(
-                        entry("#twilightAlpha", (double) j)
-                ));
-
-                this.rgba[3] = Math.min(j, (float) Util.solveEquation(CelestialSky.getDimensionRenderInfo().environment.twilightAlpha, Util.getReplaceMapAdd(toReplaceMap)));
+                this.rgba[3] = Math.min(j, (float) Util.solveEquation(CelestialSky.getDimensionRenderInfo().environment.twilightAlpha, Util.getReplaceMapNormal()));
                 info.setReturnValue(this.rgba);
             } else {
                 info.setReturnValue(null);

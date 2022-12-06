@@ -20,6 +20,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.util.Map.entry;
 
 @Mixin(LevelRenderer.class)
 public class LevelRendererMixin {
@@ -62,11 +66,44 @@ public class LevelRendererMixin {
         return matrix4f;
     }
 
+    private HashMap<String, Util.DynamicValue> replaceMap = new HashMap<>();
+
+    private void setupReplaceMap() {
+        replaceMap = Util.getReplaceMapNormal();
+        Util.DynamicValue v = new Util.DynamicValue() {
+            @Override
+            public double getValue() {
+                return 0;
+            }
+        };
+
+        replaceMap.put("#populateDegreesX", v);
+        replaceMap.put("#populateDegreesY", v);
+        replaceMap.put("#populateDegreesZ", v);
+        replaceMap.put("#populatePosX", v);
+        replaceMap.put("#populatePosY", v);
+        replaceMap.put("#populatePosZ", v);
+        replaceMap.put("#populateDistance", v);
+        replaceMap.put("#populateScale", v);
+        replaceMap.put("#populateId", v);
+    }
+
+    private final Util.MutableDynamicValue a1 = new Util.MutableDynamicValue();
+    private final Util.MutableDynamicValue b1 = new Util.MutableDynamicValue();
+    private final Util.MutableDynamicValue c1 = new Util.MutableDynamicValue();
+    private final Util.MutableDynamicValue d1 = new Util.MutableDynamicValue();
+    private final Util.MutableDynamicValue e1 = new Util.MutableDynamicValue();
+    private final Util.MutableDynamicValue f1 = new Util.MutableDynamicValue();
+    private final Util.MutableDynamicValue g1 = new Util.MutableDynamicValue();
+    private final Util.MutableDynamicValue h1 = new Util.MutableDynamicValue();
+    private final Util.MutableDynamicValue i1 = new Util.MutableDynamicValue();
+
     @Inject(method = "renderSky", at = @At("HEAD"), cancellable = true)
     private void renderSky(PoseStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean bl, Runnable runnable, CallbackInfo info) {
         // In the midst of chaos, there is also opportunity - Sun Tzu
         if (CelestialSky.doesDimensionHaveCustomSky()) {
             info.cancel();
+
             runnable.run();
             FogType fogType = camera.getFluidInCamera();
             if (fogType != FogType.POWDER_SNOW && fogType != FogType.LAVA && !(doesMobEffectBlockSky(camera))) {
@@ -156,23 +193,52 @@ public class LevelRendererMixin {
                 renderOrder.addAll(renderOrderColor);
                 renderOrder.addAll(renderOrderTexture);
 
+                int count;
+
                 for (CelestialObject c : renderOrder) {
+                    count = 0;
 
                     matrices.pushPose();
 
                     if (c.isPopulation()) {
-                        matrices.mulPose(Vector3f.XP.rotationDegrees((float) Util.solveEquation(((CelestialObjectPopulation) c).baseObject.baseDegreesX, Util.getReplaceMapNormal())));
-                        matrices.mulPose(Vector3f.YP.rotationDegrees((float) Util.solveEquation(((CelestialObjectPopulation) c).baseObject.baseDegreesY, Util.getReplaceMapNormal())));
-                        matrices.mulPose(Vector3f.ZP.rotationDegrees((float) Util.solveEquation(((CelestialObjectPopulation) c).baseObject.baseDegreesZ, Util.getReplaceMapNormal())));
 
-                        Object[] dataArray = null;
+                        matrices.mulPose(Vector3f.XP.rotationDegrees((float) Util.solveEquation(((CelestialObjectPopulation) c).baseObject.baseDegreesX, replaceMap)));
+                        matrices.mulPose(Vector3f.YP.rotationDegrees((float) Util.solveEquation(((CelestialObjectPopulation) c).baseObject.baseDegreesY, replaceMap)));
+                        matrices.mulPose(Vector3f.ZP.rotationDegrees((float) Util.solveEquation(((CelestialObjectPopulation) c).baseObject.baseDegreesZ, replaceMap)));
 
-                        if (!((CelestialObjectPopulation) c).perObjectCalculation)
-                            dataArray = getObjectDataArray(((CelestialObjectPopulation) c).baseObject);
+                        // Checks if replace map has special values yet
+                        if (!replaceMap.containsKey("#populateId")) {
+                            setupReplaceMap();
+                        }
+
+                        Object[] dataArray = getObjectDataArray(((CelestialObjectPopulation) c).baseObject, replaceMap);
 
                         for (CelestialObject c2 : ((CelestialObjectPopulation) c).population) {
-                            if (((CelestialObjectPopulation) c).perObjectCalculation)
-                                dataArray = getObjectDataArray(((CelestialObjectPopulation) c).baseObject);
+                            if (((CelestialObjectPopulation) c).perObjectCalculation) {
+                                a1.value = ((float) dataArray[0] + c2.populateDegreesX);
+                                replaceMap.put("#populateDegreesX", a1);
+                                b1.value = ((float) dataArray[1] + c2.populateDegreesY);
+                                replaceMap.put("#populateDegreesY", b1);
+                                c1.value = ((float) dataArray[2] + c2.populateDegreesZ);
+                                replaceMap.put("#populateDegreesZ", c1);
+
+                                d1.value = ((float) dataArray[3] + c2.populatePosX);
+                                replaceMap.put("#populatePosX", d1);
+                                e1.value = ((float) dataArray[4] + c2.populatePosY);
+                                replaceMap.put("#populatePosY", e1);
+                                f1.value = ((float) dataArray[5] + c2.populatePosZ);
+                                replaceMap.put("#populatePosZ", f1);
+
+                                g1.value = ((float) dataArray[7] + c2.populateDistanceAdd);
+                                replaceMap.put("#populateDistance", g1);
+                                h1.value = ((float) dataArray[8] + c2.populateScaleAdd);
+                                replaceMap.put("#populateScale", h1);
+
+                                i1.value = count;
+                                replaceMap.put("#populateId", i1);
+
+                                dataArray = getObjectDataArray(((CelestialObjectPopulation) c).baseObject, replaceMap);
+                            }
 
                             // Making things people will never understand is my passion
                             // The function below this text is truly beautiful, isn't it?
@@ -194,8 +260,10 @@ public class LevelRendererMixin {
                                     (float) dataArray[7],
                                     (float) dataArray[8],
                                     (int) dataArray[9],
-                                    (ArrayList<Util.VertexPointValue>) dataArray[10]
+                                    (ArrayList<Util.VertexPointValue>) dataArray[10],
+                                    replaceMap
                             );
+                            count++;
                         }
                     } else {
                         if (!c.type.equals(CelestialObject.CelestialObjectType.SKYBOX)) {
@@ -216,7 +284,8 @@ public class LevelRendererMixin {
                                     (float) dataArray[7],
                                     (float) dataArray[8],
                                     (int) dataArray[9],
-                                    (ArrayList<Util.VertexPointValue>) dataArray[10]
+                                    (ArrayList<Util.VertexPointValue>) dataArray[10],
+                                    Util.getReplaceMapNormal()
                             );
                         else
                             renderSkyObject(bufferBuilder, matrices,
@@ -236,7 +305,8 @@ public class LevelRendererMixin {
                                     (float) dataArray[7],
                                     (float) dataArray[8],
                                     (int) dataArray[9],
-                                    (ArrayList<Util.VertexPointValue>) dataArray[10]
+                                    (ArrayList<Util.VertexPointValue>) dataArray[10],
+                                    Util.getReplaceMapNormal()
                             );
                     }
 
@@ -273,37 +343,42 @@ public class LevelRendererMixin {
     }
 
     private Object[] getObjectDataArray(CelestialObject c) {
+        return getObjectDataArray(c, Util.getReplaceMapNormal());
+    }
+
+    private Object[] getObjectDataArray(CelestialObject c, HashMap<String, Util.DynamicValue> replaceMap) {
+
         Object[] dataArray = new Object[13];
 
         //degrees x 0
-        dataArray[0] = ((float) Util.solveEquation(c.degreesX, Util.getReplaceMapNormal()));
+        dataArray[0] = ((float) Util.solveEquation(c.degreesX, replaceMap));
 
         //degrees y 1
-        dataArray[1] = ((float) Util.solveEquation(c.degreesY, Util.getReplaceMapNormal()));
+        dataArray[1] = ((float) Util.solveEquation(c.degreesY, replaceMap));
 
         //degrees z 2
-        dataArray[2] = ((float) Util.solveEquation(c.degreesZ, Util.getReplaceMapNormal()));
+        dataArray[2] = ((float) Util.solveEquation(c.degreesZ, replaceMap));
 
         //pos x 3
-        dataArray[3] = ((float) Util.solveEquation(c.posX, Util.getReplaceMapNormal()));
+        dataArray[3] = ((float) Util.solveEquation(c.posX, replaceMap));
 
         //pos y 4
-        dataArray[4] = ((float) Util.solveEquation(c.posY, Util.getReplaceMapNormal()));
+        dataArray[4] = ((float) Util.solveEquation(c.posY, replaceMap));
 
         //pos z 5
-        dataArray[5] = ((float) Util.solveEquation(c.posZ, Util.getReplaceMapNormal()));
+        dataArray[5] = ((float) Util.solveEquation(c.posZ, replaceMap));
 
         //alpha 6
-        dataArray[6] = (((float) Util.solveEquation(c.celestialObjectProperties.alpha, Util.getReplaceMapNormal())));
+        dataArray[6] = (((float) Util.solveEquation(c.celestialObjectProperties.alpha, replaceMap)));
 
         //distance 7
-        dataArray[7] = ((float) Util.solveEquation(c.distance, Util.getReplaceMapNormal()));
+        dataArray[7] = ((float) Util.solveEquation(c.distance, replaceMap));
 
         //scale 8
-        dataArray[8] = ((float) Util.solveEquation(c.scale, Util.getReplaceMapNormal()));
+        dataArray[8] = ((float) Util.solveEquation(c.scale, replaceMap));
 
         //moon phase 9
-        dataArray[9] = ((int) Util.solveEquation(c.celestialObjectProperties.moonPhase, Util.getReplaceMapNormal()));
+        dataArray[9] = ((int) Util.solveEquation(c.celestialObjectProperties.moonPhase, replaceMap));
 
         ArrayList<Util.VertexPointValue> vertexList = new ArrayList<>();
 
@@ -316,9 +391,9 @@ public class LevelRendererMixin {
 
         // colors 11
         dataArray[11] = (new Vector3f(
-                (float) ((Util.solveEquation(c.celestialObjectProperties.red, Util.getReplaceMapNormal()))),
-                (float) ((Util.solveEquation(c.celestialObjectProperties.green, Util.getReplaceMapNormal()))),
-                (float) ((Util.solveEquation(c.celestialObjectProperties.blue, Util.getReplaceMapNormal())))));
+                (float) ((Util.solveEquation(c.celestialObjectProperties.red, replaceMap))),
+                (float) ((Util.solveEquation(c.celestialObjectProperties.green, replaceMap))),
+                (float) ((Util.solveEquation(c.celestialObjectProperties.blue, replaceMap)))));
 
         //solid colors 12
         if (c.solidColor != null)
@@ -332,7 +407,7 @@ public class LevelRendererMixin {
     }
 
     // Render sky object
-    private void renderSkyObject(BufferBuilder bufferBuilder, PoseStack matrices, Matrix4f matrix4f2, CelestialObject c, Vector3f color, Vector3f colorsSolid, float alpha, float distancePre, float scalePre, int moonPhase, ArrayList<Util.VertexPointValue> vertexList) {
+    private void renderSkyObject(BufferBuilder bufferBuilder, PoseStack matrices, Matrix4f matrix4f2, CelestialObject c, Vector3f color, Vector3f colorsSolid, float alpha, float distancePre, float scalePre, int moonPhase, ArrayList<Util.VertexPointValue> vertexList,  HashMap<String, Util.DynamicValue> objectReplaceMap) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         float distance = (float) (distancePre + c.populateDistanceAdd);
@@ -430,8 +505,8 @@ public class LevelRendererMixin {
             float uvY;
             float uvSizeX;
             float uvSizeY;
-            float textureSizeX = c.solidColor != null ? 0 : (float) Util.solveEquation(c.skyBoxProperties.textureSizeX, Util.getReplaceMapNormal());
-            float textureSizeY = c.solidColor != null ? 0 : (float) Util.solveEquation(c.skyBoxProperties.textureSizeY, Util.getReplaceMapNormal());
+            float textureSizeX = c.solidColor != null ? 0 : (float) Util.solveEquation(c.skyBoxProperties.textureSizeX, objectReplaceMap);
+            float textureSizeY = c.solidColor != null ? 0 : (float) Util.solveEquation(c.skyBoxProperties.textureSizeY, objectReplaceMap);
 
             for (int l = 0; l < 6; ++l) {
                 matrices.pushPose();
@@ -447,11 +522,12 @@ public class LevelRendererMixin {
                 }
                 if (l == 1) {
                     matrices.mulPose(Vector3f.XP.rotationDegrees(90.0F));
-                    matrices.mulPose(Vector3f.YP.rotationDegrees(180.0F));
                 }
 
                 if (l == 2) {
                     matrices.mulPose(Vector3f.XP.rotationDegrees(-90.0F));
+
+                    matrices.mulPose(Vector3f.YP.rotationDegrees(180.0F));
                 }
 
                 if (l == 3) {
@@ -461,15 +537,15 @@ public class LevelRendererMixin {
 
                 if (l == 4) {
                     matrices.mulPose(Vector3f.ZP.rotationDegrees(90.0F));
-                    matrices.mulPose(Vector3f.YP.rotationDegrees(90.0F));
+                    matrices.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
                 }
 
                 if (l == 5) {
                     matrices.mulPose(Vector3f.ZP.rotationDegrees(-90.0F));
-                    matrices.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
+                    matrices.mulPose(Vector3f.YP.rotationDegrees(90.0F));
                 }
 
-                size = (float) Util.solveEquation(c.skyBoxProperties.skyBoxSize, Util.getReplaceMapNormal());
+                size = (float) Util.solveEquation(c.skyBoxProperties.skyBoxSize, objectReplaceMap);
 
                 Matrix4f matrix4f3 = matrices.last().pose();
 
@@ -484,10 +560,10 @@ public class LevelRendererMixin {
 
                     RenderSystem.enableTexture();
                 } else {
-                    uvX = (float) Util.solveEquation(side.uvX, Util.getReplaceMapNormal());
-                    uvY = (float) Util.solveEquation(side.uvY, Util.getReplaceMapNormal());
-                    uvSizeX = (float) Util.solveEquation(side.uvSizeX, Util.getReplaceMapNormal());
-                    uvSizeY = (float) Util.solveEquation(side.uvSizeY, Util.getReplaceMapNormal());
+                    uvX = (float) Util.solveEquation(side.uvX, objectReplaceMap);
+                    uvY = (float) Util.solveEquation(side.uvY, objectReplaceMap);
+                    uvSizeX = (float) Util.solveEquation(side.uvSizeX, objectReplaceMap);
+                    uvSizeY = (float) Util.solveEquation(side.uvSizeY, objectReplaceMap);
 
                     textureX = (uvX / textureSizeX);
                     textureY = (uvY / textureSizeY);

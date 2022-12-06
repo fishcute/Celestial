@@ -13,10 +13,16 @@ import java.awt.*;
 
 @Mixin(ClientLevel.class)
 public class ClientLevelMixin {
-    @Inject(method = "getCloudColor", at = @At("RETURN"))
-    private void getCloudColor(float f, CallbackInfoReturnable<Vec3> cir) {
-        if (CelestialSky.doesDimensionHaveCustomSky())
-            CelestialSky.getDimensionRenderInfo().environment.cloudColor.setInheritColor(new Color((int) cir.getReturnValue().x * 255, (int) cir.getReturnValue().y * 255, (int) cir.getReturnValue().z * 255));
+    @Inject(method = "getCloudColor", at = @At("RETURN"), cancellable = true)
+    private void getCloudColor(float f, CallbackInfoReturnable<Vec3> info) {
+        if (CelestialSky.doesDimensionHaveCustomSky()) {
+            if (CelestialSky.getDimensionRenderInfo().environment.cloudColor.ignoreSkyEffects) {
+                CelestialSky.getDimensionRenderInfo().environment.cloudColor.setInheritColor(new Color(255,  255, 255));
+                info.setReturnValue(new Vec3(CelestialSky.getDimensionRenderInfo().environment.cloudColor.storedColor.getRed() / 255.0F, CelestialSky.getDimensionRenderInfo().environment.cloudColor.storedColor.getGreen() / 255.0F, CelestialSky.getDimensionRenderInfo().environment.cloudColor.storedColor.getBlue() / 255.0F));
+            }
+            else
+                CelestialSky.getDimensionRenderInfo().environment.cloudColor.setInheritColor(new Color(255, 255, 255));
+        }
     }
     @ModifyVariable(method = "getCloudColor", at = @At("STORE"), ordinal = 3)
     private float getRed(float h) {
@@ -35,5 +41,13 @@ public class ClientLevelMixin {
         if (CelestialSky.doesDimensionHaveCustomSky())
             return (CelestialSky.getDimensionRenderInfo().environment.cloudColor.storedColor.getBlue() / 255f) * j;
         return j;
+    }
+    @Inject(method = "getSkyColor", at = @At("RETURN"), cancellable = true)
+    private void getSkyColor(Vec3 vec3, float f, CallbackInfoReturnable<Vec3> info) {
+        if (CelestialSky.doesDimensionHaveCustomSky() && CelestialSky.getDimensionRenderInfo().environment.skyColor.ignoreSkyEffects) {
+            info.setReturnValue(new Vec3(((float) CelestialSky.getDimensionRenderInfo().environment.skyColor.storedColor.getRed()) / 255,
+                    ((float) CelestialSky.getDimensionRenderInfo().environment.skyColor.storedColor.getGreen()) / 255,
+                    ((float) CelestialSky.getDimensionRenderInfo().environment.skyColor.storedColor.getBlue()) / 255));
+        }
     }
 }

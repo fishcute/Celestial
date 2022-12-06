@@ -72,13 +72,13 @@ public class CelestialEnvironmentRenderInfo {
         JsonObject clouds = environment.getAsJsonObject("clouds");
         return new CelestialEnvironmentRenderInfo(
                 Util.getOptionalBoolean(fog, "has_thick_fog", false),
-                ColorEntry.createColorEntry(environment, "fog_color", DEFAULT_COLOR_FOG),
-                ColorEntry.createColorEntry(environment, "sky_color", DEFAULT_COLOR_SKY),
+                ColorEntry.createColorEntry(environment, "fog_color", DEFAULT_COLOR_FOG, true),
+                ColorEntry.createColorEntry(environment, "sky_color", DEFAULT_COLOR_SKY, true),
                 Util.getOptionalString(clouds, "height", "128"),
-                ColorEntry.createColorEntry(clouds, "color", DEFAULT_COLOR_CLOUD),
+                ColorEntry.createColorEntry(clouds, "color", DEFAULT_COLOR_CLOUD, true),
                 Util.getOptionalString(fog, "fog_start", "-1"),
                 Util.getOptionalString(fog, "fog_end", "-1"),
-                ColorEntry.createColorEntry(environment, "twilight_color", DEFAULT_COLOR_TWILIGHT),
+                ColorEntry.createColorEntry(environment, "twilight_color", DEFAULT_COLOR_TWILIGHT, false),
                 Util.getOptionalString(environment, "twilight_alpha", "1"),
                 Util.getOptionalString(environment, "void_culling_level", "0")
         );

@@ -138,7 +138,7 @@ public class CelestialObject {
                 CelestialObjectProperties.createCelestialObjectPropertiesFromJson(o.getAsJsonObject("properties")),
                 Util.getOptionalString(o, "parent", null),
                 dimension,
-                ColorEntry.createColorEntry(o, "solid_color", null),
+                ColorEntry.createColorEntry(o, "solid_color", null, false),
                 Util.convertToPointUvList(o, "vertex"),
                 null
         );
@@ -158,6 +158,7 @@ public class CelestialObject {
         JsonObject display = o.getAsJsonObject("display");
         JsonObject rotation = o.getAsJsonObject("rotation");
         //I love parameters
+
         CelestialObject object = new CelestialObject(
                 findObjectType(o),
                 Util.getOptionalString(o, "texture", null),
@@ -175,7 +176,7 @@ public class CelestialObject {
                 CelestialObjectProperties.createCelestialObjectPropertiesFromJson(o.getAsJsonObject("properties")),
                 Util.getOptionalString(o, "parent", null),
                 dimension,
-                ColorEntry.createColorEntry(o, Util.getOptionalString(o, "solid_color", null), null),
+                ColorEntry.createColorEntry(o, "solid_color", null, false),
                 null,
                 SkyBoxObjectProperties.getSkyboxPropertiesFromJson(o)
         );
@@ -190,10 +191,12 @@ public class CelestialObject {
 
     public static CelestialObjectType findObjectType(JsonObject o) {
         String objectType = Util.getOptionalString(o, "type", "default");
-        if (o.has("texture") && !objectType.equals("skybox"))
-            return CelestialObjectType.DEFAULT;
-        else if (o.has("solid_color") && !objectType.equals("skybox"))
-            return CelestialObjectType.COLOR;
+        if (!objectType.equals("skybox")) {
+            if (o.has("texture"))
+                return CelestialObjectType.DEFAULT;
+            else if (o.has("solid_color"))
+                return CelestialObjectType.COLOR;
+        }
         return getCelestialObjectType(objectType);
     }
     public static CelestialObjectType getCelestialObjectType(String i) {
