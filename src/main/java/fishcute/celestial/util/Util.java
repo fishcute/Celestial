@@ -415,7 +415,7 @@ public class Util {
     }
 
     public static int getDecimal(Color color) {
-        return getDecimal(String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue()));
+        return getDecimal("#" + Integer.toHexString(color.getRed()) + Integer.toHexString(color.getGreen()) + Integer.toHexString(color.getBlue()));
     }
 
     public static double generateRandomDouble(double min, double max) {
