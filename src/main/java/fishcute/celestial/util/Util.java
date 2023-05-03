@@ -46,8 +46,6 @@ public class Util {
 
         StringBuilder builder = new StringBuilder(str);
 
-        int preIndex;
-
         for (String i : toReplace.keySet()) {
             while (builder.indexOf(i) != -1)
                 builder.replace(builder.indexOf(i), builder.indexOf(i) + i.length(), numberFormat.format(Double.valueOf(toReplace.get(i).getValue())));
