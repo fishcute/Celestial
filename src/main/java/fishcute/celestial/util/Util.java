@@ -16,13 +16,18 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.level.material.FogType;
 import net.minecraft.world.phys.Vec3;
 import oshi.util.tuples.Pair;
 
 import java.awt.*;
 import java.text.DecimalFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalField;
 import java.util.*;
 
 public class Util {
@@ -40,6 +45,9 @@ public class Util {
         catch(NumberFormatException ignored) {}
 
         StringBuilder builder = new StringBuilder(str);
+
+        int preIndex;
+
         for (String i : toReplace.keySet()) {
             while (builder.indexOf(i) != -1)
                 builder.replace(builder.indexOf(i), builder.indexOf(i) + i.length(), numberFormat.format(Double.valueOf(toReplace.get(i).getValue())));
@@ -415,7 +423,7 @@ public class Util {
     }
 
     public static int getDecimal(Color color) {
-        return getDecimal(String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue()));
+        return getDecimal("#" + Integer.toHexString(color.getRed()) + Integer.toHexString(color.getGreen()) + Integer.toHexString(color.getBlue()));
     }
 
     public static double generateRandomDouble(double min, double max) {
@@ -465,8 +473,11 @@ public class Util {
         toReplaceMap.put("#isSubmerged", new DynamicValue() {@Override public double getValue() { return
                 Minecraft.getInstance().player.isInWater() ? 1 : 0;
         }});
-        toReplaceMap.put("#getTotalTime", new DynamicValue() {@Override public double getValue() { return
+        toReplaceMap.put("#getGameTime", new DynamicValue() {@Override public double getValue() { return
                 Minecraft.getInstance().level.getGameTime();
+        }});
+        toReplaceMap.put("#getWorldTime", new DynamicValue() {@Override public double getValue() { return
+                Minecraft.getInstance().level.dayTime();
         }});
         toReplaceMap.put("#getDayTime", new DynamicValue() {@Override public double getValue() { return
                 Minecraft.getInstance().level.dayTime() - (Math.floor(Minecraft.getInstance().level.dayTime() / 24000f) * 24000);
@@ -483,10 +494,13 @@ public class Util {
         toReplaceMap.put("#maxInteger", new DynamicValue() {@Override public double getValue() { return
                 Integer.MAX_VALUE;
         }});
-        toReplaceMap.put("#yaw", new DynamicValue() {@Override public double getValue() { return
+        toReplaceMap.put("#pi", new DynamicValue() {@Override public double getValue() { return
+                Math.PI;
+        }});
+        toReplaceMap.put("#headYaw", new DynamicValue() {@Override public double getValue() { return
                 Minecraft.getInstance().player.getViewXRot(Minecraft.getInstance().getFrameTime());
         }});
-        toReplaceMap.put("#pitch", new DynamicValue() {@Override public double getValue() { return
+        toReplaceMap.put("#headPitch", new DynamicValue() {@Override public double getValue() { return
                 Minecraft.getInstance().player.getViewYRot(Minecraft.getInstance().getFrameTime());
         }});
         toReplaceMap.put("#isLeftClicking", new DynamicValue() {@Override public double getValue() { return
@@ -495,35 +509,35 @@ public class Util {
         toReplaceMap.put("#isRightClicking", new DynamicValue() {@Override public double getValue() { return
                 isRightClicking() ? 1 : 0;
         }});
-        toReplaceMap.put("#pi", new DynamicValue() {@Override public double getValue() { return
-                Math.PI;
-        }});
         toReplaceMap.put("#viewDistance", new DynamicValue() {@Override public double getValue() { return
                 Minecraft.getInstance().options.getEffectiveRenderDistance();
         }});
         toReplaceMap.put("#moonPhase", new DynamicValue() {@Override public double getValue() {return
-            Minecraft.getInstance().level.getMoonPhase();
+                Minecraft.getInstance().level.getMoonPhase();
         }});
         toReplaceMap.put("#localDayOfYear", new DynamicValue() {@Override public double getValue() {return
-                LocalDate.now().getDayOfYear();
+                getTime(0);
         }});
         toReplaceMap.put("#localDayOfMonth", new DynamicValue() {@Override public double getValue() {return
-                LocalDate.now().getDayOfMonth();
+                getTime(1);
         }});
         toReplaceMap.put("#localDayOfWeek", new DynamicValue() {@Override public double getValue() {return
-                LocalDate.now().getDayOfWeek().getValue();
+                getTime(2);
         }});
         toReplaceMap.put("#localMonth", new DynamicValue() {@Override public double getValue() {return
-                LocalDate.now().getMonthValue();
+                getTime(3);
         }});
         toReplaceMap.put("#localYear", new DynamicValue() {@Override public double getValue() {return
-                LocalDate.now().getYear();
+                getTime(4);
         }});
         toReplaceMap.put("#localSecondOfHour", new DynamicValue() {@Override public double getValue() {return
-                LocalDate.now().atTime(LocalTime.now()).getSecond();
+                getTime(5);
         }});
         toReplaceMap.put("#localMinuteOfHour", new DynamicValue() {@Override public double getValue() {return
-                LocalDate.now().atTime(LocalTime.now()).getMinute();
+                getTime(6);
+        }});
+        toReplaceMap.put("#localMillisecondOfDay", new DynamicValue() {@Override public double getValue() {return
+                getTotalMilliseconds();
         }});
         toReplaceMap.put("#localSecondOfDay", new DynamicValue() {@Override public double getValue() {return
                 getTotalSeconds();
@@ -555,8 +569,44 @@ public class Util {
                 return Math.pow(1.0F - (1.0F - Mth.sin(((g + 0.0F) / 0.4F * 0.5F + 0.5F) * 3.1415927F)) * 0.99F, 2);
             return 0;
         }});
+        toReplaceMap.put("#biomeTemperature", new DynamicValue() {@Override public double getValue() {return
+                Minecraft.getInstance().level.getBiome(Minecraft.getInstance().player.blockPosition()).value().getBaseTemperature();
+        }});
+        toReplaceMap.put("#biomeDownfall", new DynamicValue() {@Override public double getValue() {return
+                Minecraft.getInstance().level.getBiome(Minecraft.getInstance().player.blockPosition()).value().getDownfall();
+        }});
+        toReplaceMap.put("#biomeHasSnow", new DynamicValue() {@Override public double getValue() {return
+                Minecraft.getInstance().level.getBiome(Minecraft.getInstance().player.blockPosition()).value().coldEnoughToSnow(Minecraft.getInstance().player.blockPosition()) ? 1 : 0;
+        }});
 
         toReplaceMap.putAll(extraValues);
+    }
+
+    public static int getTime(int id) {
+        switch (id) {
+            case 0:
+                return LocalDate.now().getDayOfYear();
+            case 1:
+                return LocalDate.now().getDayOfMonth();
+            case 2:
+                return LocalDate.now().getDayOfWeek().getValue();
+            case 3:
+                return LocalDate.now().getMonthValue();
+            case 4:
+                return LocalDate.now().getYear();
+            case 5:
+                return LocalDate.now().atTime(LocalTime.now()).getSecond();
+            case 6:
+                return LocalDate.now().atTime(LocalTime.now()).getMinute();
+            default:
+                return 0;
+        }
+    }
+
+    public static long getTotalMilliseconds() {
+        return (Calendar.getInstance().getTimeInMillis() + Calendar.getInstance().get(Calendar.ZONE_OFFSET) +
+                Calendar.getInstance().get(Calendar.DST_OFFSET)) %
+                (24 * 60 * 60 * 1000);
     }
 
     public static int getTotalSeconds() {
@@ -612,13 +662,13 @@ public class Util {
             for (JsonElement e : o.getAsJsonArray(name)) {
                 JsonObject entry = e.getAsJsonObject();
                 returnList.add(
-                    new VertexPoint(
-                         getOptionalString(entry, "x", ""),
-                         getOptionalString(entry, "y", ""),
-                         getOptionalString(entry, "z", ""),
-                         getOptionalString(entry, "uv_x", null),
-                         getOptionalString(entry, "uv_y", null)
-                    )
+                        new VertexPoint(
+                                getOptionalString(entry, "x", ""),
+                                getOptionalString(entry, "y", ""),
+                                getOptionalString(entry, "z", ""),
+                                getOptionalString(entry, "uv_x", null),
+                                getOptionalString(entry, "uv_y", null)
+                        )
                 );
             }
         }
@@ -721,7 +771,7 @@ public class Util {
 
             return distanceTo(Minecraft.getInstance().player.getX(), Minecraft.getInstance().player.getY(), Minecraft.getInstance().player.getZ(),
                     Double.parseDouble(str[0]), Double.parseDouble(str[1]), Double.parseDouble(str[2]));
-            }
+        }
         catch (Exception e) {
             sendErrorInGame("Failed to parse #distanceTo variable with arguments \"" + arguments + "\".", false);
             return 0;
@@ -824,8 +874,8 @@ public class Util {
                             Minecraft.getInstance().player.getZ());
                     if (equalToBiome(
                             Minecraft.getInstance().level.getBiome(pos), biomeName) && (
-                                    !foundSpot || dist < closestDist
-                            )
+                            !foundSpot || dist < closestDist
+                    )
                     ) {
                         closestDist = getDistanceToArea(pos.getX() - 0.5, pos.getY() - 0.5, pos.getZ() + 0.5, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
                         foundSpot = true;
@@ -868,20 +918,20 @@ public class Util {
         double closestDist = searchDistance;
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
         for (int i = -searchDistance; i <= searchDistance; i++) {
-                for (int k = -searchDistance; k <= searchDistance; k++) {
-                    pos.set(i + Minecraft.getInstance().player.getX(), yLevel, k + Minecraft.getInstance().player.getZ());
-                    dist = distanceTo(pos.getX(), yLevel, pos.getZ(),
-                            Minecraft.getInstance().player.getX(),
-                            yLevel,
-                            Minecraft.getInstance().player.getZ());
-                    if (equalToBiome(
-                            Minecraft.getInstance().level.getBiome(pos), biomeName) && (
-                            !foundSpot || dist < closestDist
-                    )
-                    ) {
-                        closestDist = dist;
-                        foundSpot = true;
-                    }
+            for (int k = -searchDistance; k <= searchDistance; k++) {
+                pos.set(i + Minecraft.getInstance().player.getX(), yLevel, k + Minecraft.getInstance().player.getZ());
+                dist = distanceTo(pos.getX(), yLevel, pos.getZ(),
+                        Minecraft.getInstance().player.getX(),
+                        yLevel,
+                        Minecraft.getInstance().player.getZ());
+                if (equalToBiome(
+                        Minecraft.getInstance().level.getBiome(pos), biomeName) && (
+                        !foundSpot || dist < closestDist
+                )
+                ) {
+                    closestDist = dist;
+                    foundSpot = true;
+                }
             }
         }
 
@@ -943,5 +993,9 @@ public class Util {
 
     public static float getDayLight() {
         return 1 - (float) (1 + ((Minecraft.getInstance().level.getStarBrightness(Minecraft.getInstance().getFrameTime()) - 0.5) * 2));
+    }
+
+    public static boolean disableFogChanges() {
+        return Minecraft.getInstance().gameRenderer.getMainCamera().getFluidInCamera() != FogType.NONE;
     }
 }

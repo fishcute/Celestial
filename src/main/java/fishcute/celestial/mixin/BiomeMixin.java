@@ -19,7 +19,7 @@ import java.awt.*;
 public class BiomeMixin {
     @Inject(method = "getFogColor", at = @At("RETURN"), cancellable = true)
     private void getFogColor(CallbackInfoReturnable<Integer> info) {
-        if (CelestialSky.doesDimensionHaveCustomSky()) {
+        if (CelestialSky.doesDimensionHaveCustomSky() && !Util.disableFogChanges()) {
             if (Util.getRealFogColor) {
                 info.setReturnValue(((Biome) (Object) this).getSpecialEffects().getFogColor());
             }
@@ -30,7 +30,7 @@ public class BiomeMixin {
     }
     @Inject(method = "getSkyColor", at = @At("RETURN"), cancellable = true)
     private void getSkyColor(CallbackInfoReturnable<Integer> info) {
-        if (CelestialSky.doesDimensionHaveCustomSky()) {
+        if (CelestialSky.doesDimensionHaveCustomSky() && !Util.disableFogChanges()) {
             if (Util.getRealSkyColor) {
                 info.setReturnValue(info.getReturnValue());
             }

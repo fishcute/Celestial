@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.material.FogType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.criteria.ObjectiveCriteria;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,13 +27,13 @@ import static java.util.Map.entry;
 public class FogRendererMixin {
     @ModifyVariable(method = "setupFog", at = @At("HEAD"), ordinal = 0, argsOnly = true)
     private static boolean setupFog(boolean thickFog) {
-        if (CelestialSky.doesDimensionHaveCustomSky() && CelestialSky.getDimensionRenderInfo().environment.useSimpleFog())
+        if (CelestialSky.doesDimensionHaveCustomSky() && CelestialSky.getDimensionRenderInfo().environment.useSimpleFog() && !Util.disableFogChanges())
             return CelestialSky.getDimensionRenderInfo().environment.hasThickFog;
         return thickFog;
     }
     @Inject(method = "setupFog", at = @At("RETURN"))
     private static void setupFog(Camera camera, FogRenderer.FogMode fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo info) {
-        if (CelestialSky.doesDimensionHaveCustomSky() && !CelestialSky.getDimensionRenderInfo().environment.useSimpleFog()) {
+        if (CelestialSky.doesDimensionHaveCustomSky() && !CelestialSky.getDimensionRenderInfo().environment.useSimpleFog() && !Util.disableFogChanges()) {
             RenderSystem.setShaderFogStart((float) Util.solveEquation(CelestialSky.getDimensionRenderInfo().environment.fogStart, Util.getReplaceMapNormal()));
             RenderSystem.setShaderFogEnd((float) Util.solveEquation(CelestialSky.getDimensionRenderInfo().environment.fogEnd, Util.getReplaceMapNormal()));
         }
@@ -50,7 +51,7 @@ public class FogRendererMixin {
 
     @Inject(method = "levelFogColor", at = @At("RETURN"))
     private static void setupColor(CallbackInfo ci) {
-        if (CelestialSky.doesDimensionHaveCustomSky() && CelestialSky.getDimensionRenderInfo().environment.fogColor.ignoreSkyEffects) {
+        if (CelestialSky.doesDimensionHaveCustomSky() && CelestialSky.getDimensionRenderInfo().environment.fogColor.ignoreSkyEffects && !Util.disableFogChanges()) {
             fogRed = CelestialSky.getDimensionRenderInfo().environment.fogColor.storedColor.getRed() / 255.0F;
             fogGreen = CelestialSky.getDimensionRenderInfo().environment.fogColor.storedColor.getGreen() / 255.0F;
             fogBlue = CelestialSky.getDimensionRenderInfo().environment.fogColor.storedColor.getBlue() / 255.0F;

@@ -181,8 +181,11 @@ public class LevelRendererMixin {
                             ((CelestialObjectPopulation) c).baseObject.solidColor.tick();
                         }
                     } else {
-                        if (c.type == CelestialObject.CelestialObjectType.DEFAULT || c.type == CelestialObject.CelestialObjectType.SKYBOX)
+                        if (c.type == CelestialObject.CelestialObjectType.DEFAULT || c.type == CelestialObject.CelestialObjectType.SKYBOX) {
                             renderOrderTexture.add(c);
+                            if (c.celestialObjectProperties.color != null)
+                                c.celestialObjectProperties.color.tick();
+                        }
                         else if (c.solidColor != null) {
                             renderOrderColor.add(c);
                             c.solidColor.tick();
@@ -391,9 +394,9 @@ public class LevelRendererMixin {
 
         // colors 11
         dataArray[11] = (new Vector3f(
-                (float) ((Util.solveEquation(c.celestialObjectProperties.red, replaceMap))),
-                (float) ((Util.solveEquation(c.celestialObjectProperties.green, replaceMap))),
-                (float) ((Util.solveEquation(c.celestialObjectProperties.blue, replaceMap)))));
+                c.celestialObjectProperties.getRed(),
+                c.celestialObjectProperties.getGreen(),
+                c.celestialObjectProperties.getBlue()));
 
         //solid colors 12
         if (c.solidColor != null)
