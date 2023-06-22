@@ -6,28 +6,23 @@ import com.google.gson.JsonObject;
 import fishcute.celestial.sky.CelestialSky;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CubicSampler;
 import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.material.FogType;
 import net.minecraft.world.phys.Vec3;
 import oshi.util.tuples.Pair;
 
 import java.awt.*;
 import java.text.DecimalFormat;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoField;
-import java.time.temporal.TemporalField;
 import java.util.*;
 
 public class Util {
@@ -407,21 +402,8 @@ public class Util {
         return toReturn;
     }
 
-    private static final String digits = "0123456789ABCDEF";
-    public static int getDecimal(String hex) {
-        hex = hex.toUpperCase();
-        int val = 0;
-        for (int i = 0; i < hex.length(); i++)
-        {
-            char c = hex.charAt(i);
-            int d = digits.indexOf(c);
-            val = 16*val + d;
-        }
-        return val;
-    }
-
     public static int getDecimal(Color color) {
-        return getDecimal("#" + Integer.toHexString(color.getRed()) + Integer.toHexString(color.getGreen()) + Integer.toHexString(color.getBlue()));
+        return color.getRGB();
     }
 
     public static double generateRandomDouble(double min, double max) {
@@ -994,6 +976,7 @@ public class Util {
     }
 
     public static boolean disableFogChanges() {
-        return Minecraft.getInstance().gameRenderer.getMainCamera().getFluidInCamera() != FogType.NONE;
+        return Minecraft.getInstance().gameRenderer.getMainCamera().getFluidInCamera() !=
+                FogType.NONE || Minecraft.getInstance().player.hasEffect(MobEffects.BLINDNESS);
     }
 }
