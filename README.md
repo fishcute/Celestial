@@ -8,8 +8,7 @@ View the wiki on how to make custom resource packs [here](https://github.com/fis
 
 [Modrinth Page](https://modrinth.com/mod/celestial)
 
-# Links to repositories 
-(Version 2.0, this update hasn't been released yet. If you are from the present, ignore this)
+# Links to repositories
 
 ## [Celestial (Current Repository)](https://github.com/fishcute/Celestial)
 This repository does not contain updated code for Celestial. It is used as a unifier for all Celestial repositories, and contains the Celestial wiki.
