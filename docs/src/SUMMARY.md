@@ -2,8 +2,9 @@
 
 [Introduction](Home.md)
 
-- [REMOVED - SkyRender Type]('[Removed]-Sky-Render-Type.md')
-- [REMOVED - Star Details]('[Removed]-Star-Details.md')
+- Test
+  - [REMOVED - SkyRender Type]('[Removed]-Sky-Render-Type.md')
+  - [REMOVED - Star Details]('[Removed]-Star-Details.md')
 - [Celestial Object Entry]('Celestial-Object-Entry.md')
 - [Color Entry](Color-Entry.md)
 - [Custom Variables](Custom-Variables.md)
