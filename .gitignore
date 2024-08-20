@@ -1,0 +1,8 @@
+**/*.html
+**/*.css
+**/*.js
+**/*.svg
+**/*.png
+docs/book/
+docs/src/fonts/
+docs/src/css/
